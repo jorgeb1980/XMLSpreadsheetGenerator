@@ -1,5 +1,6 @@
 apply plugin: 'java'
-// Integration with eclipse IDE
+// Integration with eclipse IDE (optional; should and must work if you are brave
+// and bold enough to edit with vim)
 apply plugin: 'eclipse'
 
 sourceCompatibility = 1.5
@@ -16,5 +17,6 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'
+	compile 'org.apache.velocity:velocity:1.6.2'
 }
 

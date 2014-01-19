@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook
+    xmlns = "urn:schemas-microsoft-com:office:spreadsheet"
+    xmlns:c = "urn:schemas-microsoft-com:office:component:spreadsheet"
+    xmlns:html = "http://www.w3.org/TR/REC-html40"
+    xmlns:o = "urn:schemas-microsoft-com:office:office"
+    xmlns:ss = "urn:schemas-microsoft-com:office:spreadsheet"
+    xmlns:x2 = "http://schemas.microsoft.com/office/excel/2003/xml"
+    xmlns:x = "urn:schemas-microsoft-com:office:excel"
+    xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance">
+    <OfficeDocumentSettings xmlns = "urn:schemas-microsoft-com:office:office">
+        <Colors>
+            <Color>
+                <Index>3</Index>
+                <RGB>#c0c0c0</RGB>
+            </Color>
+            <Color>
+                <Index>4</Index>
+                <RGB>#ff0000</RGB>
+            </Color>
+        </Colors>
+    </OfficeDocumentSettings>
+    <ExcelWorkbook xmlns = "urn:schemas-microsoft-com:office:excel">
+        <WindowHeight>$height</WindowHeight>
+        <WindowWidth>$width</WindowWidth>
+        <WindowTopX>$topX</WindowTopX>
+        <WindowTopY>$topY</WindowTopY>
+        <ProtectStructure>False</ProtectStructure>
+        <ProtectWindows>False</ProtectWindows>
+    </ExcelWorkbook>
