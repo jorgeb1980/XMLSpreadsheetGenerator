@@ -11,7 +11,7 @@ Office to save XML Spreadsheets with gaps (empty rows, etc.).
 
 The fix is not intended for production (I guess it can be quite heavy with a
 spreadsheet having thousands of empty lines) but it succeeded in saving a 
-couple of files, which is all I needed for my purposes.  If found it under:
+couple of files, which is all I needed for my purposes.  I found it under:
 
 LOCAL_DIRECTORY/share/xslt/export/spreadsheetml/table.xsl
 
