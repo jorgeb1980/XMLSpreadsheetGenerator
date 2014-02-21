@@ -20,17 +20,34 @@ public class Font {
 	
 	/** Underline state of a font */
 	public enum Underline {
-		None, Single, Double, SingleAccounting, DoubleAccounting
+		None, 
+		Single, 
+		Double, 
+		SingleAccounting, 
+		DoubleAccounting;
+		
+		// No need to override toString, it is enough as is
 	}
 	
 	/** Vertical alignment of a font */
 	public enum VerticalAlignment {
-		None, Subscript, Superscript
+		None, 
+		Subscript, 
+		Superscript;
+		
+		// No need to override toString, it is enough as is
 	}
 	
 	/** Win-32 font family */
 	public enum FontFamily {
-		Automatic, Decorative, Modern, Roman, Script, Swiss;
+		Automatic, 
+		Decorative, 
+		Modern, 
+		Roman, 
+		Script, 
+		Swiss;
+		
+		// No need to override toString, it is enough as is
 	}
 	
 	//-------------------------------------------------------------------

@@ -15,15 +15,51 @@ public class Alignment {
 	
 	// Reading order of a cell
 	public enum ReadingOrder {
-		RightToLeft, LeftToRight, Context
+		
+		// Constant values from
+		// http://www.smarterdatacollection.com/Blog/?p=374
+		
+		RightToLeft ("-5004"), 
+		LeftToRight ("-5003"), 
+		Context ("-5002");
+		
+		private String order;
+		
+		private ReadingOrder(String order) {
+			this.order = order;
+		}
+		
+		public String toString() {
+			return order;
+		}
 	}
+	
 	// Horizontal alignment of a cell
 	public enum HorizontalAlignment {
-		Automatic, Left, Center, Right, Fill, Justify, CenterAcrossSelection, Distributed, JustifyDistributed
+		Automatic, 
+		Left, 
+		Center, 
+		Right, 
+		Fill, 
+		Justify, 
+		CenterAcrossSelection, 
+		Distributed, 
+		JustifyDistributed;
+		
+		// No need to override toString, it is enough as is
 	}
+	
 	// Vertical alignment of a cell
 	public enum VerticalAlignment {
-		Automatic, Top, Bottom, Center, Justify, Distributed, JustifyDistributed
+		Automatic, 
+		Top, 
+		Bottom, 
+		Center, 
+		Justify, 
+		Distributed, 
+		JustifyDistributed;
+		
+		// No need to override toString, it is enough as is
 	}
 	
 	//-----------------------------------------------------------

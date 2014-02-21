@@ -17,24 +17,48 @@ public class Border {
 	/** Automatic value for border color. */
 	public static final String COLOR_AUTOMATIC = "Automatic";
 	
-	// Border predefined weights
-	/** 0—Hairline */
-	public static final double BORDER_HAIRLINE = 0;
-	/** 1—Thin */
-	public static final double BORDER_THIN = 1;
-	/** 2—Medium */
-	public static final double BORDER_MEDIUM = 2;
-	/** 3—Thick */
-	public static final double BORDER_THICK = 3;
+	/** Predefined border weights */
+	public enum BorderWeight {
+		Hairline (0),
+		Thin (1),
+		Medium (2),
+		Thick (3);
+		
+		private double weight;
+		
+		private BorderWeight (double weight) {
+			this.weight = weight;
+		}
+		
+		public double getValue() {
+			return weight;
+		}
+	}
 	
 	/** Position of the border */
 	public enum BorderPosition {
-		Left, Top, Right, Bottom, DiagonalLeft, DiagonalRight
+		Left, 
+		Top, 
+		Right, 
+		Bottom, 
+		DiagonalLeft, 
+		DiagonalRight;
+		
+		// No need to override toString, it is enough as is
 	}
 	
 	/** Line style. */
 	public enum LineStyle {
-		None, Continuous, Dash, Dot, DashDot, DashDotDot, SlantDashDot, Double;
+		None, 
+		Continuous, 
+		Dash, 
+		Dot, 
+		DashDot, 
+		DashDotDot,
+		SlantDashDot, 
+		Double;
+		
+		// No need to override toString, it is enough as is
 	}
 	
 	//-----------------------------------------------------------
@@ -64,7 +88,7 @@ public class Border {
 			2—Medium
 			3—Thick 
 	 */
-	private double weight = BORDER_HAIRLINE;
+	private double weight = BorderWeight.Hairline.getValue();
 	
 	//-----------------------------------------------------------
 	// Class methods
@@ -129,6 +153,13 @@ public class Border {
 	 */
 	public void setWeight(double weight) {
 		this.weight = weight;
+	}
+	
+	/**
+	 * @param weight the weight to set
+	 */
+	public void setWeight(BorderWeight weight) {
+		this.weight = weight.getValue();
 	}
 	
 	@Override
