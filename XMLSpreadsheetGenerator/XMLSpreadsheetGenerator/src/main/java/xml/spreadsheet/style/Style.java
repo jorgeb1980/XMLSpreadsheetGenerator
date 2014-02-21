@@ -17,8 +17,10 @@ public class Style {
 	// Attributes
 	/** Unique id */
 	private String id;
+	
 	/** Name */
 	private String name = "";
+	
 	/** Parent */
 	private String parent = "";
 	
@@ -26,14 +28,19 @@ public class Style {
 	
 	/** Alignment */
 	private Alignment alignment;
+	
 	/** Borders */
 	private Borders borders;
+	
 	/** Font */
 	private Font font;
+	
 	/** Interior */
 	private Interior interior;
+	
 	/** NumberFormat */
 	private NumberFormat numberFormat;
+	
 	/** Protection */
 	private Protection protection;
 	

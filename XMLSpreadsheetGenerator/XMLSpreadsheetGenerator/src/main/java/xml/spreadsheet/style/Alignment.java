@@ -4,7 +4,8 @@
 package xml.spreadsheet.style;
 
 /**
- * Alignment element inside Style</br>
+ * Defines the font alignment attributes to use in this style. 
+ * Each attribute that is specified is considered an override from the default. 
  * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:alignment
  */
 public class Alignment {
@@ -30,25 +31,32 @@ public class Alignment {
 	
 	/** Horizontal alignment of the cell. */
 	private HorizontalAlignment horizontal = HorizontalAlignment.Automatic;
+	
 	/** Number of indents. */
 	private int indent = 0;
+	
 	/** Reading order of the cell. */
 	private ReadingOrder readingOrder;
+	
 	/** Rotation of the cell.  
 	 * 90 is straight up, 0 is horizontal, and -90 is straight down
 	 */
 	private double rotate = 0.0;
+	
 	/**
 	 * True means that the text size should be shrunk so that all of the text 
 	 * fits within the cell. False means that the font within the cell 
 	 * should behave normally.  
 	 */
 	private boolean shrinkToFit = false;
+	
 	/** Vertical alignment of the cell. */
 	private VerticalAlignment vertical = VerticalAlignment.Automatic;
+	
 	/** Specifies whether the text is drawn "downwards", 
 	 * whereby each letter is drawn horizontally, one above the other. */
 	private boolean verticalText = false;
+	
 	/** Specifies whether the text in this cell should wrap at the cell boundary. 
 	 * False means that text either spills or gets truncated at the cell boundary 
 	 * (depending on whether the adjacent cell(s) have content).*/
