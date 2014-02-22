@@ -75,10 +75,10 @@ public class Border {
 	 * This string can also be the special 
 	 * value of "Automatic." This string is case insensitive. 
 	 */
-	private String color = COLOR_AUTOMATIC;
+	private String color = null;
 	
 	/** Specifies the appearance of this border. */
-	private LineStyle lineStyle = LineStyle.None;
+	private LineStyle lineStyle = null;
 	
 	/**
 	 *  Specifies the weight (or thickness) of this border. This measurement 
@@ -89,7 +89,7 @@ public class Border {
 			2—Medium
 			3—Thick 
 	 */
-	private double weight = BorderWeight.Hairline.getValue();
+	private Double weight = null;
 	
 	//-----------------------------------------------------------
 	// Class methods
@@ -97,14 +97,6 @@ public class Border {
 	// Standard visibility constructor - not intended to be used out of
 	//	the package
 	Border(BorderPosition position) {
-		this.position = position;
-	}
-
-	/**
-	 * @param position Specifies which of the six possible borders this 
-	 * element represents. Duplicate borders are not permitted and are considered invalid
-	 */
-	public void setPosition(BorderPosition position) {
 		this.position = position;
 	}
 
@@ -154,16 +146,16 @@ public class Border {
 		sb.append("<ss:Border");
 		AttributeHelper.att(sb, "ss:Position", position);
 		
-		if (color != null && !color.equals(COLOR_AUTOMATIC)) {
+		if (color != null) {
 			AttributeHelper.att(sb, "ss:Color", color);
 		}
 		
-		if (lineStyle != LineStyle.None) {
+		if (lineStyle != null) {
 			AttributeHelper.att(sb, "ss:LineStyle", lineStyle);
 		}
 		
-		if (weight != BorderWeight.Hairline.getValue()) {
-			AttributeHelper.att(sb, "ss:Weight", weight);
+		if (weight != null) {
+			AttributeHelper.att(sb, "ss:Weight", weight.doubleValue());
 		}
 		
 		sb.append("/>");

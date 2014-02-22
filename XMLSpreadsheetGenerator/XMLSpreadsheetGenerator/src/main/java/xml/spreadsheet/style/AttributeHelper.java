@@ -14,7 +14,7 @@ public class AttributeHelper {
 	// Class properties
 
 	/** Number format for doubles */
-	private static final DecimalFormat DOUBLE_FORMAT =
+	public static final DecimalFormat DOUBLE_FORMAT =
 		new DecimalFormat("#.#");
 	
 	//------------------------------------------------------------------

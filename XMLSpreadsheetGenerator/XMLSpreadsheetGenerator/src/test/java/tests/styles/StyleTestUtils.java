@@ -14,6 +14,8 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 import org.junit.Assert;
 
+import xml.spreadsheet.style.AttributeHelper;
+
 /**
  * Utility methods for style elements testing
  */
@@ -49,15 +51,15 @@ public class StyleTestUtils {
 	}
 	
 	public static void checkAttributeValue(Object styleElement, String attribute, String value) {
-		Document doc = parseStyleElement(styleElement);
-		if (value != null) {
-			Assert.assertEquals(value, 
-				StyleTestUtils.attributeValue(doc, "//ss:" + styleElement.getClass().getSimpleName(), attribute));
-		}
-		else {
-			Assert.assertNull(StyleTestUtils.attributeValue(doc, 
-					"//ss:" + styleElement.getClass().getSimpleName(), attribute));
-		}
+		checkAttributeValue(styleElement, "//ss:" + styleElement.getClass().getSimpleName(), attribute, value);
+	}
+	
+	public static void checkAttributeValue(Object styleElement, String selector, String attribute, double value) {
+		checkAttributeValue(styleElement, selector, attribute, AttributeHelper.DOUBLE_FORMAT.format(value));
+	}
+	
+	public static void checkAttributeValue(Object styleElement, String attribute, double value) {
+		checkAttributeValue(styleElement, attribute, AttributeHelper.DOUBLE_FORMAT.format(value));
 	}
 	
 	public static void checkAttributeValue(Object styleElement, String selector, String attribute, String value) {
@@ -68,7 +70,7 @@ public class StyleTestUtils {
 		}
 		else {
 			Assert.assertNull(StyleTestUtils.attributeValue(doc, 
-					"ss:" + styleElement.getClass().getSimpleName(), attribute));
+					selector, attribute));
 		}
 	}
 }
