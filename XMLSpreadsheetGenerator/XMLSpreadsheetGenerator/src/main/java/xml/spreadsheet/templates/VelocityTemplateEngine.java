@@ -3,22 +3,26 @@
  */
 package xml.spreadsheet.templates;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Map;
 
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+
 /**
- * Trivial implementation of an .xml template engine.  Based on .xml text files
- * and regex pattern replacement
+ * Velocity implementation of an .xml template engine.  Based on .xml text files
+ * and Velocity
  */
-public class FileTemplateEngine implements TemplateEngine {
+public class VelocityTemplateEngine implements TemplateEngine {
 
 	
 	//---------------------------------------------------
 	// Class methods
 	
 	// Must be instantiated by reflection
-	public FileTemplateEngine() {
+	public VelocityTemplateEngine() {
 	}
-
 	
 	/* 
 	 * In this case, we map templateId to a full path in the classpath.  The way
@@ -31,20 +35,23 @@ public class FileTemplateEngine implements TemplateEngine {
 	public String applyTemplate(String templateId, Map<String, String> values) 
 			throws TemplateException {
 		String templateValue = returnTemplate(templateId);
-		// 'Naive' replacement of variables
+		VelocityContext context = new VelocityContext();
 		for (String key: values.keySet()) {
-			templateValue = templateValue.replaceAll("\\$" + key, values.get(key));
-		}		
-		return templateValue;
+			context.put(key, values.get(key));
+		}
+		StringWriter writer = new StringWriter();
+		try {
+			Velocity.evaluate(context, writer, templateId, templateValue);
+		}
+		catch(IOException ioe) {
+			throw new TemplateException(ioe);
+		}
+		return writer.toString();
 	}
-	
-	/* 
-	 * In this case, we map templateId to a full path in the classpath.  The way
-	 * to do so is:
-	 * Classpath route -> templates/{templateId}.xml
-	 * @see xml.spreadsheet.templates.TemplateEngine#returnTemplate(java.lang.String)
-	 */
+		
+	// This method returns the contents of an .xml file
 	public String returnTemplate(String templateId) throws TemplateException {
 		return TemplateCache.readTemplate(templateId);
 	}	
+	
 }

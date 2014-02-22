@@ -1,8 +1,9 @@
 apply plugin: 'java'
-// Integration with eclipse IDE
+// Integration with eclipse IDE (optional; should and must work if you are brave
+// and bold enough to edit with vim)
 apply plugin: 'eclipse'
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.6
 version = '1.0'
 jar {
     manifest {
@@ -16,5 +17,8 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'
+	testCompile 'jdom:jdom:1.0'
+	testCompile 'jaxen:jaxen:1.1.6'
+	compile 'org.apache.velocity:velocity:1.6.2'
 }
 

@@ -3,6 +3,8 @@
  */
 package xml.spreadsheet.templates;
 
+import java.util.Map;
+
 /**
  * 
  */
@@ -14,16 +16,15 @@ public interface TemplateEngine {
 	 * rules
 	 * @return Value of the template without any tampering
 	 */
-	String returnTemplate(String templateId);
+	String returnTemplate(String templateId) throws TemplateException;
 	
 	/**
 	 * Returns the value of the template, after making the proper substitutions
 	 * @param templateId Template identifier according to template engine
 	 * rules
-	 * @param values Object with the values to substitute in the template, being
-	 * whatever needed by the engine definition (String[], Map[], etc.)
+	 * @param values Substitutions to apply (key -> value)
 	 * @return Value of the template after making the proper substitutions
 	 */
-	String applyTemplate(String templateId, Object values);
+	String applyTemplate(String templateId, Map<String, String> values) throws TemplateException;
 	
 }

@@ -4,43 +4,89 @@
 package xml.spreadsheet.templates;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
+import xml.spreadsheet.PropertiesReader;
+import xml.spreadsheet.XMLSpreadsheetException;
+
 /**
- *
+ * Singleton factory for template engines
  */
 public class TemplateEngineFactory {
 
+	
+	//---------------------------------------------------
+	// Class constants
+	
+	/** Prefix for template engine implementation class properties. */
+	private static final String PROPERTY_ENGINE_PREFIX = "template.engine.";
+	/** Property with the id of the default template engine. */
+	private static final String PROPERTY_DEFAULT_ENGINE = "template.engine.default";
+	
 	//---------------------------------------------------
 	// Class properties
 	
+	/** Singleton instance of the factory. */
+	private static TemplateEngineFactory factory = null;
 	/** Array of registered implementations. */
-	private static Map<String, TemplateEngine> engines = 
-			new Hashtable<String, TemplateEngine>();
+	private Map<String, TemplateEngine> engines = null;
 	
 	//---------------------------------------------------
 	// Class methods
 	
 	// Hidden in order to avoid instantiation
-	private TemplateEngineFactory() {}
+	private TemplateEngineFactory() throws XMLSpreadsheetException {
+		engines = 
+			new Hashtable<String, TemplateEngine>();
+		// Reads and tries to instantiate every possible template engine
+		//	found in spreadsheet.properties
+		List<String> templateEngines = 
+			PropertiesReader.propertiesByPrefix(PROPERTY_ENGINE_PREFIX);
+		for (String id: templateEngines) {
+			try {
+				String className = PropertiesReader.property(id);
+				if (className != null && className.trim().length() > 0 
+						&& !id.equals(PROPERTY_DEFAULT_ENGINE)) {
+					Class clazz = Class.forName(className.trim());  
+					TemplateEngine t = (TemplateEngine) clazz.newInstance();
+					engines.put(id, t);
+				}
+			}
+			catch(Throwable t) {
+				throw new XMLSpreadsheetException(t);
+			}
+		}
+	}
+	
+	/**
+	 * Public entry point to get a reference to the factory singleton
+	 * @return Singleton of the template engines factory
+	 */
+	public static TemplateEngineFactory factory() throws XMLSpreadsheetException {
+		if (factory == null) {
+			factory = new TemplateEngineFactory();
+		}
+		return factory;
+	}
 	
 	/**
 	 * Returns the default template engine
 	 * @return Instance of a template engine
 	 */
-	public static TemplateEngine engine() {
-		validateEngines();
-		// Return the first engine registered
-		return engines.values().iterator().next();
-	}
-	
-	/** 
-	 * Entry point for all template engines to register into the factory
-	 * @param id Engine identifier
-	 * @param te Concrete template engine
-	 */
-	static void registerEngine(String id, TemplateEngine te) {
-		engines.put(id, te);
+	public TemplateEngine engine() throws XMLSpreadsheetException {
+		if (engines == null) {
+			throw new TemplateException(
+					"No template engines registered - " +
+					"check spreadsheet.properties for any template.engine.* property");
+		}
+		else {
+			// Return the default engine (property template.engine.default)
+			String defaultEngine = PropertiesReader.property(PROPERTY_DEFAULT_ENGINE);
+			TemplateEngine t = engine(defaultEngine);
+			System.err.println("Template engine by default: " + t.getClass().getName());
+			return t;
+		}
 	}
 	
 	/**
@@ -48,18 +94,13 @@ public class TemplateEngineFactory {
 	 * @param engineId Template identifier
 	 * @return 
 	 */
-	public static TemplateEngine engine(String id) {
-		validateEngines();
-		if (!engines.containsKey(id)) {
-			throw new NullPointerException("No template engine found for id " + id);
-		}
-		return engines.get(id);
-	}
-
-	// Make sure there is some engine registered
-	private static void validateEngines() {
-		if (engines.isEmpty()) {
-			throw new NullPointerException("No template engine initialized");
-		}
+	public TemplateEngine engine(String id) throws XMLSpreadsheetException {
+		String engineId = PROPERTY_ENGINE_PREFIX + id;
+		if (!engines.containsKey(engineId)) {
+			//throw new NullPointerException("No template engine found for id " + id);
+			// Try to instantiate it
+			throw new XMLSpreadsheetException("No template engine registered for id " + id);
+		}		
+		return engines.get(engineId);
 	}
 }
