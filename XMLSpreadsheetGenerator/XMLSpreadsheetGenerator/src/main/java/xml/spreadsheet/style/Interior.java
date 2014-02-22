@@ -53,13 +53,8 @@ public class Interior {
 	//-------------------------------------------------------------------
 	// Class methods
 
-	/**
-	 * @return the color
-	 */
-	public String getColor() {
-		return color;
-	}
-
+	public Interior () {}
+	
 	/**
 	 * @param color the color to set
 	 */
@@ -68,24 +63,10 @@ public class Interior {
 	}
 
 	/**
-	 * @return the pattern
-	 */
-	public FillPattern getPattern() {
-		return pattern;
-	}
-
-	/**
 	 * @param pattern the pattern to set
 	 */
 	public void setPattern(FillPattern pattern) {
 		this.pattern = pattern;
-	}
-
-	/**
-	 * @return the patternColor
-	 */
-	public String getPatternColor() {
-		return patternColor;
 	}
 
 	/**

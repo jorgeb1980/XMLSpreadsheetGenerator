@@ -1,7 +1,14 @@
 /**
  * 
  */
-package xml.spreadsheet.style;
+package xml.spreadsheet;
+
+import xml.spreadsheet.style.Alignment;
+import xml.spreadsheet.style.Borders;
+import xml.spreadsheet.style.Font;
+import xml.spreadsheet.style.Interior;
+import xml.spreadsheet.style.NumberFormat;
+import xml.spreadsheet.style.Protection;
 
 /**
  * This class contains the information for a style definition in an XML
@@ -43,45 +50,61 @@ public class Style {
 	
 	/** Protection */
 	private Protection protection;
-	
+		
 	//-----------------------------------------------------------
 	// Style methods
 	
 	
+	Style(String id) {
+		this.id = id;
+	}
+	
 	/** Creates an Alignment element */
 	public Alignment alignment() {
-		alignment = new Alignment();
+		if (alignment == null) {
+			alignment = new Alignment();
+		}
 		return  alignment;
 	}
 	
 	/** Creates a Borders element */
 	public Borders borders() {
-		borders = new Borders();
+		if (borders == null) {
+			borders = new Borders();
+		}
 		return borders;
 	}
 	
 	/** Creates a Font element */
 	public Font font() {
-		font = new Font();
+		if (font == null) {
+			font = new Font();
+		}
 		return font;
 	}
 	
 	/** Creates an Interior element */
 	public Interior interior() {
-		interior = new Interior();
+		if (interior == null) {
+			interior = new Interior();
+		}
 		return interior;
 	}
 	
 	/** Creates a NumberFormat element */
 	public NumberFormat numberFormat() {
-		numberFormat = new NumberFormat();
+		if (numberFormat == null) {
+			numberFormat = new NumberFormat();
+		}
 		return numberFormat;
 		
 	}
 	
 	/** Creates a Protection element */
 	public Protection protection() {
-		protection = new Protection();
+		if (protection == null) {
+			protection = new Protection();
+		}
 		return protection;
 	}
 	

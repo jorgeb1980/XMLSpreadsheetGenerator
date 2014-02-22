@@ -29,6 +29,8 @@ public class Protection {
 	
 	//-------------------------------------------------------------------
 	// Class methods
+	
+	public Protection() {}
 
 	/**
 	 * @return the protectedCell

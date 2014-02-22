@@ -24,7 +24,8 @@ public class Borders {
 	//-----------------------------------------------------------
 	// Class methods
 	
-	Borders() {
+	
+	public Borders() {
 		borders = new HashMap<Border.BorderPosition, Border>();
 	}
 	
@@ -47,7 +48,16 @@ public class Borders {
 	
 	@Override
 	public String toString() {
-		// TODO: XML rendering of the borders
-		return "";
+		StringBuilder sb = new StringBuilder();
+		
+		if (borders != null && borders.size() > 0) {
+			sb.append("<ss:Borders>");
+			for (Border border: borders.values()) {
+				sb.append(border.toString());
+			}
+			sb.append("</ss:Borders>");
+		}
+		
+		return sb.toString();
 	}
 }

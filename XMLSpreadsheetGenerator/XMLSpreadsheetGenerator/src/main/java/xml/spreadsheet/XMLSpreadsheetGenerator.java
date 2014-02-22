@@ -5,6 +5,8 @@ package xml.spreadsheet;
 
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Partial implementation of the spreadsheet format described in the article<br/>
@@ -36,9 +38,9 @@ public class XMLSpreadsheetGenerator {
 	/** Generator state. */
 	private GeneratorState state = GeneratorState.INITIALIZATION;
 	/** Style counter. */
-	private int styles = 0;
+	private int styleCounter = 1;
 	/** Styles. */
-	
+	private List<Style> styles;
 	
 	//---------------------------------------------------------------
 	// Class methods
@@ -55,7 +57,13 @@ public class XMLSpreadsheetGenerator {
 				throws XMLSpreadsheetException {
 		os = new BufferedOutputStream(output, BUFFER_SIZE);
 		// Initialization state: we can define styles
-		
+		styles = new LinkedList<Style>();
+	}
+	
+	public Style createStyle() {
+		Style style = new Style("ce" + Integer.toString(styleCounter++));
+		styles.add(style);
+		return style;
 	}
 	
 	/**

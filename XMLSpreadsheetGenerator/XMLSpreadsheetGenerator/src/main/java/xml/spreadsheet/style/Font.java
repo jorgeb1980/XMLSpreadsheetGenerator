@@ -116,146 +116,99 @@ public class Font {
 	//-------------------------------------------------------------------
 	// Class methods
 	
+	public Font() {}
+	
 	/**
-	 * @return the bold
-	 */
-	public boolean isBold() {
-		return bold;
-	}
-	/**
-	 * @param bold the bold to set
+	 * @param bold Specifies the bold state of the font. If the parent 
+	 * style has Bold="1" and the child style wants to override the setting, 
+	 * it must explicitly set the value to Bold="0"
 	 */
 	public void setBold(boolean bold) {
 		this.bold = bold;
 	}
+	
 	/**
-	 * @return the color
-	 */
-	public String getColor() {
-		return color;
-	}
-	/**
-	 * @param color the color to set
+	 * @param color Specifies the color of the font. This value can be 
+	 * either a 6-hexadecimal digit number in "#rrggbb" format among other things
 	 */
 	public void setColor(String color) {
 		this.color = color;
 	}
+
 	/**
-	 * @return the fontName
-	 */
-	public String getFontName() {
-		return fontName;
-	}
-	/**
-	 * @param fontName the fontName to set
+	 * @param fontName Specifies the name of the font. 
+	 * This string is case insensitive.
 	 */
 	public void setFontName(String fontName) {
 		this.fontName = fontName;
 	}
+
 	/**
-	 * @return the italic
-	 */
-	public boolean isItalic() {
-		return italic;
-	}
-	/**
-	 * @param italic the italic to set
+	 * @param italic Specifies the italic state of the font
 	 */
 	public void setItalic(boolean italic) {
 		this.italic = italic;
 	}
+
 	/**
-	 * @return the outline
-	 */
-	public boolean isOutline() {
-		return outline;
-	}
-	/**
-	 * @param outline the outline to set
+	 * @param outline Specifies whether the font is rendered as an outline.
+	 *  This property originates in Macintosh Office, and is not used on Windows.
 	 */
 	public void setOutline(boolean outline) {
 		this.outline = outline;
 	}
+
 	/**
-	 * @return the shadow
-	 */
-	public boolean isShadow() {
-		return shadow;
-	}
-	/**
-	 * @param shadow the shadow to set
+	 * @param shadow Specifies whether the font is shadowed. This property 
+	 * originates in Macintosh Office, and is not used on Windows
 	 */
 	public void setShadow(boolean shadow) {
 		this.shadow = shadow;
 	}
+
 	/**
-	 * @return the size
-	 */
-	public double getSize() {
-		return size;
-	}
-	/**
-	 * @param size the size to set
+	 * @param size Specifies the size of the font in points. 
+	 * This value must be strictly greater than 0.
 	 */
 	public void setSize(double size) {
+		if (size <= 0.0) {
+			throw new IllegalArgumentException(
+				"The font size must be greater than zero [" + size + "]");
+		}
 		this.size = size;
 	}
+
 	/**
-	 * @return the strikeThrough
-	 */
-	public boolean isStrikeThrough() {
-		return strikeThrough;
-	}
-	/**
-	 * @param strikeThrough the strikeThrough to set
+	 * @param strikeThrough Specifies the strike-through state of the font.
 	 */
 	public void setStrikeThrough(boolean strikeThrough) {
 		this.strikeThrough = strikeThrough;
 	}
+
 	/**
-	 * @return the underline
-	 */
-	public Underline getUnderline() {
-		return underline;
-	}
-	/**
-	 * @param underline the underline to set
+	 * @param underline Specifies the underline state of the font.
 	 */
 	public void setUnderline(Underline underline) {
 		this.underline = underline;
 	}
+
 	/**
-	 * @return the verticalAlign
-	 */
-	public VerticalAlignment getVerticalAlign() {
-		return verticalAlign;
-	}
-	/**
-	 * @param verticalAlign the verticalAlign to set
+	 * @param verticalAlign This attribute specifies the subscript or 
+	 * superscript state of the font.
 	 */
 	public void setVerticalAlign(VerticalAlignment verticalAlign) {
 		this.verticalAlign = verticalAlign;
 	}
+
 	/**
-	 * @return the charSet
-	 */
-	public long getCharSet() {
-		return charSet;
-	}
-	/**
-	 * @param charSet the charSet to set
+	 * @param charSet Win32-dependent character set value. 
 	 */
 	public void setCharSet(long charSet) {
 		this.charSet = charSet;
 	}
+
 	/**
-	 * @return the family
-	 */
-	public FontFamily getFamily() {
-		return family;
-	}
-	/**
-	 * @param family the family to set
+	 * @param family Win32-dependent font family. 
 	 */
 	public void setFamily(FontFamily family) {
 		this.family = family;

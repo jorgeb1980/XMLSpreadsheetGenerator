@@ -65,7 +65,8 @@ public class Border {
 	// Class properties
 
 	// Attributes
-	/** Position of the border. */
+	/** Specifies which of the six possible borders this element represents. 
+	 * Duplicate borders are not permitted and are considered invalid. */
 	private BorderPosition position;
 	
 	/** 
@@ -92,7 +93,7 @@ public class Border {
 	
 	//-----------------------------------------------------------
 	// Class methods
-	
+		
 	// Standard visibility constructor - not intended to be used out of
 	//	the package
 	Border(BorderPosition position) {
@@ -100,63 +101,47 @@ public class Border {
 	}
 
 	/**
-	 * @return the position
-	 */
-	public BorderPosition getPosition() {
-		return position;
-	}
-
-	/**
-	 * @param position the position to set
+	 * @param position Specifies which of the six possible borders this 
+	 * element represents. Duplicate borders are not permitted and are considered invalid
 	 */
 	public void setPosition(BorderPosition position) {
 		this.position = position;
 	}
 
 	/**
-	 * @return the color
-	 */
-	public String getColor() {
-		return color;
-	}
-
-	/**
-	 * @param color the color to set
+	 * @param color Specifies the color of this border. This value can be, among other things,
+	 * a 6-hexadecimal digit number in "#rrggbb" format.  
+	 * This string can also be the special 
+	 * value of "Automatic." This string is case insensitive.
 	 */
 	public void setColor(String color) {
 		this.color = color;
 	}
 
 	/**
-	 * @return the lineStyle
-	 */
-	public LineStyle getLineStyle() {
-		return lineStyle;
-	}
-
-	/**
-	 * @param lineStyle the lineStyle to set
+	 * @param lineStyle Specifies the appearance of this border.
 	 */
 	public void setLineStyle(LineStyle lineStyle) {
 		this.lineStyle = lineStyle;
 	}
 
 	/**
-	 * @return the weight
-	 */
-	public double getWeight() {
-		return weight;
-	}
-
-	/**
-	 * @param weight the weight to set
+	 * @param weight Specifies the weight (or thickness) of this border. 
+	 * This measurement is specified in points, and the following values map to: <br/>
+			0—Hairline
+			<br/>
+			1—Thin
+			<br/>
+			2—Medium
+			<br/>
+			3—Thick 
 	 */
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}
 	
 	/**
-	 * @param weight the weight to set
+	 * @param weight Specifies the weight (or thickness) of this border
 	 */
 	public void setWeight(BorderWeight weight) {
 		this.weight = weight.getValue();
@@ -164,7 +149,25 @@ public class Border {
 	
 	@Override
 	public String toString() {
-		// TODO: XML rendering of the border
-		return "";
+		StringBuilder sb = new StringBuilder(); 
+		
+		sb.append("<ss:Border");
+		AttributeHelper.att(sb, "ss:Position", position);
+		
+		if (color != null && !color.equals(COLOR_AUTOMATIC)) {
+			AttributeHelper.att(sb, "ss:Color", color);
+		}
+		
+		if (lineStyle != LineStyle.None) {
+			AttributeHelper.att(sb, "ss:LineStyle", lineStyle);
+		}
+		
+		if (weight != BorderWeight.Hairline.getValue()) {
+			AttributeHelper.att(sb, "ss:Weight", weight);
+		}
+		
+		sb.append("/>");
+		
+		return sb.toString();
 	}
 }

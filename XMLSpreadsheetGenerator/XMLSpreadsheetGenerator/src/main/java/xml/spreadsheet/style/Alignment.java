@@ -66,144 +66,144 @@ public class Alignment {
 	// Class properties
 	
 	/** Horizontal alignment of the cell. */
-	private HorizontalAlignment horizontal = HorizontalAlignment.Automatic;
+	private HorizontalAlignment horizontal = null;
 	
 	/** Number of indents. */
-	private int indent = 0;
+	private Integer indent = null;
 	
 	/** Reading order of the cell. */
-	private ReadingOrder readingOrder;
+	private ReadingOrder readingOrder = null;
 	
 	/** Rotation of the cell.  
 	 * 90 is straight up, 0 is horizontal, and -90 is straight down
 	 */
-	private double rotate = 0.0;
+	private Double rotate = null;
 	
 	/**
 	 * True means that the text size should be shrunk so that all of the text 
 	 * fits within the cell. False means that the font within the cell 
 	 * should behave normally.  
 	 */
-	private boolean shrinkToFit = false;
+	private Boolean shrinkToFit = null;
 	
 	/** Vertical alignment of the cell. */
-	private VerticalAlignment vertical = VerticalAlignment.Automatic;
+	private VerticalAlignment vertical = null;
 	
 	/** Specifies whether the text is drawn "downwards", 
 	 * whereby each letter is drawn horizontally, one above the other. */
-	private boolean verticalText = false;
+	private Boolean verticalText = null;
 	
 	/** Specifies whether the text in this cell should wrap at the cell boundary. 
 	 * False means that text either spills or gets truncated at the cell boundary 
 	 * (depending on whether the adjacent cell(s) have content).*/
-	private boolean wrapText = false;
+	private Boolean wrapText = null;
 	
 	
 	//-----------------------------------------------------------
 	// Class methods
 	
-	Alignment() {}
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("<ss:Alignment");
+		
+		AttributeHelper.att(sb, "ss:Horizontal", horizontal);
+		
+		if (indent != null) {
+			AttributeHelper.att(sb, "ss:Indent", indent.intValue());
+		}
+	
+		// Ignore reading order - not sure if supported
+		
+		if (rotate != null) {
+			AttributeHelper.att(sb, "ss:Rotate", rotate.doubleValue());
+		}
+		
+		if (shrinkToFit != null) {
+			AttributeHelper.att(sb, "ss:ShrinkToFit", shrinkToFit.booleanValue());
+		}
+		
+		AttributeHelper.att(sb, "ss:Vertical", vertical);
+		
+		if (verticalText != null) {
+			AttributeHelper.att(sb, "ss:VerticalText", verticalText.booleanValue());
+		}
+		
+		if (wrapText != null) {
+			AttributeHelper.att(sb, "ss:WrapText", wrapText.booleanValue());
+		}
+		
+		sb.append("/>");		
+		
+		return sb.toString();
+	}
+	
+	public Alignment() {}
 	
 	/**
-	 * @return the horizontal
-	 */
-	public HorizontalAlignment getHorizontal() {
-		return horizontal;
-	}
-	/**
-	 * @param horizontal the horizontal to set
+	 * @param horizontal Specifies the left-to-right alignment of text within a cell
 	 */
 	public void setHorizontal(HorizontalAlignment horizontal) {
 		this.horizontal = horizontal;
 	}
+
 	/**
-	 * @return the indent
-	 */
-	public int getIndent() {
-		return indent;
-	}
-	/**
-	 * @param indent the indent to set
+	 * @param indent Number of indents
 	 */
 	public void setIndent(int indent) {
 		this.indent = indent;
 	}
+
 	/**
-	 * @return the readingOrder
-	 */
-	public ReadingOrder getReadingOrder() {
-		return readingOrder;
-	}
-	/**
-	 * @param readingOrder the readingOrder to set
+	 * @param readingOrder Specifies the default right-to-left text entry mode for a cell
 	 */
 	public void setReadingOrder(ReadingOrder readingOrder) {
 		this.readingOrder = readingOrder;
 	}
+
 	/**
-	 * @return the rotate
-	 */
-	public double getRotate() {
-		return rotate;
-	}
-	/**
-	 * @param rotate the rotate to set
+	 * @param rotate Specifies the rotation of the text within the cell. 
+	 * 90 is straight up, 0 is horizontal, and -90 is straight down
 	 */
 	public void setRotate(double rotate) {
 		this.rotate = rotate;
 	}
+
 	/**
-	 * @return the shrinkToFit
-	 */
-	public boolean isShrinkToFit() {
-		return shrinkToFit;
-	}
-	/**
-	 * @param shrinkToFit the shrinkToFit to set
+	 * @param shrinkToFit True means that the text size should be 
+	 * shrunk so that all of the text fits within the cell.
+	 * False means that the font within the cell should behave normally
 	 */
 	public void setShrinkToFit(boolean shrinkToFit) {
 		this.shrinkToFit = shrinkToFit;
 	}
+
 	/**
-	 * @return the vertical
-	 */
-	public VerticalAlignment getVertical() {
-		return vertical;
-	}
-	/**
-	 * @param vertical the vertical to set
+	 * @param vertical Specifies the top-to-bottom alignment of text within a 
+	 * cell. Distributed and JustifyDistributed are only legitimate values 
+	 * when ss:VerticalText is True
 	 */
 	public void setVertical(VerticalAlignment vertical) {
 		this.vertical = vertical;
 	}
+
 	/**
-	 * @return the verticalText
-	 */
-	public boolean isVerticalText() {
-		return verticalText;
-	}
-	/**
-	 * @param verticalText the verticalText to set
+	 * @param verticalText Specifies whether the text is drawn "downwards", 
+	 * whereby each letter is drawn horizontally, one above the other
 	 */
 	public void setVerticalText(boolean verticalText) {
 		this.verticalText = verticalText;
 	}
+
 	/**
-	 * @return the wrapText
-	 */
-	public boolean isWrapText() {
-		return wrapText;
-	}
-	/**
-	 * @param wrapText the wrapText to set
+	 * @param wrapText Specifies whether the text in this cell should wrap at the cell boundary. 
+	 * False means that text either spills or gets truncated at the cell boundary 
+	 * (depending on whether the adjacent cell(s) have content)
 	 */
 	public void setWrapText(boolean wrapText) {
 		this.wrapText = wrapText;
 	}
 	
-	@Override
-	public String toString() {
-		// TODO: XML rendering of the alignment
-		return "";
-	}
+	
 }

@@ -58,13 +58,8 @@ public class NumberFormat {
 	//-------------------------------------------------------------------
 	// Class methods
 	
-	/**
-	 * @return the format
-	 */
-	public String getFormat() {
-		return format;
-	}
-
+	public NumberFormat() {}
+	
 	/**
 	 * @param format the format to set
 	 */
@@ -77,5 +72,12 @@ public class NumberFormat {
 	 */
 	public void setFormat(Format format) {
 		this.format = format.toString();
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		return sb.toString();
 	}
 }
