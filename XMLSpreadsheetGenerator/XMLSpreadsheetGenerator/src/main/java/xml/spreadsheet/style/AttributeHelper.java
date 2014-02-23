@@ -22,7 +22,7 @@ public class AttributeHelper {
 
 	
 	/** 
-	 * Fills an xml attribute into the StringBuilder
+	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String
 	 * @param att Name of the attribute
 	 * @param value Value to fill into the string
@@ -36,7 +36,7 @@ public class AttributeHelper {
 	}
 	
 	/** 
-	 * Fills an xml attribute into the StringBuilder
+	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String
 	 * @param att Name of the attribute
 	 * @param value Value to fill into the string
@@ -46,7 +46,7 @@ public class AttributeHelper {
 	}
 	
 	/** 
-	 * Fills an xml attribute into the StringBuilder
+	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String
 	 * @param att Name of the attribute
 	 * @param value Value to fill into the string
@@ -56,7 +56,7 @@ public class AttributeHelper {
 	}
 	
 	/** 
-	 * Fills an xml attribute into the StringBuilder
+	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String
 	 * @param att Name of the attribute
 	 * @param value Value to fill into the string.  1 = true; 0 = false
