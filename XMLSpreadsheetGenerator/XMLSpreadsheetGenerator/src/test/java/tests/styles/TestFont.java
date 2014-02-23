@@ -1,6 +1,6 @@
 package tests.styles;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,7 +9,6 @@ import org.junit.Test;
 import xml.spreadsheet.Charset;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
-import xml.spreadsheet.style.Borders;
 import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Font.FontFamily;
 import xml.spreadsheet.style.Font.Underline;
