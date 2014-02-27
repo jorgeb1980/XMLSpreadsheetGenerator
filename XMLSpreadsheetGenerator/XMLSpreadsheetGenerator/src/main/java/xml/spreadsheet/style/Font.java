@@ -6,7 +6,7 @@ package xml.spreadsheet.style;
 /**
  * Defines the font attributes to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_font
+ * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:font
  */
 public class Font {
 
@@ -50,71 +50,129 @@ public class Font {
 		// No need to override toString, it is enough as is
 	}
 	
+	
+	
 	//-------------------------------------------------------------------
 	// Class properties
 	
 	// Attributes
 	
 	/** Specifies the bold state of the font */
-	private boolean bold = false;
+	private Boolean bold = null;
 	
 	/** Specifies the color of the font. This value can be either a 6-hexadecimal digit number in "#rrggbb" format
 	 * among other things.  This string can also be special value of Automatic. This string is case insensitive. 
 	 */
-	private String color = COLOR_AUTOMATIC; 
+	private String color = null; 
 	
 	/** Specifies the name of the font. This string is case insensitive. */
-	private String fontName = FONT_ARIAL; 
+	private String fontName = null; 
 	
 	/** Specifies the italic state of the font */
-	private boolean italic = false;
+	private Boolean italic = null;
 	
 	/** Specifies whether the font is rendered as an outline. 
 	 * This property originates in Macintosh Office, and is not used on Windows.
 	 */
-	private boolean outline = false;
+	private Boolean outline = null;
 	
 	/**
 	 * This attribute specifies whether the font is shadowed. This property 
 	 * originates in Macintosh Office, and is not used on Windows 
 	 */
-	private boolean shadow = false;
+	private Boolean shadow = null;
 	
 	/**
 	 * Specifies the size of the font in points. 
 	 * This value must be strictly greater than 0
 	 */
-	private double size = 10;
+	private Double size = null;
 	
 	/**
 	 *  This attribute specifies the strike-through state of the font. 
 	 *  If this attribute is not specified within an element, the default is assumed
 	 */
-	private boolean strikeThrough = false;
+	private Boolean strikeThrough = null;
 	
 	/**
 	 * Specifies the underline state of the font.
 	 */
-	private Underline underline; 
+	private Underline underline = null; 
 	
 	/**
 	 * This attribute specifies the subscript or superscript state of the font
 	 */
-	private VerticalAlignment verticalAlign = VerticalAlignment.None;
+	private VerticalAlignment verticalAlign = null;
 	
 	/**
 	 * Win32-dependent character set value. 
 	 */
-	private long charSet = 0;
+	private Long charSet = null;
 	
 	/**
 	 * Win32-dependent font family. 
 	 */
-	private FontFamily family = FontFamily.Automatic;
+	private FontFamily family = null;
 	
 	
 	//-------------------------------------------------------------------
 	// Class methods
+	
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("<ss:Font");
+		
+		if (bold != null) {
+			AttributeHelper.att(sb, "ss:Bold", bold.booleanValue());
+		}
+		
+		AttributeHelper.att(sb, "ss:Color", color);
+		
+		AttributeHelper.att(sb, "ss:FontName", fontName);
+		
+		if (italic != null) {
+			AttributeHelper.att(sb, "ss:Italic", italic.booleanValue());
+		}
+		
+		if (outline != null) {
+			AttributeHelper.att(sb, "ss:Outline", outline.booleanValue());
+		}
+		
+		if (shadow != null) {
+			AttributeHelper.att(sb, "ss:Shadow", shadow.booleanValue());
+		}
+		
+		if (size != null) {
+			AttributeHelper.att(sb, "ss:Size", size.doubleValue());
+		}
+		
+		if (strikeThrough != null) {
+			AttributeHelper.att(sb, "ss:StrikeThrough", strikeThrough.booleanValue());
+		}
+		
+		if (underline != null) {
+			AttributeHelper.att(sb, "ss:Underline", underline);
+		}
+		
+		if (verticalAlign != null) {
+			AttributeHelper.att(sb, "ss:VerticalAlign", verticalAlign);
+		}
+		
+		if (charSet != null) {
+			AttributeHelper.att(sb, "x:CharSet", charSet);
+		}
+		
+		if (family != null) {
+			AttributeHelper.att(sb, "x:Family", family);
+		}
+		
+		sb.append("/>");
+		
+		return sb.toString();
+	}
 	
 	public Font() {}
 	
@@ -213,12 +271,5 @@ public class Font {
 	public void setFamily(FontFamily family) {
 		this.family = family;
 	}
-	
-	@Override
-	public String toString() {
-		// TODO: XML rendering of the borders
-		return "";
-	}
-	
 	
 }

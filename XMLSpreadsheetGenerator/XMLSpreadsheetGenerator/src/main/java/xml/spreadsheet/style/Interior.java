@@ -35,51 +35,68 @@ public class Interior {
 	 * 6-hexadecimal digit number in "#rrggbb" format among other things.  
 	 * This string is case insensitive.
 	 */
-	private String color = COLOR_AUTOMATIC;
+	private String color = null;
 	
 	/**
 	 * Specifies the fill pattern in the cell. The fill pattern determines 
 	 * how to blend the Color and PatternColor attributes to produce the 
 	 * cell's appearance. 
 	 */
-	private FillPattern pattern = FillPattern.None;
+	private FillPattern pattern = null;
 	
 	/**
 	 * Specifies the secondary fill color of the cell when 
 	 * Pattern does not equal Solid.
 	 */
-	private String patternColor = COLOR_AUTOMATIC;
+	private String patternColor = null;
 	
 	//-------------------------------------------------------------------
 	// Class methods
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("<ss:Interior");
+		
+		AttributeHelper.att(sb, "ss:Color", color);
+		
+		if (pattern != null) {
+			AttributeHelper.att(sb, "ss:Pattern", pattern.toString());
+		}
+		
+		AttributeHelper.att(sb, "ss:PatternColor", patternColor);
+		
+		sb.append("/>");
+		
+		return sb.toString();
+	}
 
 	public Interior () {}
 	
 	/**
-	 * @param color the color to set
+	 * @param color Specifies the fill color of the cell. This value can be a 
+	 * 6-hexadecimal digit number in "#rrggbb" format among other things.
 	 */
 	public void setColor(String color) {
 		this.color = color;
 	}
 
 	/**
-	 * @param pattern the pattern to set
+	 * @param pattern Specifies the fill pattern in the cell. The fill pattern determines 
+	 * how to blend the Color and PatternColor attributes to produce the 
+	 * cell's appearance. 
 	 */
 	public void setPattern(FillPattern pattern) {
 		this.pattern = pattern;
 	}
 
 	/**
-	 * @param patternColor the patternColor to set
+	 * @param patternColor Specifies the secondary fill color of the cell when 
+	 * Pattern does not equal Solid.
 	 */
 	public void setPatternColor(String patternColor) {
 		this.patternColor = patternColor;
-	}
-	
-	@Override
-	public String toString() {
-		// TODO: XML rendering of the borders
-		return "";
 	}
 	
 	

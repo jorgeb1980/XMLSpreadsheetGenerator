@@ -7,6 +7,8 @@ package xml.spreadsheet.style;
  * Defines the number format that should be in cells referencing this style. 
  * The default value is General, and all other number formats require a custom format code. 
  * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:numberformat
+ * Additional information on 
+ * http://office.microsoft.com/en-us/excel-help/create-a-custom-number-format-HP010342372.aspx
  */
 public class NumberFormat {
 
@@ -52,7 +54,7 @@ public class NumberFormat {
 	/**
 	 * A number format code in the Excel number format syntax.
 	 */
-	private String format = Format.General.toString();
+	private String format = null;
 	
 	
 	//-------------------------------------------------------------------
@@ -60,24 +62,31 @@ public class NumberFormat {
 	
 	public NumberFormat() {}
 	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("<ss:NumberFormat");
+		
+		AttributeHelper.att(sb, "ss:Format", format);
+		
+		sb.append("/>");
+		
+		return sb.toString();
+	}
+	
 	/**
-	 * @param format the format to set
+	 * @param format A number format code in the Excel number format syntax.
+	 * See http://office.microsoft.com/en-us/excel-help/create-a-custom-number-format-HP010342372.aspx
 	 */
 	public void setFormat(String format) {
 		this.format = format;
 	}
 	
 	/**
-	 * @param format the format to set
+	 * @param format A predefined XML Spreadsheet format 
 	 */
 	public void setFormat(Format format) {
 		this.format = format.toString();
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		
-		return sb.toString();
 	}
 }

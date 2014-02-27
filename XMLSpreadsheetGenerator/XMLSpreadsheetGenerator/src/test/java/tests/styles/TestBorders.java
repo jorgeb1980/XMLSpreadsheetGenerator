@@ -10,6 +10,8 @@ import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Border;
 import xml.spreadsheet.style.Border.BorderPosition;
+import xml.spreadsheet.style.Border.BorderWeight;
+import xml.spreadsheet.style.Border.LineStyle;
 import xml.spreadsheet.style.Borders;
 
 public class TestBorders {
@@ -63,6 +65,98 @@ public class TestBorders {
 		}
 	}
 	
-	//public void 
+	@Test
+	public void testSetLinestyle() {
+		try {
+			// Reset the borders object
+			borders = new Borders();
+			for (BorderPosition position: BorderPosition.values()) {
+				Border b = borders.createBorder(position);
+				// Null if default
+				StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"LineStyle", null);
+				// For each possible position, try each possible line style
+				for (LineStyle lineStyle: LineStyle.values()) {
+					b.setLineStyle(lineStyle);
+					StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"LineStyle", lineStyle.toString());
+				}
+			}
+		}
+		catch (Throwable t) {
+			fail(t.getMessage());
+		}
+	}
+	
+	@Test
+	public void testSetColor() {
+		try {
+			// Reset the borders object
+			borders = new Borders();
+			for (BorderPosition position: BorderPosition.values()) {
+				Border b = borders.createBorder(position);
+				// Null if default
+				StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"Color", null);
+				
+				// For each possible position, try colors
+				b.setColor(Border.COLOR_AUTOMATIC);
+				StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"Color", Border.COLOR_AUTOMATIC);
+				
+				// dark red
+				b.setColor("#C14949");
+				StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"Color", "#C14949");
+				
+				// dark blue
+				b.setColor("#1B1F97");
+				StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"Color", "#1B1F97");
+				
+				// dark green
+				b.setColor("#096F27");
+				StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"Color", "#096F27");
+			}
+		}
+		catch (Throwable t) {
+			fail(t.getMessage());
+		}
+	}
 
+	@Test
+	public void testSetWeight() {
+		try {
+			// Reset the borders object
+			borders = new Borders();
+			for (BorderPosition position: BorderPosition.values()) {
+				Border b = borders.createBorder(position);
+				// Null if default
+				StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"Weight", null);
+				
+				// For each possible position, try weights
+				for (BorderWeight weight: BorderWeight.values()) {
+					b.setWeight(weight);
+					StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"Weight", weight.getValue());
+				}
+			}
+		}
+		catch (Throwable t) {
+			fail(t.getMessage());
+		}
+	}
+	
+	
 }
