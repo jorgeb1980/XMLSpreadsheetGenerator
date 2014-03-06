@@ -12,28 +12,7 @@ public class Alignment {
 	
 	//-----------------------------------------------------------
 	// Subtypes and constants
-	
-	// Reading order of a cell
-	public enum ReadingOrder {
 		
-		// Constant values from
-		// http://www.smarterdatacollection.com/Blog/?p=374
-		
-		RightToLeft ("-5004"), 
-		LeftToRight ("-5003"), 
-		Context ("-5002");
-		
-		private String order;
-		
-		private ReadingOrder(String order) {
-			this.order = order;
-		}
-		
-		public String toString() {
-			return order;
-		}
-	}
-	
 	// Horizontal alignment of a cell
 	public enum HorizontalAlignment {
 		Automatic, 
@@ -70,9 +49,6 @@ public class Alignment {
 	
 	/** Number of indents. */
 	private Integer indent = null;
-	
-	/** Reading order of the cell. */
-	private ReadingOrder readingOrder = null;
 	
 	/** Rotation of the cell.  
 	 * 90 is straight up, 0 is horizontal, and -90 is straight down
@@ -153,13 +129,6 @@ public class Alignment {
 	 */
 	public void setIndent(int indent) {
 		this.indent = indent;
-	}
-
-	/**
-	 * @param readingOrder Specifies the default right-to-left text entry mode for a cell
-	 */
-	public void setReadingOrder(ReadingOrder readingOrder) {
-		this.readingOrder = readingOrder;
 	}
 
 	/**

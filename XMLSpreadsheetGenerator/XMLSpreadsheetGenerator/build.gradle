@@ -22,21 +22,13 @@ dependencies {
 	testCompile 'jaxen:jaxen:1.1.6'
 }
 
-
-//cobertura {
-//    format = 'html'
-//    includes = ['**/*.java', '**/*.groovy']
-//    excludes = ['com/thirdparty/**/*.*']
-//}
-
-
-/*buildscript {
+buildscript {
 	repositories {
 	    mavenCentral()
 	}
 	dependencies {		
 		classpath 'com.eriwen:gradle-cobertura-plugin:1.1.0' //'com.eriwen:gradle-cobertura-plugin:1.1.1'
 	}
-}*/
+}
 
-//apply plugin: 'cobertura'
+apply plugin: 'cobertura'

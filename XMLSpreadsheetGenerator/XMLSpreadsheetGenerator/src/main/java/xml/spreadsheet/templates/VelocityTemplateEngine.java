@@ -36,8 +36,10 @@ public class VelocityTemplateEngine implements TemplateEngine {
 			throws TemplateException {
 		String templateValue = returnTemplate(templateId);
 		VelocityContext context = new VelocityContext();
-		for (String key: values.keySet()) {
-			context.put(key, values.get(key));
+		if (values != null) {
+			for (String key: values.keySet()) {
+				context.put(key, values.get(key));
+			}
 		}
 		StringWriter writer = new StringWriter();
 		try {

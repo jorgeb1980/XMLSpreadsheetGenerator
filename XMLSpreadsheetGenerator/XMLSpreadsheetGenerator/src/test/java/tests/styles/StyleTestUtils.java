@@ -31,6 +31,8 @@ public class StyleTestUtils {
 		namespaces.put("ss", "urn:schemas-microsoft-com:office:spreadsheet");
 	}
 	
+	private StyleTestUtils() {}
+	
  	private static final String PREFIX = "ss";
 
 	public static Document parseStyleElement(Object styleElement) {
@@ -62,6 +64,7 @@ public class StyleTestUtils {
 					Namespace.getNamespace(prefix, namespaces.get(prefix)));
 		}
 		catch (Throwable t) {
+			t.printStackTrace();
 			fail(t.getMessage());
 		}
 		return ret;
@@ -89,6 +92,10 @@ public class StyleTestUtils {
 	
 	public static void checkAttributeValue(String prefix, Object styleElement, String selector, String attribute, String value) {
 		Document doc = parseStyleElement(styleElement);
+		checkAttributeValue(prefix, doc, selector, attribute, value);
+	}
+	
+	public static void checkAttributeValue(String prefix, Document doc, String selector, String attribute, String value) {
 		if (value != null) {
 			Assert.assertEquals(value, 
 				StyleTestUtils.attributeValue(prefix, doc, selector, attribute));

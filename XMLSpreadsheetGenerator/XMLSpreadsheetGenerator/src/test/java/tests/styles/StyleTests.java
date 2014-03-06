@@ -10,7 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestBorders.class, 
 	TestFont.class, 
 	TestInterior.class,
-	TestNumberFormat.class})
+	TestNumberFormat.class,
+	TestProtection.class})
 public class StyleTests {
 
 }

@@ -32,9 +32,11 @@ public class FileTemplateEngine implements TemplateEngine {
 			throws TemplateException {
 		String templateValue = returnTemplate(templateId);
 		// 'Naive' replacement of variables
-		for (String key: values.keySet()) {
-			templateValue = templateValue.replaceAll("\\$" + key, values.get(key));
-		}		
+		if (values != null) {
+			for (String key: values.keySet()) {
+				templateValue = templateValue.replaceAll("\\$" + key, values.get(key));
+			}		
+		}
 		return templateValue;
 	}
 	
