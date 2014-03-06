@@ -19,13 +19,13 @@ public class Protection {
 	 * When the worksheet is unprotected, cell-level protection has no effect. 
 	 * When a cell is protected, it will not allow the user to enter information into it. 
 	 */
-	private boolean protectedCell = true;
+	private Boolean protectedCell = null;
 	
 	/**
 	 * This attribute indicates whether or not this cell's formula 
 	 * should be hidden when worksheet protection is enabled. 
 	 */
-	private boolean hideFormula = false;
+	private Boolean hideFormula = null;
 	
 	//-------------------------------------------------------------------
 	// Class methods
@@ -33,24 +33,10 @@ public class Protection {
 	public Protection() {}
 
 	/**
-	 * @return the protectedCell
-	 */
-	public boolean isProtectedCell() {
-		return protectedCell;
-	}
-
-	/**
 	 * @param protectedCell the protectedCell to set
 	 */
 	public void setProtectedCell(boolean protectedCell) {
 		this.protectedCell = protectedCell;
-	}
-
-	/**
-	 * @return the hideFormula
-	 */
-	public boolean isHideFormula() {
-		return hideFormula;
 	}
 
 	/**
@@ -62,8 +48,21 @@ public class Protection {
 	
 	@Override
 	public String toString() {
-		// TODO: XML rendering of the borders
-		return "";
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("<ss:Protection");
+		
+		if (protectedCell != null) {
+			AttributeHelper.att(sb, "ss:Protected", protectedCell.booleanValue());
+		}
+		
+		if (hideFormula != null) {
+			AttributeHelper.att(sb, "x:HideFormula", hideFormula.booleanValue());
+		}
+		
+		sb.append("/>");
+		
+		return sb.toString();
 	}
 	
 	
