@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import xml.spreadsheet.Style;
+import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Border;
 import xml.spreadsheet.style.Border.BorderPosition;
@@ -46,6 +47,20 @@ public class TestBorders {
 	@Test
 	public void testCreateBorders() {
 		Assert.assertNotNull(borders);
+	}
+	
+	@Test
+	public void testRepeatBorder() {
+		try {
+			// Reset the borders object
+			borders = new Borders();
+			borders.createBorder(BorderPosition.Bottom);
+			borders.createBorder(BorderPosition.Bottom);
+			Assert.assertTrue(false);
+		}
+		catch (XMLSpreadsheetException e) {
+			Assert.assertTrue(true);
+		}
 	}
 	
 	@Test

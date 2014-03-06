@@ -4,6 +4,7 @@
 package xml.spreadsheet;
 
 import xml.spreadsheet.style.Alignment;
+import xml.spreadsheet.style.AttributeHelper;
 import xml.spreadsheet.style.Borders;
 import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Interior;
@@ -106,6 +107,31 @@ public class Style {
 			protection = new Protection();
 		}
 		return protection;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("<ss:Style");
+		
+		AttributeHelper.att(sb, "ID", id);
+		AttributeHelper.att(sb, "Name", name);
+		AttributeHelper.att(sb, "Parent", parent);
+		
+		sb.append(">");
+		
+		// Flush the inner elements
+		sb.append(alignment != null?alignment.toString():"");
+		sb.append(borders != null?borders.toString():"");
+		sb.append(font != null?font.toString():"");
+		sb.append(interior != null?interior.toString():"");
+		sb.append(numberFormat != null?numberFormat.toString():"");
+		sb.append(protection != null?protection.toString():"");
+		
+		sb.append("</ss:Style>");
+		
+		return sb.toString();
 	}
 	
 }

@@ -7,11 +7,6 @@ import xml.spreadsheet.templates.TemplateEngineFactory;
 /**
  * 
  */
-
-/**
- * @author Jorge
- *
- */
 public class TestEngine {
 
 	public static void main(String args[]) {
