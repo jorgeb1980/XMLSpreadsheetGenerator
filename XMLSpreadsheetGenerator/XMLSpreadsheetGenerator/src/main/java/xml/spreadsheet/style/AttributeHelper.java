@@ -3,7 +3,7 @@
  */
 package xml.spreadsheet.style;
 
-import java.text.DecimalFormat;
+import xml.spreadsheet.NumberFormatHelper;
 
 /**
  * Fills attributes
@@ -11,15 +11,7 @@ import java.text.DecimalFormat;
 public class AttributeHelper {
 	
 	//------------------------------------------------------------------
-	// Class properties
-
-	/** Number format for doubles */
-	public static final DecimalFormat DOUBLE_FORMAT =
-		new DecimalFormat("#.#");
-	
-	//------------------------------------------------------------------
 	// Class methods
-
 	
 	/** 
 	 * Appends an xml attribute into the StringBuilder
@@ -42,7 +34,7 @@ public class AttributeHelper {
 	 * @param value Value to fill into the string
 	 */
 	public static void att(StringBuilder sb, String att, double value) {
-		att(sb, att, DOUBLE_FORMAT.format(value));
+		att(sb, att, NumberFormatHelper.formatDouble(value));
 	}
 	
 	/** 

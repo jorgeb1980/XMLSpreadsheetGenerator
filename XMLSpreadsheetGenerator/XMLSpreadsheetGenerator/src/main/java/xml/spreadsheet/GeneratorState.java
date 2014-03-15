@@ -19,10 +19,12 @@ enum GeneratorState {
 	INITIALIZATION, CLEAN_DOCUMENT, WRITING_SHEET, WRITING_ROW, WRITING_CELL, DONE;
 	
 	/**
-	 * This method controls the possible states in the machine state
+	 * This method tells if it is possible to make a transition in the state machine 
+	 * from <code>previous</code> to <code>next</code> state. 
 	 * @param previous Original state
 	 * @param next Next state
-	 * @return True if the transition is possible; false in another case
+	 * @return The <code>next</code> state if the transition is possible
+	 * @throws XMLSpreadsheetException If the transition is not possible
 	 */
 	public static GeneratorState validateTransition(GeneratorState previous, GeneratorState next) 
 			throws XMLSpreadsheetException {

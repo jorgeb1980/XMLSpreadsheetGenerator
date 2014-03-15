@@ -120,11 +120,8 @@ public class XMLSpreadsheetGenerator {
 		state = GeneratorState.validateTransition(state, 
 				GeneratorState.CLEAN_DOCUMENT);
 		
-		// Header of the document
-		String beginHeader = 
-			engine.applyTemplate("workbook_header", null);
-		
-		flush(beginHeader);
+		// Header of the document		
+		flush(engine.applyTemplate("workbook_header"));
 		
 		// Flush all the styles on the document
 		if (styles != null) {
@@ -144,8 +141,7 @@ public class XMLSpreadsheetGenerator {
 	public void closeDocument() 
 				throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.DONE);
-		String endDocument = engine.applyTemplate("workbook_foot", null);
-		flush(endDocument);
+		flush(engine.applyTemplate("workbook_foot"));
 		endStreaming();
 	}
 	
@@ -154,6 +150,7 @@ public class XMLSpreadsheetGenerator {
 	 */
 	public void startRow() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+		flush(engine.applyTemplate("row_foot.xml"));
 	}
 	
 	/**
@@ -161,13 +158,31 @@ public class XMLSpreadsheetGenerator {
 	 */
 	public void closeRow() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
+		flush(engine.applyTemplate("row_foot.xml"));
 	}
 	
 	/**
 	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
 	 */
-	public void startSheet() throws XMLSpreadsheetException {
+	public void startSheet(String sheetName, Double columnWidth) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
+		// Flush the start of the sheet template
+		flush(engine.applyTemplate("sheet_header.xml", 
+			new MapClosure().add("sheetName", sheetName).map()));
+		if (columnWidth != null) {
+			// Column width specified?
+			flush(engine.applyTemplate("column.xml", 
+				new MapClosure().add(
+					"width", NumberFormatHelper.formatDouble(columnWidth)).
+						map()));
+		}
+	}
+	
+	/**
+	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
+	 */
+	public void startSheet(String sheetName) throws XMLSpreadsheetException {
+		startSheet(sheetName, null);
 	}
 	
 	/**
@@ -175,5 +190,6 @@ public class XMLSpreadsheetGenerator {
 	 */
 	public void closeSheet() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.CLEAN_DOCUMENT);
+		flush(engine.applyTemplate("sheet_foot.xml"));
 	}
 }
