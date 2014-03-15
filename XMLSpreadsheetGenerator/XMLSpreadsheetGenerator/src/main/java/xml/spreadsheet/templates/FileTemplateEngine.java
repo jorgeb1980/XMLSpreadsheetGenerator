@@ -9,7 +9,7 @@ import java.util.Map;
  * Trivial implementation of an .xml template engine.  Based on .xml text files
  * and regex pattern replacement
  */
-public class FileTemplateEngine extends AbstractTemplateEngine {
+class FileTemplateEngine extends AbstractTemplateEngine {
 
 	
 	//---------------------------------------------------

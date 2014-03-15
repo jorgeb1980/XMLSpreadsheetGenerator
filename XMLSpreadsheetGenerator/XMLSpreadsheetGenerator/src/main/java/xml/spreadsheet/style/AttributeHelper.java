@@ -3,7 +3,7 @@
  */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.NumberFormatHelper;
+import xml.spreadsheet.utils.NumberFormatHelper;
 
 /**
  * Fills attributes

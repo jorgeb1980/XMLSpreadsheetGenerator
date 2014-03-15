@@ -16,7 +16,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 import org.junit.Assert;
 
-import xml.spreadsheet.NumberFormatHelper;
+import xml.spreadsheet.utils.NumberFormatHelper;
 
 /**
  * Utility methods for style elements testing

@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 /**
  * This class retrieves files from the application classpath
  */
-public class ClasspathFileReader {
+class ClasspathFileReader {
 	
 	//-----------------------------------------------------
 	// Class methods

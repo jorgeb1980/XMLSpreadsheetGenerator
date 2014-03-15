@@ -6,7 +6,8 @@ package xml.spreadsheet.templates;
 import java.util.Map;
 
 /**
- * 
+ * Interface for all the possible template engine implementations that the
+ * library could support.
  */
 public interface TemplateEngine {
 

@@ -1,15 +1,17 @@
 /**
  * 
  */
-package xml.spreadsheet;
+package xml.spreadsheet.utils;
 
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import xml.spreadsheet.XMLSpreadsheetException;
+
 /**
- * Static properties container for the application
+ * Static properties container for the library
  */
 public class PropertiesReader {
 

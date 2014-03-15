@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Abstract implementation of the TemplateEngine interface
  */
-public abstract class AbstractTemplateEngine implements TemplateEngine {
+abstract class AbstractTemplateEngine implements TemplateEngine {
 
 		
 	// This method returns the contents of an .xml file

@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Static template cache
  */
-public class TemplateCache {
+class TemplateCache {
 
 	//---------------------------------------------------
 	// Class properties

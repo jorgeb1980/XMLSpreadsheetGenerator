@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Kind of closure to build maps for the template engine
  */
-public class MapClosure {
+class MapClosure {
 
 	//---------------------------------------------------------------
 	// Class properties

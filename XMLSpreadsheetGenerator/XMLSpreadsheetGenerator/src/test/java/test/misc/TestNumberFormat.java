@@ -8,7 +8,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import xml.spreadsheet.NumberFormatHelper;
+import xml.spreadsheet.utils.NumberFormatHelper;
 
 public class TestNumberFormat {
 

@@ -7,7 +7,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import xml.spreadsheet.PropertiesReader;
+import xml.spreadsheet.utils.PropertiesReader;
 import xml.spreadsheet.XMLSpreadsheetException;
 
 /**

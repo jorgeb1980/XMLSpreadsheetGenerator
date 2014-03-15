@@ -1,7 +1,7 @@
 /**
  * 
  */
-package xml.spreadsheet;
+package xml.spreadsheet.utils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

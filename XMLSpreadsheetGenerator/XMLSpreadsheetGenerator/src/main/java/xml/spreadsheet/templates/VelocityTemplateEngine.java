@@ -14,7 +14,7 @@ import org.apache.velocity.app.Velocity;
  * Velocity implementation of an .xml template engine.  Based on .xml text files
  * and Velocity
  */
-public class VelocityTemplateEngine extends AbstractTemplateEngine {
+class VelocityTemplateEngine extends AbstractTemplateEngine {
 
 	
 	//---------------------------------------------------
