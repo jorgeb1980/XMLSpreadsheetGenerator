@@ -8,10 +8,8 @@ import org.jdom.Document;
 import org.junit.Test;
 
 import tests.generator.GeneratorTestUtils;
-import xml.spreadsheet.templates.FileTemplateEngine;
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
-import xml.spreadsheet.templates.VelocityTemplateEngine;
 
 public class TestTemplates {
 
@@ -37,7 +35,7 @@ public class TestTemplates {
 			// Test default engine creation
 			TemplateEngine engine = TemplateEngineFactory.factory().engine(FILE_TEMPLATE_ENGINE);
 			assertNotNull(engine);
-			assertEquals(engine.getClass().getName(), FileTemplateEngine.class.getName());
+			assertEquals(engine.getClass().getName(), "xml.spreadsheet.templates.FileTemplateEngine");
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -51,7 +49,7 @@ public class TestTemplates {
 			// Test default engine creation
 			TemplateEngine engine = TemplateEngineFactory.factory().engine(VELOCITY_TEMPLATE_ENGINE);
 			assertNotNull(engine);
-			assertEquals(engine.getClass().getName(), VelocityTemplateEngine.class.getName());
+			assertEquals(engine.getClass().getName(), "xml.spreadsheet.templates.VelocityTemplateEngine");
 		}
 		catch(Exception e) {
 			e.printStackTrace();

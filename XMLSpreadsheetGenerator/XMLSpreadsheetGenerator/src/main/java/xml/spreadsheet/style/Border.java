@@ -3,6 +3,8 @@
  */
 package xml.spreadsheet.style;
 
+import xml.spreadsheet.utils.AttributeHelper;
+
 /**
  * Defines a single border within this style's Borders collection. The Borders 
  * collection may contain up to six unique Border elements. If duplicate Border 
@@ -144,19 +146,14 @@ public class Border {
 		StringBuilder sb = new StringBuilder(); 
 		
 		sb.append("<ss:Border");
-		AttributeHelper.att(sb, "ss:Position", position);
-		
-		if (color != null) {
-			AttributeHelper.att(sb, "ss:Color", color);
+		if (position != null) {
+			AttributeHelper.att(sb, "ss:Position", position.toString());
 		}
-		
+		AttributeHelper.att(sb, "ss:Color", color);		
 		if (lineStyle != null) {
-			AttributeHelper.att(sb, "ss:LineStyle", lineStyle);
-		}
-		
-		if (weight != null) {
-			AttributeHelper.att(sb, "ss:Weight", weight.doubleValue());
-		}
+			AttributeHelper.att(sb, "ss:LineStyle", lineStyle.toString());
+		}		
+		AttributeHelper.att(sb, "ss:Weight", weight);
 		
 		sb.append("/>");
 		

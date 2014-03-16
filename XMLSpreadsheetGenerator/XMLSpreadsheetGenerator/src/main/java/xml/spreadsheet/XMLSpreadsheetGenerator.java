@@ -13,6 +13,7 @@ import java.util.List;
 
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
+import xml.spreadsheet.utils.AttributeHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
 /**
@@ -61,6 +62,8 @@ public class XMLSpreadsheetGenerator {
 	private int rowCounter = 0;
 	// Should the next row show its row counter?
 	private boolean showRowCounter = false;
+	// Current row information
+	private Row currentRow = null;
 	
 	//---------------------------------------------------------------
 	// Class methods
@@ -189,11 +192,13 @@ public class XMLSpreadsheetGenerator {
 			Style style) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
 		emptyCurrentRow = true;
+		// Create current row
+		currentRow = new Row(caption, autoFitHeight, height, hidden, style);
 		rowCounter++;
 	}
 	
 	/**
-	 * Writes a single empty <ss:Row> with the desired span and formatting
+	 * Writes a single empty <code>&lt;ss:Row&gt;</code> element with the desired span and formatting
 	 * @param span Specifies the number of adjacent rows with the same formatting as this row. 
 	 * When a Span attribute is used, the spanned row elements are not written out.
 	 * Rows must not overlap. Doing so results in an XML Spreadsheet document that is invalid. 
@@ -201,17 +206,36 @@ public class XMLSpreadsheetGenerator {
 	 * row index that is specified. Unlike columns, rows with the Span attribute must be empty. 
 	 * A row that contains a Span attribute and one or more Cell elements is considered invalid. 
 	 * The Span attribute for rows is a short-hand method for setting formatting properties for multiple, empty rows.
+	 * @param autoFitHeight f this attribute is True, it means that this row should be autosized
 	 * @param height Specifies the height of a row in points. This value must be greater than or equal to 0
 	 * @param style Style object to be applied to these rows
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
 	public void writeEmptyRows(
-		Integer span, 
-		Double height, 
-		Style style) throws XMLSpreadsheetException {
+			Long span, 
+			Boolean autoFitHeight, 
+			Double height, 
+			Style style) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
-		rowCounter += span;
+		currentRow = null;
+		if (span != null) {
+			// Flush the row
+			rowCounter += span;
+		}
+		else {
+			rowCounter++;
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("<ss:Row");
+		AttributeHelper.att(sb, "ss:Span", span);
+		AttributeHelper.att(sb, "ss:Height", height.doubleValue());
+		AttributeHelper.att(sb, "ss:AutoFitHeight", autoFitHeight);
+		if (style != null) {
+			AttributeHelper.att(sb, "ss:StyleID", style.getId());
+		}
+		sb.append("/>");
+		flush(sb.toString());
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
 	}
 	
@@ -272,12 +296,79 @@ public class XMLSpreadsheetGenerator {
 			// flush the start of the row
 			flush("<ss:Row");
 			emptyCurrentRow = false;
+			StringBuilder sb = new StringBuilder();
+			sb.append("<ss:Row");
+			AttributeHelper.att(sb, "ss:Caption", currentRow.getCaption());
+			AttributeHelper.att(sb, "ss:Height", currentRow.getHeight());
+			AttributeHelper.att(sb, "ss:AutoFitHeight", currentRow.getAutoFitHeight());
+			AttributeHelper.att(sb, "ss:Hidden", currentRow.getHidden());
+			if (currentRow.getStyle() != null) {
+				AttributeHelper.att(sb, "ss:StyleID", currentRow.getStyle().getId());
+			}
 			if (showRowCounter) {
 				// Show row counter
-				
+				AttributeHelper.att(sb, "ss:Index", currentRow.getStyle().getId());
 				showRowCounter = false;
 			}
+			sb.append("/>");
+			flush(sb.toString());
+			emptyCurrentRow = false;
 		}
 		// write the contents of the cell
+	}
+	
+	private class Row {
+		private String caption;
+		private Boolean autoFitHeight; 
+		private Double height; 
+		private Boolean hidden;
+		private Style style;
+		/**
+		 * @return the caption
+		 */
+		public String getCaption() {
+			return caption;
+		}
+		/**
+		 * @return the autoFitHeight
+		 */
+		public Boolean getAutoFitHeight() {
+			return autoFitHeight;
+		}
+		/**
+		 * @return the height
+		 */
+		public Double getHeight() {
+			return height;
+		}
+		/**
+		 * @return the hidden
+		 */
+		public Boolean getHidden() {
+			return hidden;
+		}
+		/**
+		 * @return the style
+		 */
+		public Style getStyle() {
+			return style;
+		}
+		/**
+		 * @param caption
+		 * @param autoFitHeight
+		 * @param height
+		 * @param hidden
+		 * @param style
+		 */
+		public Row(String caption, Boolean autoFitHeight, Double height,
+				Boolean hidden, Style style) {
+			super();
+			this.caption = caption;
+			this.autoFitHeight = autoFitHeight;
+			this.height = height;
+			this.hidden = hidden;
+			this.style = style;
+		}
+		
 	}
 }

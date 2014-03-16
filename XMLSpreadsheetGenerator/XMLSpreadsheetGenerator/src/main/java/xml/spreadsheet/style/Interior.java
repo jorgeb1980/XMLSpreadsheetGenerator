@@ -3,6 +3,8 @@
  */
 package xml.spreadsheet.style;
 
+import xml.spreadsheet.utils.AttributeHelper;
+
 /**
  * Defines the fill properties to use in this style. 
  * Each attribute that is specified is considered an override from the default. 

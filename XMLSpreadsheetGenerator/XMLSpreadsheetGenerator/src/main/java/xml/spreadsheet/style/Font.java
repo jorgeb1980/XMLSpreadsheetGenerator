@@ -3,6 +3,8 @@
  */
 package xml.spreadsheet.style;
 
+import xml.spreadsheet.utils.AttributeHelper;
+
 /**
  * Defines the font attributes to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
@@ -133,42 +135,21 @@ public class Font {
 		
 		AttributeHelper.att(sb, "ss:FontName", fontName);
 		
-		if (italic != null) {
-			AttributeHelper.att(sb, "ss:Italic", italic.booleanValue());
-		}
-		
-		if (outline != null) {
-			AttributeHelper.att(sb, "ss:Outline", outline.booleanValue());
-		}
-		
-		if (shadow != null) {
-			AttributeHelper.att(sb, "ss:Shadow", shadow.booleanValue());
-		}
-		
-		if (size != null) {
-			AttributeHelper.att(sb, "ss:Size", size.doubleValue());
-		}
-		
-		if (strikeThrough != null) {
-			AttributeHelper.att(sb, "ss:StrikeThrough", strikeThrough.booleanValue());
-		}
-		
+		AttributeHelper.att(sb, "ss:Italic", italic);
+		AttributeHelper.att(sb, "ss:Outline", outline);
+		AttributeHelper.att(sb, "ss:Shadow", shadow);
+		AttributeHelper.att(sb, "ss:Size", size);
+		AttributeHelper.att(sb, "ss:StrikeThrough", strikeThrough);
 		if (underline != null) {
-			AttributeHelper.att(sb, "ss:Underline", underline);
-		}
-		
+			AttributeHelper.att(sb, "ss:Underline", underline.toString());
+		}		
 		if (verticalAlign != null) {
-			AttributeHelper.att(sb, "ss:VerticalAlign", verticalAlign);
+			AttributeHelper.att(sb, "ss:VerticalAlign", verticalAlign.toString());
 		}
-		
-		if (charSet != null) {
-			AttributeHelper.att(sb, "x:CharSet", charSet);
-		}
-		
+		AttributeHelper.att(sb, "x:CharSet", charSet);
 		if (family != null) {
-			AttributeHelper.att(sb, "x:Family", family);
-		}
-		
+			AttributeHelper.att(sb, "x:Family", family.toString());
+		}		
 		sb.append("/>");
 		
 		return sb.toString();

@@ -4,12 +4,12 @@
 package xml.spreadsheet;
 
 import xml.spreadsheet.style.Alignment;
-import xml.spreadsheet.style.AttributeHelper;
 import xml.spreadsheet.style.Borders;
 import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Interior;
 import xml.spreadsheet.style.NumberFormat;
 import xml.spreadsheet.style.Protection;
+import xml.spreadsheet.utils.AttributeHelper;
 
 /**
  * This class contains the information for a style definition in an XML
@@ -132,6 +132,13 @@ public class Style {
 		sb.append("</ss:Style>");
 		
 		return sb.toString();
+	}
+
+	/**
+	 * @return Style ID to be used as reference when building the XML
+	 */
+	public String getId() {
+		return id;
 	}
 	
 }

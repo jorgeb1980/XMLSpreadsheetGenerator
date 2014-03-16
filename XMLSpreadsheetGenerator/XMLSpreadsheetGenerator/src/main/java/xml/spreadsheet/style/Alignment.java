@@ -3,6 +3,8 @@
  */
 package xml.spreadsheet.style;
 
+import xml.spreadsheet.utils.AttributeHelper;
+
 /**
  * Defines the font alignment attributes to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
@@ -84,31 +86,18 @@ public class Alignment {
 		
 		sb.append("<ss:Alignment");
 		
-		AttributeHelper.att(sb, "ss:Horizontal", horizontal);
-		
-		if (indent != null) {
-			AttributeHelper.att(sb, "ss:Indent", indent.intValue());
+		if (horizontal != null) {
+			AttributeHelper.att(sb, "ss:Horizontal", horizontal.toString());
 		}
-	
-		// Ignore reading order - not sure if supported
-		
-		if (rotate != null) {
-			AttributeHelper.att(sb, "ss:Rotate", rotate.doubleValue());
+		AttributeHelper.att(sb, "ss:Indent", indent);	
+		// Ignore reading order - not sure if supported		
+		AttributeHelper.att(sb, "ss:Rotate", rotate);		
+		AttributeHelper.att(sb, "ss:ShrinkToFit", shrinkToFit);
+		if (vertical != null) {
+			AttributeHelper.att(sb, "ss:Vertical", vertical.toString());
 		}
-		
-		if (shrinkToFit != null) {
-			AttributeHelper.att(sb, "ss:ShrinkToFit", shrinkToFit.booleanValue());
-		}
-		
-		AttributeHelper.att(sb, "ss:Vertical", vertical);
-		
-		if (verticalText != null) {
-			AttributeHelper.att(sb, "ss:VerticalText", verticalText.booleanValue());
-		}
-		
-		if (wrapText != null) {
-			AttributeHelper.att(sb, "ss:WrapText", wrapText.booleanValue());
-		}
+		AttributeHelper.att(sb, "ss:VerticalText", verticalText);		
+		AttributeHelper.att(sb, "ss:WrapText", wrapText);
 		
 		sb.append("/>");		
 		

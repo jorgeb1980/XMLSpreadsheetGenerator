@@ -3,6 +3,8 @@
  */
 package xml.spreadsheet.style;
 
+import xml.spreadsheet.utils.AttributeHelper;
+
 /**
  * Defines the number format that should be in cells referencing this style. 
  * The default value is General, and all other number formats require a custom format code. 

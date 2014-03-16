@@ -1,9 +1,8 @@
 /**
  * 
  */
-package xml.spreadsheet.style;
+package xml.spreadsheet.utils;
 
-import xml.spreadsheet.utils.NumberFormatHelper;
 
 /**
  * Fills attributes
@@ -19,7 +18,7 @@ public class AttributeHelper {
 	 * @param att Name of the attribute
 	 * @param value Value to fill into the string
 	 */
-	public static void att(StringBuilder sb, String att, Object value) {
+	public static void att(StringBuilder sb, String att, String value) {
 		if (value != null && value.toString().trim().length() > 0) {
 			sb.append(" " + att + "=\"");
 			sb.append(value.toString());
@@ -33,8 +32,10 @@ public class AttributeHelper {
 	 * @param att Name of the attribute
 	 * @param value Value to fill into the string
 	 */
-	public static void att(StringBuilder sb, String att, double value) {
-		att(sb, att, NumberFormatHelper.formatDouble(value));
+	public static void att(StringBuilder sb, String att, Double value) {
+		if (value != null) {
+			att(sb, att, NumberFormatHelper.formatDouble(value));
+		}
 	}
 	
 	/** 
@@ -43,8 +44,22 @@ public class AttributeHelper {
 	 * @param att Name of the attribute
 	 * @param value Value to fill into the string
 	 */
-	public static void att(StringBuilder sb, String att, int value) {
-		att(sb, att, Integer.toString(value));
+	public static void att(StringBuilder sb, String att, Integer value) {
+		if (value != null) {
+			att(sb, att, Integer.toString(value));
+		}
+	}
+	
+	/** 
+	 * Appends an xml attribute into the StringBuilder
+	 * @param sb Mutable String
+	 * @param att Name of the attribute
+	 * @param value Value to fill into the string
+	 */
+	public static void att(StringBuilder sb, String att, Long value) {
+		if (value != null) {
+			att(sb, att, Long.toString(value));
+		}
 	}
 	
 	/** 
@@ -53,7 +68,9 @@ public class AttributeHelper {
 	 * @param att Name of the attribute
 	 * @param value Value to fill into the string.  1 = true; 0 = false
 	 */
-	public static void att(StringBuilder sb, String att, boolean value) {
-		att(sb, att, value?"1":"0");
+	public static void att(StringBuilder sb, String att, Boolean value) {
+		if (value != null) {
+			att(sb, att, value?"1":"0");
+		}
 	}
 } 
