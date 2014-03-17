@@ -8,25 +8,30 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
 import xml.spreadsheet.utils.AttributeHelper;
+import xml.spreadsheet.utils.DateFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
 /**
  * Partial implementation of the spreadsheet format described in the article<br/>
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx 
+ * <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx">Microsoft XML Spreadsheet Reference</a> 
  * <br/>
- * The generator will follow this sequence:
+ * The generator will follow this state machine:
  * <br/>
  * <code>
  * Constructor -> [Create style]* -> startDocument -> 
  * [openSheet -> [openRow -> [openCell -> closeCell]* -> closeRow]* -> closeSheet ]* -> 
  * closeDocument
- * </code>
+ * </code><br/>
+ * The Generator will throw a <code>XMLSpreadsheetException</code> if 
+ * the API user tries to break the state machine (say for example, try to write a cell
+ * after closing the document, or writing a row before opening a sheet)
  */
 public class XMLSpreadsheetGenerator {
 
@@ -72,8 +77,7 @@ public class XMLSpreadsheetGenerator {
 	/**
 	 * Builds a generator tied to the OutputStream passed as a parameter.
 	 * Sets the <code>INITIALIZATION</code> state.
-	 * @param os Where the generator is going to write its output to.
-	 * in advance the number of sheets that the spreadsheet will have
+	 * @param output Where the generator is going to write its output to.
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
@@ -241,6 +245,10 @@ public class XMLSpreadsheetGenerator {
 	
 	/**
 	 * Streams the ending of a row.  Sets the <code>WRITING_SHEET</code> state.
+	 * If we have created no cells in the row, it will flush nothing to the output,
+	 * but increase the counter for the next row.
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
 	 */
 	public void closeRow() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
@@ -255,6 +263,8 @@ public class XMLSpreadsheetGenerator {
 	
 	/**
 	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
 	 */
 	public void startSheet(String sheetName, Double columnWidth) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
@@ -265,7 +275,7 @@ public class XMLSpreadsheetGenerator {
 			// Column width specified?
 			flush(engine.applyTemplate("column.xml", 
 				new MapClosure().add(
-					"width", NumberFormatHelper.formatDouble(columnWidth)).
+					"width", NumberFormatHelper.format(columnWidth)).
 						map()));
 		}
 		// Current sheet row counter
@@ -274,6 +284,8 @@ public class XMLSpreadsheetGenerator {
 	
 	/**
 	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
 	 */
 	public void startSheet(String sheetName) throws XMLSpreadsheetException {
 		startSheet(sheetName, null);
@@ -281,6 +293,8 @@ public class XMLSpreadsheetGenerator {
 	
 	/**
 	 * Streams the ending of a sheet.  Sets the <code>CLEAN_DOCUMENT</code> state.
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
 	 */
 	public void closeSheet() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.CLEAN_DOCUMENT);
@@ -288,14 +302,82 @@ public class XMLSpreadsheetGenerator {
 	}
 	
 	/**
+	 * Writes a String to a cell
+	 * @param style Style object to apply to the cell
+	 * @param value String value to write
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void writeCell(Style style, String value) throws XMLSpreadsheetException {		
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_CELL);
+		writeCellImpl(style, value, CellType.String);		
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+	}
+	
+	/**
+	 * Writes a String to a cell
+	 * @param value String value to write
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void writeCell(String value) throws XMLSpreadsheetException {		
+		writeCell(null, value);
+	}
+	
+	/**
+	 * Writes a number to a cell
+	 * @param style Style object to apply to the cell
+	 * @param value Number value to write
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void writeCell(Style style, Double value) throws XMLSpreadsheetException {		
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_CELL);
+		writeCellImpl(style, NumberFormatHelper.format(value), CellType.Number);		
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+	}
+	
+	/**
+	 * Writes a number to a cell
+	 * @param value Number value to write
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void writeCell(Double value) throws XMLSpreadsheetException {		
+		writeCell(null, value);
+	}
+	
+	/**
+	 * Writes a date to a cell
+	 * @param style Style object to apply to the cell
+	 * @param value Date value to write
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void writeCell(Style style, Date value) throws XMLSpreadsheetException {		
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_CELL);
+		// Desired format: 1987-10-30T00:00:00.000
+		writeCellImpl(style, DateFormatHelper.format(value), CellType.DateTime);		
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+	}
+	
+	/**
+	 * Writes a date to a cell
+	 * @param value Date value to write
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void writeCell(Date value) throws XMLSpreadsheetException {		
+		writeCell(null, value);
+	}
+	
+	/**
 	 * Writes a cell value into the stream
 	 */
-	public void writeCell() throws XMLSpreadsheetException {		
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_CELL);
+	private void writeCellImpl(Style style, String value, CellType type) throws XMLSpreadsheetException {
 		if (emptyCurrentRow) {
-			// flush the start of the row
+			// flush the start of the row since we are going to need it
 			flush("<ss:Row");
-			emptyCurrentRow = false;
 			StringBuilder sb = new StringBuilder();
 			sb.append("<ss:Row");
 			AttributeHelper.att(sb, "ss:Caption", currentRow.getCaption());
@@ -306,8 +388,8 @@ public class XMLSpreadsheetGenerator {
 				AttributeHelper.att(sb, "ss:StyleID", currentRow.getStyle().getId());
 			}
 			if (showRowCounter) {
-				// Show row counter
-				AttributeHelper.att(sb, "ss:Index", currentRow.getStyle().getId());
+				// Show row counter only if necessary
+				AttributeHelper.att(sb, "ss:Index", rowCounter);
 				showRowCounter = false;
 			}
 			sb.append("/>");
@@ -315,8 +397,13 @@ public class XMLSpreadsheetGenerator {
 			emptyCurrentRow = false;
 		}
 		// write the contents of the cell
+		flush("<ss:Cell");
+		
+		flush("/>");
 	}
 	
+	// Internal class representing the current row configuration (may need to
+	//	remember it or may not)
 	private class Row {
 		private String caption;
 		private Boolean autoFitHeight; 

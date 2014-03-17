@@ -33,7 +33,7 @@ public class NumberFormatHelper {
 	 * @param d Double value
 	 * @return String presentation of the double
 	 */
-	public static String formatDouble(Double d) {
+	public static String format(Double d) {
 		String ret = null;
 		if (d != null) {
 			ret = DOUBLE_FORMAT.format(d);

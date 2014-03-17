@@ -79,11 +79,11 @@ public class StyleTestUtils {
 	}
 	
 	public static void checkAttributeValue(Object styleElement, String selector, String attribute, double value) {
-		checkAttributeValue(styleElement, selector, attribute, NumberFormatHelper.formatDouble(value));
+		checkAttributeValue(styleElement, selector, attribute, NumberFormatHelper.format(value));
 	}
 	
 	public static void checkAttributeValue(Object styleElement, String attribute, double value) {
-		checkAttributeValue(styleElement, attribute, NumberFormatHelper.formatDouble(value));
+		checkAttributeValue(styleElement, attribute, NumberFormatHelper.format(value));
 	}
 	
 	public static void checkAttributeValue(Object styleElement, String selector, String attribute, String value) {

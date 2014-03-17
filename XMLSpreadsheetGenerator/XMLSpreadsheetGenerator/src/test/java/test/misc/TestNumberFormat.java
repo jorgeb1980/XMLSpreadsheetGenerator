@@ -14,26 +14,26 @@ public class TestNumberFormat {
 
 	@Test
 	public void testNull() {
-		assertNull(NumberFormatHelper.formatDouble(null));
+		assertNull(NumberFormatHelper.format(null));
 	}
 
 	@Test
 	public void testSimple() {
-		assertEquals("3", NumberFormatHelper.formatDouble(3d));
+		assertEquals("3", NumberFormatHelper.format(3d));
 	}
 	
 	@Test
 	public void testDecimals() {
-		assertEquals("3.56", NumberFormatHelper.formatDouble(3.56));
+		assertEquals("3.56", NumberFormatHelper.format(3.56));
 	}
 	
 	@Test
 	public void testZero() {
-		assertEquals("0.56", NumberFormatHelper.formatDouble(0.56d));
+		assertEquals("0.56", NumberFormatHelper.format(0.56d));
 	}
 	
 	@Test
 	public void testZeroes() {
-		assertEquals("1.00056", NumberFormatHelper.formatDouble(1.00056d));
+		assertEquals("1.00056", NumberFormatHelper.format(1.00056d));
 	}
 }

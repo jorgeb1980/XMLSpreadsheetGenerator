@@ -34,7 +34,7 @@ public class AttributeHelper {
 	 */
 	public static void att(StringBuilder sb, String att, Double value) {
 		if (value != null) {
-			att(sb, att, NumberFormatHelper.formatDouble(value));
+			att(sb, att, NumberFormatHelper.format(value));
 		}
 	}
 	

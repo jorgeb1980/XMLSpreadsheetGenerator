@@ -91,8 +91,8 @@ public class TemplateEngineFactory {
 	
 	/**
 	 * Returns the engine identified by the parameter.
-	 * @param engineId Template identifier
-	 * @return 
+	 * @param id Template identifier
+	 * @return Requested implementation of the template engine
 	 */
 	public TemplateEngine engine(String id) throws XMLSpreadsheetException {
 		String engineId = PROPERTY_ENGINE_PREFIX + id;
