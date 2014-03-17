@@ -3,6 +3,10 @@
  */
 package xml.spreadsheet.style;
 
+import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.XmlHelper;
+
+
 /**
  * Defines the protection properties that should be used in cells referencing this style. 
  * This element exists as a short-hand way to apply protection to an entire table, 
@@ -48,21 +52,10 @@ public class Protection {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("<ss:Protection");
-		
-		if (protectedCell != null) {
-			AttributeHelper.att(sb, "ss:Protected", protectedCell.booleanValue());
-		}
-		
-		if (hideFormula != null) {
-			AttributeHelper.att(sb, "x:HideFormula", hideFormula.booleanValue());
-		}
-		
-		sb.append("/>");
-		
-		return sb.toString();
+		return XmlHelper.emptyElement("ss:Protection",
+			new Table<Object>().
+				add("ss:Protected", protectedCell).
+				add("x:HideFormula", hideFormula));
 	}
 	
 	

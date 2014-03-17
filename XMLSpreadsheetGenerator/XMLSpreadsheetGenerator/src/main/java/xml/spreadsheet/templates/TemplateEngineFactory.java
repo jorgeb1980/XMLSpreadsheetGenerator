@@ -7,7 +7,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import xml.spreadsheet.PropertiesReader;
+import xml.spreadsheet.utils.PropertiesReader;
 import xml.spreadsheet.XMLSpreadsheetException;
 
 /**
@@ -83,16 +83,14 @@ public class TemplateEngineFactory {
 		else {
 			// Return the default engine (property template.engine.default)
 			String defaultEngine = PropertiesReader.property(PROPERTY_DEFAULT_ENGINE);
-			TemplateEngine t = engine(defaultEngine);
-			System.err.println("Template engine by default: " + t.getClass().getName());
-			return t;
+			return engine(defaultEngine);
 		}
 	}
 	
 	/**
 	 * Returns the engine identified by the parameter.
-	 * @param engineId Template identifier
-	 * @return 
+	 * @param id Template identifier
+	 * @return Requested implementation of the template engine
 	 */
 	public TemplateEngine engine(String id) throws XMLSpreadsheetException {
 		String engineId = PROPERTY_ENGINE_PREFIX + id;

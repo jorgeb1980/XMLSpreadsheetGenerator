@@ -14,7 +14,7 @@ import org.apache.velocity.app.Velocity;
  * Velocity implementation of an .xml template engine.  Based on .xml text files
  * and Velocity
  */
-public class VelocityTemplateEngine implements TemplateEngine {
+class VelocityTemplateEngine extends AbstractTemplateEngine {
 
 	
 	//---------------------------------------------------
@@ -50,10 +50,6 @@ public class VelocityTemplateEngine implements TemplateEngine {
 		}
 		return writer.toString();
 	}
-		
-	// This method returns the contents of an .xml file
-	public String returnTemplate(String templateId) throws TemplateException {
-		return TemplateCache.readTemplate(templateId);
-	}	
+	
 	
 }

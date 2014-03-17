@@ -1,3 +1,2 @@
 <ss:Worksheet ss:Name="$sheetName">
-  <Table ss:StyleID="$styleId">
-    <Column ss:Width="$width"/>
+  <Table>

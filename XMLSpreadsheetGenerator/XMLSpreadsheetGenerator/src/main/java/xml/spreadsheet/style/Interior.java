@@ -3,6 +3,9 @@
  */
 package xml.spreadsheet.style;
 
+import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.XmlHelper;
+
 /**
  * Defines the fill properties to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
@@ -55,21 +58,11 @@ public class Interior {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("<ss:Interior");
-		
-		AttributeHelper.att(sb, "ss:Color", color);
-		
-		if (pattern != null) {
-			AttributeHelper.att(sb, "ss:Pattern", pattern.toString());
-		}
-		
-		AttributeHelper.att(sb, "ss:PatternColor", patternColor);
-		
-		sb.append("/>");
-		
-		return sb.toString();
+		return XmlHelper.emptyElement("ss:Interior",
+			new Table<Object>().
+				add("ss:Color", color).
+				add("ss:Pattern", pattern != null?pattern.toString():null).
+				add("ss:PatternColor", patternColor));
 	}
 
 	public Interior () {}

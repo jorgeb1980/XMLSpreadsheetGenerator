@@ -4,28 +4,28 @@
 package xml.spreadsheet;
 
 /**
- * Recognized character sets.
-    00H = 0 = 	ANSI Latin 
-    A2H = 162 = ANSI Turkish
-	01H = 1 = 	System default 
-	A3H = 163 = ANSI Vietnamese
-	02H = 2 = 	Symbol 
-	B1H = 177 = ANSI Hebrew
-	4DH = 77 = 	Apple Roman 
-	B2H = 178 = ANSI Arabic
-	80H = 128 = ANSI Japanese Shift-JIS 
-	BAH = 186 = ANSI Baltic
-	81H = 129 = ANSI Korean (Hangul) 
-	CCH = 204 = ANSI Cyrillic
-	82H = 130 = ANSI Korean (Johab) 
-	DEH = 222 = ANSI Thai
-	86H = 134 = ANSI Chinese Simplified GBK 
-	EEH = 238 = ANSI Latin II (Central European)
-	88H = 136 = ANSI Chinese Traditional BIG5 
-	FFH = 255 = OEM Latin I
-	A1H = 161 = ANSI Greek
+ * Recognized character sets:<br/>
+    00H = 0 = 	ANSI Latin <br/>
+    A2H = 162 = ANSI Turkish<br/>
+	01H = 1 = 	System default <br/>
+	A3H = 163 = ANSI Vietnamese<br/>
+	02H = 2 = 	Symbol <br/>
+	B1H = 177 = ANSI Hebrew<br/>
+	4DH = 77 = 	Apple Roman <br/>
+	B2H = 178 = ANSI Arabic<br/>
+	80H = 128 = ANSI Japanese Shift-JIS <br/>
+	BAH = 186 = ANSI Baltic<br/>
+	81H = 129 = ANSI Korean (Hangul) <br/>
+	CCH = 204 = ANSI Cyrillic<br/>
+	82H = 130 = ANSI Korean (Johab) <br/>
+	DEH = 222 = ANSI Thai<br/>
+	86H = 134 = ANSI Chinese Simplified GBK <br/>
+	EEH = 238 = ANSI Latin II (Central European)<br/>
+	88H = 136 = ANSI Chinese Traditional BIG5 <br/>
+	FFH = 255 = OEM Latin I<br/>
+	A1H = 161 = ANSI Greek<br/>
 	
-	Source: http://www.openoffice.org/sc/excelfileformat.pdf
+	Source: <a href="http://www.openoffice.org/sc/excelfileformat.pdf">Open Office file format documentation</a>
  */
 public enum Charset {
 	ANSI_Latin (0),

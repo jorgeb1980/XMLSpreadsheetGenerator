@@ -3,6 +3,9 @@
  */
 package xml.spreadsheet.style;
 
+import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.XmlHelper;
+
 /**
  * Defines the font attributes to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
@@ -120,58 +123,21 @@ public class Font {
 	
 	
 	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("<ss:Font");
-		
-		if (bold != null) {
-			AttributeHelper.att(sb, "ss:Bold", bold.booleanValue());
-		}
-		
-		AttributeHelper.att(sb, "ss:Color", color);
-		
-		AttributeHelper.att(sb, "ss:FontName", fontName);
-		
-		if (italic != null) {
-			AttributeHelper.att(sb, "ss:Italic", italic.booleanValue());
-		}
-		
-		if (outline != null) {
-			AttributeHelper.att(sb, "ss:Outline", outline.booleanValue());
-		}
-		
-		if (shadow != null) {
-			AttributeHelper.att(sb, "ss:Shadow", shadow.booleanValue());
-		}
-		
-		if (size != null) {
-			AttributeHelper.att(sb, "ss:Size", size.doubleValue());
-		}
-		
-		if (strikeThrough != null) {
-			AttributeHelper.att(sb, "ss:StrikeThrough", strikeThrough.booleanValue());
-		}
-		
-		if (underline != null) {
-			AttributeHelper.att(sb, "ss:Underline", underline);
-		}
-		
-		if (verticalAlign != null) {
-			AttributeHelper.att(sb, "ss:VerticalAlign", verticalAlign);
-		}
-		
-		if (charSet != null) {
-			AttributeHelper.att(sb, "x:CharSet", charSet);
-		}
-		
-		if (family != null) {
-			AttributeHelper.att(sb, "x:Family", family);
-		}
-		
-		sb.append("/>");
-		
-		return sb.toString();
+	public String toString() {		
+		return XmlHelper.emptyElement("ss:Font",
+			new Table<Object>().
+				add("ss:Bold", bold != null?bold.booleanValue():null).
+				add("ss:Color", color).
+				add("ss:FontName", fontName).
+				add("ss:Italic", italic).
+				add("ss:Outline", outline).
+				add("ss:Shadow", shadow).
+				add("ss:Size", size).
+				add("ss:StrikeThrough", strikeThrough).				
+				add("ss:Underline", underline != null?underline.toString():null).		
+				add("ss:VerticalAlign", verticalAlign != null?verticalAlign.toString():null).		
+				add("x:CharSet", charSet).		
+				add("x:Family", family != null?family.toString():null));
 	}
 	
 	public Font() {}

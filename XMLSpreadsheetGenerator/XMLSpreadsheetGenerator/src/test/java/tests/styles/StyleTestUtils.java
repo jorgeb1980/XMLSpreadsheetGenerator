@@ -16,7 +16,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 import org.junit.Assert;
 
-import xml.spreadsheet.style.AttributeHelper;
+import xml.spreadsheet.utils.NumberFormatHelper;
 
 /**
  * Utility methods for style elements testing
@@ -79,11 +79,11 @@ public class StyleTestUtils {
 	}
 	
 	public static void checkAttributeValue(Object styleElement, String selector, String attribute, double value) {
-		checkAttributeValue(styleElement, selector, attribute, AttributeHelper.DOUBLE_FORMAT.format(value));
+		checkAttributeValue(styleElement, selector, attribute, NumberFormatHelper.format(value));
 	}
 	
 	public static void checkAttributeValue(Object styleElement, String attribute, double value) {
-		checkAttributeValue(styleElement, attribute, AttributeHelper.DOUBLE_FORMAT.format(value));
+		checkAttributeValue(styleElement, attribute, NumberFormatHelper.format(value));
 	}
 	
 	public static void checkAttributeValue(Object styleElement, String selector, String attribute, String value) {
