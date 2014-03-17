@@ -144,7 +144,7 @@ public class Border {
 	
 	@Override
 	public String toString() {		
-		return XmlHelper.emptyElement("ss:Border",
+		return XmlHelper.element("ss:Border",
 			new Table<Object>().
 				add("ss:Position", position != null?position.toString():null).
 				add("ss:Color", color).

@@ -58,7 +58,7 @@ public class Interior {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.emptyElement("ss:Interior",
+		return XmlHelper.element("ss:Interior",
 			new Table<Object>().
 				add("ss:Color", color).
 				add("ss:Pattern", pattern != null?pattern.toString():null).

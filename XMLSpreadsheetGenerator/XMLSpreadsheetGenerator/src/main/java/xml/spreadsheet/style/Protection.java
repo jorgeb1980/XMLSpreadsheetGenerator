@@ -52,7 +52,7 @@ public class Protection {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.emptyElement("ss:Protection",
+		return XmlHelper.element("ss:Protection",
 			new Table<Object>().
 				add("ss:Protected", protectedCell).
 				add("x:HideFormula", hideFormula));

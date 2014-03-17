@@ -124,7 +124,7 @@ public class Font {
 	
 	@Override
 	public String toString() {		
-		return XmlHelper.emptyElement("ss:Font",
+		return XmlHelper.element("ss:Font",
 			new Table<Object>().
 				add("ss:Bold", bold != null?bold.booleanValue():null).
 				add("ss:Color", color).

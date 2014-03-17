@@ -83,7 +83,7 @@ public class Alignment {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.emptyElement("ss:Alignment",
+		return XmlHelper.element("ss:Alignment",
 			new Table<Object>().
 				add("ss:Horizontal", horizontal != null?horizontal.toString():null).
 				add("ss:Indent", indent).

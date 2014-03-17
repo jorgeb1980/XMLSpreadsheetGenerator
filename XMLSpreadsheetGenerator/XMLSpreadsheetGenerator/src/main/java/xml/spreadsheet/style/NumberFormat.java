@@ -67,7 +67,7 @@ public class NumberFormat {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.emptyElement("ss:NumberFormat",
+		return XmlHelper.element("ss:NumberFormat",
 			new Table<Object>().
 				add("ss:Format", format));
 	}
