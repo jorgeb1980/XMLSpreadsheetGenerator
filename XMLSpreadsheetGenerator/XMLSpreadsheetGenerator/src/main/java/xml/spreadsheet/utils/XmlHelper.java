@@ -7,7 +7,7 @@ import java.util.Map;
 
 
 /**
- * Fills attributes
+ * Provides support to XML generation across the library
  */
 public class XmlHelper {
 	

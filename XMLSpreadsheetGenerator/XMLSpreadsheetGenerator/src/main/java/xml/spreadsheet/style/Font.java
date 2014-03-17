@@ -9,7 +9,7 @@ import xml.spreadsheet.utils.XmlHelper;
 /**
  * Defines the font attributes to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:font
+ * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:font">MSDN Font element reference</a>
  */
 public class Font {
 

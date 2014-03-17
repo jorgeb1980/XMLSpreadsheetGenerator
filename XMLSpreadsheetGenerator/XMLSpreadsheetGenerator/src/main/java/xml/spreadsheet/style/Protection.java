@@ -11,7 +11,7 @@ import xml.spreadsheet.utils.XmlHelper;
  * Defines the protection properties that should be used in cells referencing this style. 
  * This element exists as a short-hand way to apply protection to an entire table, 
  * row, or column, by simply adding it to a style. 
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:protection
+ * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:protection">MSDN Protection element reference</a>
  */
 public class Protection {
 

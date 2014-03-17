@@ -11,7 +11,7 @@ import xml.spreadsheet.XMLSpreadsheetException;
 /**
  * Defines the border properties for cells referencing this style. The Borders 
  * element contains no attributes; it is purely a container for individual Border elements. 
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:borders
+ * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:borders">MSDN Borders element reference</a>
  */
 public class Borders {
 
