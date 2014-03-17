@@ -14,7 +14,9 @@ import java.util.List;
 
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
-import xml.spreadsheet.utils.AttributeHelper;
+import xml.spreadsheet.utils.AssertionHelper;
+import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.XmlHelper;
 import xml.spreadsheet.utils.DateFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
@@ -232,11 +234,11 @@ public class XMLSpreadsheetGenerator {
 		}
 		StringBuilder sb = new StringBuilder();
 		sb.append("<ss:Row");
-		AttributeHelper.att(sb, "ss:Span", span);
-		AttributeHelper.att(sb, "ss:Height", height.doubleValue());
-		AttributeHelper.att(sb, "ss:AutoFitHeight", autoFitHeight);
+		XmlHelper.att(sb, "ss:Span", span);
+		XmlHelper.att(sb, "ss:Height", height.doubleValue());
+		XmlHelper.att(sb, "ss:AutoFitHeight", autoFitHeight);
 		if (style != null) {
-			AttributeHelper.att(sb, "ss:StyleID", style.getId());
+			XmlHelper.att(sb, "ss:StyleID", style.getId());
 		}
 		sb.append("/>");
 		flush(sb.toString());
@@ -268,13 +270,15 @@ public class XMLSpreadsheetGenerator {
 	 */
 	public void startSheet(String sheetName, Double columnWidth) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
+		// Validate that the sheet name is not null
+		AssertionHelper.assertion(sheetName != null, "The sheet name must be specified");
 		// Flush the start of the sheet template
 		flush(engine.applyTemplate("sheet_header.xml", 
-			new MapClosure().add("sheetName", sheetName).map()));
+			new Table<String>().add("sheetName", sheetName).map()));
 		if (columnWidth != null) {
 			// Column width specified?
 			flush(engine.applyTemplate("column.xml", 
-				new MapClosure().add(
+				new Table<String>().add(
 					"width", NumberFormatHelper.format(columnWidth)).
 						map()));
 		}
@@ -380,16 +384,16 @@ public class XMLSpreadsheetGenerator {
 			flush("<ss:Row");
 			StringBuilder sb = new StringBuilder();
 			sb.append("<ss:Row");
-			AttributeHelper.att(sb, "ss:Caption", currentRow.getCaption());
-			AttributeHelper.att(sb, "ss:Height", currentRow.getHeight());
-			AttributeHelper.att(sb, "ss:AutoFitHeight", currentRow.getAutoFitHeight());
-			AttributeHelper.att(sb, "ss:Hidden", currentRow.getHidden());
+			XmlHelper.att(sb, "ss:Caption", currentRow.getCaption());
+			XmlHelper.att(sb, "ss:Height", currentRow.getHeight());
+			XmlHelper.att(sb, "ss:AutoFitHeight", currentRow.getAutoFitHeight());
+			XmlHelper.att(sb, "ss:Hidden", currentRow.getHidden());
 			if (currentRow.getStyle() != null) {
-				AttributeHelper.att(sb, "ss:StyleID", currentRow.getStyle().getId());
+				XmlHelper.att(sb, "ss:StyleID", currentRow.getStyle().getId());
 			}
 			if (showRowCounter) {
 				// Show row counter only if necessary
-				AttributeHelper.att(sb, "ss:Index", rowCounter);
+				XmlHelper.att(sb, "ss:Index", rowCounter);
 				showRowCounter = false;
 			}
 			sb.append("/>");

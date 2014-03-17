@@ -83,9 +83,7 @@ public class TemplateEngineFactory {
 		else {
 			// Return the default engine (property template.engine.default)
 			String defaultEngine = PropertiesReader.property(PROPERTY_DEFAULT_ENGINE);
-			TemplateEngine t = engine(defaultEngine);
-			System.err.println("Template engine by default: " + t.getClass().getName());
-			return t;
+			return engine(defaultEngine);
 		}
 	}
 	

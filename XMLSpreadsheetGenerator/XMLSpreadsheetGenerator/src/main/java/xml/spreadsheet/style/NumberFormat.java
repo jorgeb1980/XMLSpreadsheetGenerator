@@ -3,7 +3,8 @@
  */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.AttributeHelper;
+import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.XmlHelper;
 
 /**
  * Defines the number format that should be in cells referencing this style. 
@@ -66,15 +67,9 @@ public class NumberFormat {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("<ss:NumberFormat");
-		
-		AttributeHelper.att(sb, "ss:Format", format);
-		
-		sb.append("/>");
-		
-		return sb.toString();
+		return XmlHelper.emptyElement("ss:NumberFormat",
+			new Table<Object>().
+				add("ss:Format", format));
 	}
 	
 	/**

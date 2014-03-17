@@ -3,11 +3,13 @@
  */
 package xml.spreadsheet.utils;
 
+import java.util.Map;
+
 
 /**
  * Fills attributes
  */
-public class AttributeHelper {
+public class XmlHelper {
 	
 	//------------------------------------------------------------------
 	// Class methods
@@ -72,5 +74,44 @@ public class AttributeHelper {
 		if (value != null) {
 			att(sb, att, value?"1":"0");
 		}
+	}
+	
+	/**
+	 * Creates an empty xml node with the indicated attributes
+	 * @param element Name of the element
+	 * @param closure Table with the attributes
+	 * @return String representation of the XML node
+	 */
+	public static String emptyElement(String element, Table<Object> closure) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<");
+		sb.append(element);
+		Map<String, Object> map = closure.map();
+		if (map != null && map.values().size() != 0) {
+			sb.append(" ");
+			for (String key: map.keySet()) {
+				Object value = map.get(key);
+				if (value instanceof String) {
+					att(sb, key, (String) value);
+				}
+				else if (value instanceof Double) {
+					att(sb, key, (Double) value);
+				}
+				else if (value instanceof Boolean) {
+					att(sb, key, (Boolean) value);
+				}
+				else if (value instanceof Long) {
+					att(sb, key, (Long) value);
+				}
+				else if (value instanceof Integer) {
+					att(sb, key, (Integer) value);
+				}
+				else {
+					att(sb, key, value.toString());
+				}
+			}
+		}
+		sb.append("/>");
+		return sb.toString();
 	}
 } 

@@ -3,7 +3,8 @@
  */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.AttributeHelper;
+import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.XmlHelper;
 
 /**
  * Defines the font alignment attributes to use in this style. 
@@ -82,26 +83,16 @@ public class Alignment {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("<ss:Alignment");
-		
-		if (horizontal != null) {
-			AttributeHelper.att(sb, "ss:Horizontal", horizontal.toString());
-		}
-		AttributeHelper.att(sb, "ss:Indent", indent);	
-		// Ignore reading order - not sure if supported		
-		AttributeHelper.att(sb, "ss:Rotate", rotate);		
-		AttributeHelper.att(sb, "ss:ShrinkToFit", shrinkToFit);
-		if (vertical != null) {
-			AttributeHelper.att(sb, "ss:Vertical", vertical.toString());
-		}
-		AttributeHelper.att(sb, "ss:VerticalText", verticalText);		
-		AttributeHelper.att(sb, "ss:WrapText", wrapText);
-		
-		sb.append("/>");		
-		
-		return sb.toString();
+		return XmlHelper.emptyElement("ss:Alignment",
+			new Table<Object>().
+				add("ss:Horizontal", horizontal != null?horizontal.toString():null).
+				add("ss:Indent", indent).
+				add("ss:Rotate", rotate).
+				add("ss:ShrinkToFit", shrinkToFit).
+				add("ss:Vertical", vertical != null?vertical.toString():null).
+				add("ss:VerticalText", verticalText).
+				add("ss:WrapText", wrapText)
+			);
 	}
 	
 	public Alignment() {}

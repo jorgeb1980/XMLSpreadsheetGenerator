@@ -3,7 +3,8 @@
  */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.AttributeHelper;
+import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.XmlHelper;
 
 /**
  * Defines a single border within this style's Borders collection. The Borders 
@@ -142,21 +143,13 @@ public class Border {
 	}
 	
 	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder(); 
-		
-		sb.append("<ss:Border");
-		if (position != null) {
-			AttributeHelper.att(sb, "ss:Position", position.toString());
-		}
-		AttributeHelper.att(sb, "ss:Color", color);		
-		if (lineStyle != null) {
-			AttributeHelper.att(sb, "ss:LineStyle", lineStyle.toString());
-		}		
-		AttributeHelper.att(sb, "ss:Weight", weight);
-		
-		sb.append("/>");
-		
-		return sb.toString();
+	public String toString() {		
+		return XmlHelper.emptyElement("ss:Border",
+			new Table<Object>().
+				add("ss:Position", position != null?position.toString():null).
+				add("ss:Color", color).
+				add("ss:LineStyle", lineStyle != null?lineStyle.toString():null).
+				add("ss:Weight", weight)
+			);
 	}
 }
