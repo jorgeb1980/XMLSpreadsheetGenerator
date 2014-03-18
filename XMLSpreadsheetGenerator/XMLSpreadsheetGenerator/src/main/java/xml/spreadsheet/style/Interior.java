@@ -9,7 +9,7 @@ import xml.spreadsheet.utils.XmlHelper;
 /**
  * Defines the fill properties to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:interior
+ * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:interior">MSDN Interior element reference</a>
  */
 public class Interior {
 
@@ -58,7 +58,7 @@ public class Interior {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.emptyElement("ss:Interior",
+		return XmlHelper.element("ss:Interior",
 			new Table<Object>().
 				add("ss:Color", color).
 				add("ss:Pattern", pattern != null?pattern.toString():null).

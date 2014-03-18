@@ -13,8 +13,9 @@ import xml.spreadsheet.utils.XmlHelper;
 
 /**
  * This class contains the information for a style definition in an XML
- * spreadsheet.<br/>
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:style
+ * spreadsheet.  It can only be built attached to a certain <code>XMLSpreadsheetGenerator</code> by calling <code>createStyle</code> 
+ * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:style">MSDN Style element reference</a>
+ * @see xml.spreadsheet.XMLSpreadsheetGenerator#createStyle()
  */
 public class Style {
 

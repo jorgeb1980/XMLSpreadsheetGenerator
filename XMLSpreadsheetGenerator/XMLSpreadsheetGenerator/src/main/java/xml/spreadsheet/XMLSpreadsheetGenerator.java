@@ -232,16 +232,12 @@ public class XMLSpreadsheetGenerator {
 		else {
 			rowCounter++;
 		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("<ss:Row");
-		XmlHelper.att(sb, "ss:Span", span);
-		XmlHelper.att(sb, "ss:Height", height.doubleValue());
-		XmlHelper.att(sb, "ss:AutoFitHeight", autoFitHeight);
-		if (style != null) {
-			XmlHelper.att(sb, "ss:StyleID", style.getId());
-		}
-		sb.append("/>");
-		flush(sb.toString());
+		flush(XmlHelper.element("ss:Row", new Table<Object>().
+			add("ss:Span", span).
+			add("ss:Height", height!=null?height.doubleValue():null).
+			add("ss:AutoFitHeight", autoFitHeight).
+			add("ss:StyleID", style!=null?style.getId():null)
+			));
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
 	}
 	
@@ -381,29 +377,27 @@ public class XMLSpreadsheetGenerator {
 	private void writeCellImpl(Style style, String value, CellType type) throws XMLSpreadsheetException {
 		if (emptyCurrentRow) {
 			// flush the start of the row since we are going to need it
-			flush("<ss:Row");
-			StringBuilder sb = new StringBuilder();
-			sb.append("<ss:Row");
-			XmlHelper.att(sb, "ss:Caption", currentRow.getCaption());
-			XmlHelper.att(sb, "ss:Height", currentRow.getHeight());
-			XmlHelper.att(sb, "ss:AutoFitHeight", currentRow.getAutoFitHeight());
-			XmlHelper.att(sb, "ss:Hidden", currentRow.getHidden());
-			if (currentRow.getStyle() != null) {
-				XmlHelper.att(sb, "ss:StyleID", currentRow.getStyle().getId());
-			}
+			flush(XmlHelper.element("ss:Row", 
+				new Table<Object>().
+					add("ss:Caption", currentRow.getCaption()).
+					add("ss:Height", currentRow.getHeight()).
+					add("ss:AutoFitHeight", currentRow.getAutoFitHeight()).
+					add("ss:Hidden", currentRow.getHidden()).
+					add("ss:StyleID", currentRow.getStyle() != null?currentRow.getStyle().getId():null).
+					add("ss:Index", showRowCounter?rowCounter:null),
+				// Don't close!
+				false));
+			emptyCurrentRow = false;
 			if (showRowCounter) {
 				// Show row counter only if necessary
-				XmlHelper.att(sb, "ss:Index", rowCounter);
 				showRowCounter = false;
 			}
-			sb.append("/>");
-			flush(sb.toString());
-			emptyCurrentRow = false;
 		}
 		// write the contents of the cell
-		flush("<ss:Cell");
-		
-		flush("/>");
+		flush(XmlHelper.element("ss:Cell", 
+			new Table<Object>().add("ss:StyleID", style!=null?style.getId():null), 
+			XmlHelper.element("ss:Data", 
+				new Table<Object>().add("ss:Type", type.toString()), value)));
 	}
 	
 	// Internal class representing the current row configuration (may need to

@@ -9,9 +9,8 @@ import xml.spreadsheet.utils.XmlHelper;
 /**
  * Defines the number format that should be in cells referencing this style. 
  * The default value is General, and all other number formats require a custom format code. 
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:numberformat
- * Additional information on 
- * http://office.microsoft.com/en-us/excel-help/create-a-custom-number-format-HP010342372.aspx
+ * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:numberformat">MSDN NumberFormat element reference</a>
+ * @see <a href="http://office.microsoft.com/en-us/excel-help/create-a-custom-number-format-HP010342372.aspx">Technical article on number format creation</a>
  */
 public class NumberFormat {
 
@@ -67,7 +66,7 @@ public class NumberFormat {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.emptyElement("ss:NumberFormat",
+		return XmlHelper.element("ss:NumberFormat",
 			new Table<Object>().
 				add("ss:Format", format));
 	}

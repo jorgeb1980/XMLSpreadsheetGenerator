@@ -7,7 +7,7 @@ import java.util.Map;
 
 
 /**
- * Fills attributes
+ * Provides support to XML generation across the library
  */
 public class XmlHelper {
 	
@@ -77,15 +77,53 @@ public class XmlHelper {
 	}
 	
 	/**
-	 * Creates an empty xml node with the indicated attributes
-	 * @param element Name of the element
+	 * Creates an empty and closed xml node with the indicated attributes
+	 * @param elementName Name of the element
 	 * @param closure Table with the attributes
 	 * @return String representation of the XML node
 	 */
-	public static String emptyElement(String element, Table<Object> closure) {
+	public static String element(String elementName, Table<Object> closure) {
+		return element(elementName, closure, null, true);		
+	}
+	
+	/**
+	 * Creates an empty xml node with the indicated attributes
+	 * @param elementName Name of the element
+	 * @param closure Table with the attributes
+	 * @param close If it is true, the method closes the xml node; if false, it
+	 * does not
+	 * @return String representation of the XML node
+	 */
+	public static String element(String elementName, Table<Object> closure, boolean close) {
+		return element(elementName, closure, null, close);		
+	}
+	
+	/**
+	 * Creates a closed xml node with the indicated attributes and content
+	 * @param elementName Name of the element
+	 * @param closure Table with the attributes
+	 * @param content Content of the XML node 
+	 * @return String representation of the XML node
+	 */
+	public static String element(String elementName, Table<Object> closure, 
+			String content) {
+		return element(elementName, closure, content, true);
+	}
+	
+	/**
+	 * Creates an xml node with the indicated attributes and content
+	 * @param elementName Name of the element
+	 * @param closure Table with the attributes
+	 * @param content Content of the XML node 
+	 * @param close If it is true, the method closes the xml node; if false, it
+	 * does not
+	 * @return String representation of the XML node
+	 */
+	public static String element(String elementName, Table<Object> closure, 
+			String content, boolean close) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<");
-		sb.append(element);
+		sb.append(elementName);
 		Map<String, Object> map = closure.map();
 		if (map != null && map.values().size() != 0) {
 			sb.append(" ");
@@ -111,7 +149,18 @@ public class XmlHelper {
 				}
 			}
 		}
-		sb.append("/>");
+		if (content != null) {
+			sb.append(">");
+			sb.append(content);
+			if (close) {
+				sb.append("<");
+				sb.append(elementName);
+				sb.append(">");
+			}
+		}
+		else {
+			sb.append(close?"/>":">");
+		}
 		return sb.toString();
 	}
 } 

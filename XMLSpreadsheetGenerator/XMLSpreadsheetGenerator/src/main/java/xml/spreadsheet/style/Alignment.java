@@ -9,7 +9,7 @@ import xml.spreadsheet.utils.XmlHelper;
 /**
  * Defines the font alignment attributes to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:alignment
+ * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:alignment">MSDN Alignment element reference</a>
  */
 public class Alignment {
 	
@@ -83,7 +83,7 @@ public class Alignment {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.emptyElement("ss:Alignment",
+		return XmlHelper.element("ss:Alignment",
 			new Table<Object>().
 				add("ss:Horizontal", horizontal != null?horizontal.toString():null).
 				add("ss:Indent", indent).
