@@ -101,11 +101,8 @@ public class XMLSpreadsheetGenerator {
 	 * any other library-related exception arises
 	 */
 	public Style createStyle() throws XMLSpreadsheetException {
-		if (state != GeneratorState.INITIALIZATION) {
-			// Throw an exception
-			throw new XMLSpreadsheetException(
+		AssertionHelper.assertion(state == GeneratorState.INITIALIZATION, 
 				"It is not possible to add styles to a generator in state: " + state);
-		}
 		Style style = new Style("ce" + Integer.toString(styleCounter++));
 		styles.add(style);
 		return style;

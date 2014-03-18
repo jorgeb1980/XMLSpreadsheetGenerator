@@ -124,28 +124,30 @@ public class XmlHelper {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<");
 		sb.append(elementName);
-		Map<String, Object> map = closure.map();
-		if (map != null && map.values().size() != 0) {
-			sb.append(" ");
-			for (String key: map.keySet()) {
-				Object value = map.get(key);
-				if (value instanceof String) {
-					att(sb, key, (String) value);
-				}
-				else if (value instanceof Double) {
-					att(sb, key, (Double) value);
-				}
-				else if (value instanceof Boolean) {
-					att(sb, key, (Boolean) value);
-				}
-				else if (value instanceof Long) {
-					att(sb, key, (Long) value);
-				}
-				else if (value instanceof Integer) {
-					att(sb, key, (Integer) value);
-				}
-				else {
-					att(sb, key, value.toString());
+		if (closure != null) {
+			Map<String, Object> map = closure.map();
+			if (map != null && map.values().size() != 0) {
+				sb.append(" ");
+				for (String key: map.keySet()) {
+					Object value = map.get(key);
+					if (value instanceof String) {
+						att(sb, key, (String) value);
+					}
+					else if (value instanceof Double) {
+						att(sb, key, (Double) value);
+					}
+					else if (value instanceof Boolean) {
+						att(sb, key, (Boolean) value);
+					}
+					else if (value instanceof Long) {
+						att(sb, key, (Long) value);
+					}
+					else if (value instanceof Integer) {
+						att(sb, key, (Integer) value);
+					}
+					else {
+						att(sb, key, value.toString());
+					}
 				}
 			}
 		}
