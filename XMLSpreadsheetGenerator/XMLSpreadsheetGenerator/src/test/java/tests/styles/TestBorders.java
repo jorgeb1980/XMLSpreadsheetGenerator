@@ -173,5 +173,26 @@ public class TestBorders {
 		}
 	}
 	
-	
+	@Test
+	public void setCustomSetWeight() {
+		try {
+			borders = new Borders();
+			for (BorderPosition position: BorderPosition.values()) {
+				Border b = borders.createBorder(position);
+				// Null if default
+				StyleTestUtils.checkAttributeValue(borders, 
+						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"Weight", null);
+				final Double WEIGHT_VALUE = 3.3d;
+				b.setWeight(WEIGHT_VALUE);
+				StyleTestUtils.checkAttributeValue(borders, 
+					"//ss:Border[@ss:Position='" + position.toString()+"']", 
+					"Weight", WEIGHT_VALUE);
+				
+			}
+		}
+		catch (Throwable t) {
+			fail(t.getMessage());
+		}
+	}
 }

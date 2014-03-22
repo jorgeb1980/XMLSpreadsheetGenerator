@@ -27,6 +27,9 @@ public class NumberFormatHelper {
 		dfs.setDecimalSeparator('.');
 		DOUBLE_FORMAT.setDecimalFormatSymbols(dfs);
 	}
+	
+	// We do not want this to be instantiated
+	private NumberFormatHelper() {}
 
 	/**
 	 * Formats a double number to the necessary format

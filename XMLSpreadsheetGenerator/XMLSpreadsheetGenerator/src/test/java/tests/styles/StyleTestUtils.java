@@ -5,11 +5,8 @@ package tests.styles;
 
 import static org.junit.Assert.fail;
 
-import java.io.StringReader;
-
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 import org.junit.Assert;
 
@@ -27,22 +24,7 @@ public class StyleTestUtils {
 	
  	private static final String PREFIX = "ss";
 
-	public static Document parseStyleElement(Object styleElement) {
-		Document doc = null;
-		try {
-			SAXBuilder builder = new SAXBuilder();
-			doc = builder.build(
-				new StringReader(
-					"<alignment_test xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\" " +
-					" xmlns:x=\"urn:schemas-microsoft-com:office:excel\">"
-					+ styleElement.toString()
-					+ "</alignment_test>"));
-		}
-		catch (Throwable t) {
-			fail(t.getMessage());
-		}
-		return doc;
-	}
+	
 	
 	public static String attributeValue(Document doc, String selector, String attribute) {
 		return attributeValue(PREFIX, doc, selector, attribute);
@@ -83,7 +65,7 @@ public class StyleTestUtils {
 	}
 	
 	public static void checkAttributeValue(String prefix, Object styleElement, String selector, String attribute, String value) {
-		Document doc = parseStyleElement(styleElement);
+		Document doc = XmlTestUtils.parseElement(styleElement);
 		checkAttributeValue(prefix, doc, selector, attribute, value);
 	}
 	

@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -372,6 +373,7 @@ public class TestGenerator {
 	@Test
 	public void testBorders() {
 		try {
+			final Double FORMAT_WEIGHT = 2.0d;
 			
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
@@ -384,7 +386,7 @@ public class TestGenerator {
 			Style thickBorderStyle = generator.createStyle();
 			thickBorderStyle.borders().createBorder(BorderPosition.Bottom).setWeight(BorderWeight.Thick);
 			Style customBorderStyle = generator.createStyle();
-			customBorderStyle.borders().createBorder(BorderPosition.Bottom).setWeight(2.0);
+			customBorderStyle.borders().createBorder(BorderPosition.Bottom).setWeight(FORMAT_WEIGHT);
 			// Empty borders
 			Style emptyBorderStyle = generator.createStyle();
 			emptyBorderStyle.borders();
@@ -418,6 +420,25 @@ public class TestGenerator {
 			Document doc = GeneratorTestUtils.parseDocument(document);
 			Assert.assertNotNull(doc);			
 			
+			List<Element> rows = GeneratorTestUtils.searchRows(doc, "a sheet with border styles");
+			// remember empty rows left for space
+			Assert.assertEquals(10, rows.size());
+			// Check the bottom border position for every even row
+			// Light
+			Assert.assertEquals(
+					NumberFormatHelper.format(BorderWeight.Thin.getValue()), 
+					bottomBorderStyle(GeneratorTestUtils.searchCells(rows.get(1)).get(0)));
+			Assert.assertEquals(
+					NumberFormatHelper.format(BorderWeight.Medium.getValue()), 
+					bottomBorderStyle(GeneratorTestUtils.searchCells(rows.get(3)).get(0)));
+			Assert.assertEquals(
+					NumberFormatHelper.format(BorderWeight.Thick.getValue()), 
+					bottomBorderStyle(GeneratorTestUtils.searchCells(rows.get(5)).get(0)));
+			Assert.assertEquals(
+					NumberFormatHelper.format(FORMAT_WEIGHT), 
+					bottomBorderStyle(GeneratorTestUtils.searchCells(rows.get(7)).get(0)));
+			// Empty style
+			
 			os.write(baos.toByteArray());			
 			os.close();
 			System.out.println("Created file with border styles -> " + file.getAbsolutePath());
@@ -426,6 +447,22 @@ public class TestGenerator {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+	
+	// Style of the bottom border
+	private String bottomBorderStyle(Element cell) throws JDOMException {
+		String ret = null;
+		Element style = GeneratorTestUtils.searchStyle(cell.getDocument(), 
+			 XmlTestUtils.getAttributeValue(cell, "StyleID", "ss"));
+		List<Element> bottomBorder = 
+			XmlTestUtils.getDescendants(style, "ss:Borders/ss:Border[@ss:Position='Bottom']");
+		if (bottomBorder != null && bottomBorder.size() == 1) {
+			ret = XmlTestUtils.getAttributeValue(bottomBorder.get(0), "Weight", "ss");
+		}
+		else {
+			fail();
+		}
+		return ret;
 	}
 	
 	@Test
