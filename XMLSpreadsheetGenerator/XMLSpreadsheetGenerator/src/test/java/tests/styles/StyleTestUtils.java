@@ -6,16 +6,14 @@ package tests.styles;
 import static org.junit.Assert.fail;
 
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 import org.junit.Assert;
 
+import test.XmlTestUtils;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
 /**
@@ -23,13 +21,7 @@ import xml.spreadsheet.utils.NumberFormatHelper;
  */
 public class StyleTestUtils {
 	
-	private static Map<String, String> namespaces = null;
 	
-	static {
-		namespaces = new HashMap<String, String>();
-		namespaces.put("x", "urn:schemas-microsoft-com:office:excel");
-		namespaces.put("ss", "urn:schemas-microsoft-com:office:spreadsheet");
-	}
 	
 	private StyleTestUtils() {}
 	
@@ -59,9 +51,9 @@ public class StyleTestUtils {
 	public static String attributeValue(String prefix, Document doc, String selector, String attribute) {
 		String ret = null;
 		try {
-			ret = 
-				((Element)XPath.selectSingleNode(doc, selector)).getAttributeValue(attribute, 
-					Namespace.getNamespace(prefix, namespaces.get(prefix)));
+			Element element = ((Element)XPath.selectSingleNode(doc, selector)); 
+			ret = XmlTestUtils.getAttributeValue(element, attribute, 
+					prefix);
 		}
 		catch (Throwable t) {
 			t.printStackTrace();

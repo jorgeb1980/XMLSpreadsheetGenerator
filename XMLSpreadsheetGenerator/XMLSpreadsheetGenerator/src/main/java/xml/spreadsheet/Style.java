@@ -116,9 +116,9 @@ public class Style {
 		
 		sb.append("<ss:Style");
 		
-		XmlHelper.att(sb, "ID", id);
-		XmlHelper.att(sb, "Name", name);
-		XmlHelper.att(sb, "Parent", parent);
+		XmlHelper.att(sb, "ss:ID", id);
+		XmlHelper.att(sb, "ss:Name", name);
+		XmlHelper.att(sb, "ss:Parent", parent);
 		
 		sb.append(">");
 		

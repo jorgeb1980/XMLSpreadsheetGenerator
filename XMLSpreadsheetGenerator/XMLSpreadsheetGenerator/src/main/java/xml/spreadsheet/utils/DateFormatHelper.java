@@ -17,7 +17,7 @@ public class DateFormatHelper {
 
 	/** Date format: 1987-10-30T00:00:00.000 */
 	private static DateFormat DATE_FORMAT = 
-		new SimpleDateFormat("yyyy-MM-dd'Thh:mm:ss.mmm");		
+		new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.mmm");		
 	
 	//------------------------------------------------------------------
 	// Class methods

@@ -155,7 +155,7 @@ public class XmlHelper {
 			sb.append(">");
 			sb.append(content);
 			if (close) {
-				sb.append("<");
+				sb.append("</");
 				sb.append(elementName);
 				sb.append(">");
 			}
