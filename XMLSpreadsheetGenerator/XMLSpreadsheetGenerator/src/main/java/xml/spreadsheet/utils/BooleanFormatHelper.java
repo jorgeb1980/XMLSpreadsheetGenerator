@@ -11,6 +11,9 @@ public class BooleanFormatHelper {
 	//------------------------------------------------------------------
 	// Class methods
 	
+	// We do not want this to be instantiated
+	private BooleanFormatHelper() {}
+	
 	/**
 	 * Returns the string representation for a Boolean in the XMLSpreadsheet 
 	 * format.

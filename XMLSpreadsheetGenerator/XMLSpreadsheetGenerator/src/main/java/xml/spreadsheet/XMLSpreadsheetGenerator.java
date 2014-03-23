@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
 import xml.spreadsheet.utils.AssertionHelper;
@@ -67,10 +68,15 @@ public class XMLSpreadsheetGenerator {
 	private boolean emptyCurrentRow = true;
 	// Row counter for the current sheet
 	private int rowCounter = 0;
+	// Cell counter for the current row
+	//private int cellCounter = 0;
 	// Should the next row show its row counter?
 	private boolean showRowCounter = false;
-	// Current row information
-	private Row currentRow = null;
+	// Should the next cell show its cell counter?
+	//private boolean showCellCounter = false;
+	
+	// The generator stores a predefined default date format
+	private Style dateFormat = null;
 	
 	//---------------------------------------------------------------
 	// Class methods
@@ -91,6 +97,9 @@ public class XMLSpreadsheetGenerator {
 		styles = new LinkedList<Style>();
 		// Template engine
 		engine = TemplateEngineFactory.factory().engine();
+		// Create the date format
+		dateFormat = createStyle();
+		dateFormat.numberFormat().setFormat(Format.LongDate);
 	}
 	
 	/**
@@ -101,11 +110,8 @@ public class XMLSpreadsheetGenerator {
 	 * any other library-related exception arises
 	 */
 	public Style createStyle() throws XMLSpreadsheetException {
-		if (state != GeneratorState.INITIALIZATION) {
-			// Throw an exception
-			throw new XMLSpreadsheetException(
+		AssertionHelper.assertion(state == GeneratorState.INITIALIZATION, 
 				"It is not possible to add styles to a generator in state: " + state);
-		}
 		Style style = new Style("ce" + Integer.toString(styleCounter++));
 		styles.add(style);
 		return style;
@@ -199,7 +205,16 @@ public class XMLSpreadsheetGenerator {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
 		emptyCurrentRow = true;
 		// Create current row
-		currentRow = new Row(caption, autoFitHeight, height, hidden, style);
+		flush(XmlHelper.element("ss:Row", 
+			new Table<Object>().
+				add("ss:Caption", caption).
+				add("ss:Height", height).
+				add("ss:AutoFitHeight", autoFitHeight).
+				add("ss:Hidden", hidden).
+				add("ss:StyleID", style != null?style.getId():null).
+				add("ss:Index", showRowCounter?rowCounter:null),
+			// Don't close!
+			false));
 		rowCounter++;
 	}
 	
@@ -224,7 +239,6 @@ public class XMLSpreadsheetGenerator {
 			Double height, 
 			Style style) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
-		currentRow = null;
 		if (span != null) {
 			// Flush the row
 			rowCounter += span;
@@ -239,6 +253,7 @@ public class XMLSpreadsheetGenerator {
 			add("ss:StyleID", style!=null?style.getId():null)
 			));
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+		showRowCounter = true;
 	}
 	
 	/**
@@ -250,36 +265,13 @@ public class XMLSpreadsheetGenerator {
 	 */
 	public void closeRow() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
-		if (!emptyCurrentRow) {
-			flush(engine.applyTemplate("row_foot.xml"));
+		if (emptyCurrentRow) {
+			flush(XmlHelper.element("ss:Cell", 
+				new Table<Object>().
+					add("ss:Index", "1")));
 		}
-		else {
-			// Current row is empty, next row comes with an index attribute
-			showRowCounter = true;
-		}
-	}
-	
-	/**
-	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
-	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
-	 * any other library-related exception arises
-	 */
-	public void startSheet(String sheetName, Double columnWidth) throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
-		// Validate that the sheet name is not null
-		AssertionHelper.assertion(sheetName != null, "The sheet name must be specified");
-		// Flush the start of the sheet template
-		flush(engine.applyTemplate("sheet_header.xml", 
-			new Table<String>().add("sheetName", sheetName).map()));
-		if (columnWidth != null) {
-			// Column width specified?
-			flush(engine.applyTemplate("column.xml", 
-				new Table<String>().add(
-					"width", NumberFormatHelper.format(columnWidth)).
-						map()));
-		}
-		// Current sheet row counter
-		rowCounter = 0;
+		flush(engine.applyTemplate("row_foot"));
+		showRowCounter = false;
 	}
 	
 	/**
@@ -288,7 +280,14 @@ public class XMLSpreadsheetGenerator {
 	 * any other library-related exception arises
 	 */
 	public void startSheet(String sheetName) throws XMLSpreadsheetException {
-		startSheet(sheetName, null);
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
+		// Validate that the sheet name is not null
+		AssertionHelper.assertion(sheetName != null, "The sheet name must be specified");
+		// Flush the start of the sheet template
+		flush(engine.applyTemplate("sheet_header", 
+			new Table<String>().add("sheetName", sheetName).map()));
+		// Current sheet row counter
+		rowCounter = 0;
 	}
 	
 	/**
@@ -298,7 +297,7 @@ public class XMLSpreadsheetGenerator {
 	 */
 	public void closeSheet() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.CLEAN_DOCUMENT);
-		flush(engine.applyTemplate("sheet_foot.xml"));
+		flush(engine.applyTemplate("sheet_foot"));
 	}
 	
 	/**
@@ -349,7 +348,10 @@ public class XMLSpreadsheetGenerator {
 	
 	/**
 	 * Writes a date to a cell
-	 * @param style Style object to apply to the cell
+	 * @param style Style object to apply to the cell.  Remember that the proper way
+	 * to create a date format is to create a <code>Style</code> object, and then
+	 * define for it a proper <code>NumberFormat</code>.
+	 * @see <a href="http://office.microsoft.com/en-us/excel-help/format-a-date-the-way-you-want-HA102809474.aspx">Custom date formatting</a>
 	 * @param value Date value to write
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
@@ -357,12 +359,13 @@ public class XMLSpreadsheetGenerator {
 	public void writeCell(Style style, Date value) throws XMLSpreadsheetException {		
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_CELL);
 		// Desired format: 1987-10-30T00:00:00.000
-		writeCellImpl(style, DateFormatHelper.format(value), CellType.DateTime);		
+		writeCellImpl(style == null?dateFormat:style, DateFormatHelper.format(value), CellType.DateTime);		
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
 	}
 	
 	/**
-	 * Writes a date to a cell
+	 * Writes a date to a cell.  It will print it with the standard format of
+	 * the library (yyyy-MM-dd)
 	 * @param value Date value to write
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
@@ -372,21 +375,29 @@ public class XMLSpreadsheetGenerator {
 	}
 	
 	/**
+	 * Writes an empty cell to the document.
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void writeEmptyCell() throws XMLSpreadsheetException {
+		writeEmptyCell(null);
+	}
+	
+	/**
+	 * Writes an empty cell to the document.
+	 * @style Cell style
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void writeEmptyCell(Style style) throws XMLSpreadsheetException {
+		writeCellImpl(style, null, CellType.String);
+	}
+	
+	/**
 	 * Writes a cell value into the stream
 	 */
 	private void writeCellImpl(Style style, String value, CellType type) throws XMLSpreadsheetException {
 		if (emptyCurrentRow) {
-			// flush the start of the row since we are going to need it
-			flush(XmlHelper.element("ss:Row", 
-				new Table<Object>().
-					add("ss:Caption", currentRow.getCaption()).
-					add("ss:Height", currentRow.getHeight()).
-					add("ss:AutoFitHeight", currentRow.getAutoFitHeight()).
-					add("ss:Hidden", currentRow.getHidden()).
-					add("ss:StyleID", currentRow.getStyle() != null?currentRow.getStyle().getId():null).
-					add("ss:Index", showRowCounter?rowCounter:null),
-				// Don't close!
-				false));
 			emptyCurrentRow = false;
 			if (showRowCounter) {
 				// Show row counter only if necessary
@@ -400,60 +411,5 @@ public class XMLSpreadsheetGenerator {
 				new Table<Object>().add("ss:Type", type.toString()), value)));
 	}
 	
-	// Internal class representing the current row configuration (may need to
-	//	remember it or may not)
-	private class Row {
-		private String caption;
-		private Boolean autoFitHeight; 
-		private Double height; 
-		private Boolean hidden;
-		private Style style;
-		/**
-		 * @return the caption
-		 */
-		public String getCaption() {
-			return caption;
-		}
-		/**
-		 * @return the autoFitHeight
-		 */
-		public Boolean getAutoFitHeight() {
-			return autoFitHeight;
-		}
-		/**
-		 * @return the height
-		 */
-		public Double getHeight() {
-			return height;
-		}
-		/**
-		 * @return the hidden
-		 */
-		public Boolean getHidden() {
-			return hidden;
-		}
-		/**
-		 * @return the style
-		 */
-		public Style getStyle() {
-			return style;
-		}
-		/**
-		 * @param caption
-		 * @param autoFitHeight
-		 * @param height
-		 * @param hidden
-		 * @param style
-		 */
-		public Row(String caption, Boolean autoFitHeight, Double height,
-				Boolean hidden, Style style) {
-			super();
-			this.caption = caption;
-			this.autoFitHeight = autoFitHeight;
-			this.height = height;
-			this.hidden = hidden;
-			this.style = style;
-		}
-		
-	}
+	
 }

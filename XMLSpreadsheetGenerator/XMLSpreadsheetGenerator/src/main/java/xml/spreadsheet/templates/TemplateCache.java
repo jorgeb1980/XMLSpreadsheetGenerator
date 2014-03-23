@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 
+import xml.spreadsheet.utils.ClasspathFileReader;
+
 /**
  * Static template cache
  */
@@ -40,7 +42,7 @@ class TemplateCache {
 	public static String readTemplate(String templateId) throws TemplateException {
 		String templateValue = null;
 		if (templateId == null || templateId.trim().length() == 0) {
-			throw new TemplateException("Template not specified");
+			throw new TemplateException("The template ID cannot be null");
 		}
 		if (!cache().containsKey(templateId)) {
 			String path = "templates/" + templateId + ".xml";

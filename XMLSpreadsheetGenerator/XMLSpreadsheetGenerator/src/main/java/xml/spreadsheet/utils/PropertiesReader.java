@@ -16,6 +16,12 @@ import xml.spreadsheet.XMLSpreadsheetException;
 public class PropertiesReader {
 
 	//----------------------------------------------------------
+	// Class constants
+	
+	/** Name of the master properties file */
+	private static final String PROPERTIES_FILE = "spreadsheet.properties";
+	
+	//----------------------------------------------------------
 	// Class properties
 	
 	// Static singleton instance
@@ -31,6 +37,8 @@ public class PropertiesReader {
 	/** 
 	 * Singleton instance of the .properties file
 	 * @return Properties object
+	 * @throws XMLSpreadsheetException If had any problem finding the
+	 * properties file
 	 */
 	private static Properties properties() 
 			throws XMLSpreadsheetException {
@@ -40,7 +48,7 @@ public class PropertiesReader {
 				InputStream is = null;
 				try {
 					is = PropertiesReader.class.getClassLoader().
-							getResourceAsStream("spreadsheet.properties");
+							getResourceAsStream(PROPERTIES_FILE);
 					properties.load(is);
 				}
 				finally {
@@ -48,7 +56,7 @@ public class PropertiesReader {
 				}
 			}
 			catch(Throwable t) {
-				throw new XMLSpreadsheetException(t);
+				throw new XMLSpreadsheetException("Could not find " + PROPERTIES_FILE + " in the classpath");
 			}			
 		}
 		return properties;
@@ -59,7 +67,7 @@ public class PropertiesReader {
 	 * @param property Name of the property
 	 * @return Value of the property
 	 */
-	public static String property(String property) 
+	public static String property(String property)
 			throws XMLSpreadsheetException {
 		return properties().getProperty(property);
 	}

@@ -9,6 +9,7 @@ import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Interior;
 import xml.spreadsheet.style.NumberFormat;
 import xml.spreadsheet.style.Protection;
+import xml.spreadsheet.utils.Table;
 import xml.spreadsheet.utils.XmlHelper;
 
 /**
@@ -112,27 +113,20 @@ public class Style {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
 		
-		sb.append("<ss:Style");
-		
-		XmlHelper.att(sb, "ID", id);
-		XmlHelper.att(sb, "Name", name);
-		XmlHelper.att(sb, "Parent", parent);
-		
-		sb.append(">");
-		
-		// Flush the inner elements
-		sb.append(alignment != null?alignment.toString():"");
-		sb.append(borders != null?borders.toString():"");
-		sb.append(font != null?font.toString():"");
-		sb.append(interior != null?interior.toString():"");
-		sb.append(numberFormat != null?numberFormat.toString():"");
-		sb.append(protection != null?protection.toString():"");
-		
-		sb.append("</ss:Style>");
-		
-		return sb.toString();
+		return XmlHelper.element("ss:Style", 
+			new Table<Object>().
+				add("ss:ID", id).
+				add("ss:Name", name).
+				add("ss:Parent", parent),
+			new StringBuilder()
+				.append(alignment != null?alignment.toString():"")
+				.append(borders != null?borders.toString():"")
+				.append(font != null?font.toString():"")
+				.append(interior != null?interior.toString():"")
+				.append(numberFormat != null?numberFormat.toString():"")
+				.append(protection != null?protection.toString():"").toString()
+			);
 	}
 
 	/**

@@ -92,12 +92,12 @@ public class TemplateEngineFactory {
 	 * @param id Template identifier
 	 * @return Requested implementation of the template engine
 	 */
-	public TemplateEngine engine(String id) throws XMLSpreadsheetException {
+	public TemplateEngine engine(String id) throws TemplateException {
 		String engineId = PROPERTY_ENGINE_PREFIX + id;
 		if (!engines.containsKey(engineId)) {
 			//throw new NullPointerException("No template engine found for id " + id);
 			// Try to instantiate it
-			throw new XMLSpreadsheetException("No template engine registered for id " + id);
+			throw new TemplateException("No template engine registered for id " + id);
 		}		
 		return engines.get(engineId);
 	}

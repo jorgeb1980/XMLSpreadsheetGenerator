@@ -9,6 +9,11 @@ import xml.spreadsheet.XMLSpreadsheetException;
  * Supports validation through the code
  */
 public class AssertionHelper {
+	
+	//------------------------------------------------------------------
+	// Class methods
+	// We do not want this to be instantiated
+	private AssertionHelper() {}
 
 	/**
 	 * Throws an exception if the condition to check is false

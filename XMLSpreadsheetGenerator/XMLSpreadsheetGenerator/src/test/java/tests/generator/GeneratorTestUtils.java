@@ -4,9 +4,13 @@
 package tests.generator;
 
 import java.io.StringReader;
+import java.util.List;
 
 import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.xpath.XPath;
 
 public class GeneratorTestUtils {
 
@@ -23,5 +27,23 @@ public class GeneratorTestUtils {
 			e.printStackTrace();
 		}
 		return doc;
+	}
+	
+	// List of rows of a certain sheet
+	// Returns rows as Element objects
+	public static List<Element> searchRows(Document doc, String sheetName) throws JDOMException {
+		return (List<Element>) XPath.selectNodes(doc, "//ss:Worksheet[@ss:Name='" + sheetName + "']//ss:Row");
+	}
+	
+	// List of cells of a certain row
+	// Returns cells as Element objects
+	public static List<Element> searchCells(Element row) throws JDOMException {
+		return (List<Element>) XPath.selectNodes(row, "ss:Cell");
+	}
+	
+	// Style of a certain id
+	// Returns the style as an Element object
+	public static Element searchStyle(Document doc, String styleId) throws JDOMException {
+		return (Element) XPath.selectSingleNode(doc, "//ss:Style[@ss:ID='" + styleId + "']");
 	}
 }

@@ -2,7 +2,6 @@ package tests.styles;
 
 import static org.junit.Assert.fail;
 
-import org.jdom.Document;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,12 +46,6 @@ public class TestAlignment {
 	
 	// UNIT TESTS
 	
-	@Test
-	public void testAlignment() {
-		Document doc = StyleTestUtils.parseStyleElement(alignment);		
-		Assert.assertNotNull(doc);
-	}
-
 	@Test
 	public void testSetHorizontal() {
 		// Null by default
