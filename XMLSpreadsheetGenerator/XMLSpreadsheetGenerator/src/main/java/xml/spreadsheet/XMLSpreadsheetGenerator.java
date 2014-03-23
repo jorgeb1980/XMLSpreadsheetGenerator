@@ -279,32 +279,15 @@ public class XMLSpreadsheetGenerator {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public void startSheet(String sheetName, Double columnWidth) throws XMLSpreadsheetException {
+	public void startSheet(String sheetName) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
 		// Validate that the sheet name is not null
 		AssertionHelper.assertion(sheetName != null, "The sheet name must be specified");
 		// Flush the start of the sheet template
 		flush(engine.applyTemplate("sheet_header", 
 			new Table<String>().add("sheetName", sheetName).map()));
-		if (columnWidth != null) {
-			// Column width specified?
-			flush(engine.applyTemplate("column.xml", 
-				new Table<String>().add(
-					"width", NumberFormatHelper.format(columnWidth)).
-						map()));
-		}
 		// Current sheet row counter
 		rowCounter = 0;
-	}
-	
-	/**
-	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
-	 * @param sheetName Name presented in the sheet tab
-	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
-	 * any other library-related exception arises
-	 */
-	public void startSheet(String sheetName) throws XMLSpreadsheetException {
-		startSheet(sheetName, null);
 	}
 	
 	/**

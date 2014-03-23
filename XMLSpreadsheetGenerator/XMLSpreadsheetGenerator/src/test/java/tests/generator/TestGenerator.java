@@ -491,4 +491,23 @@ public class TestGenerator {
 			fail(e.getMessage());
 		}
 	}
+	
+	@Test 
+	public void testStartNamelessSheet() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			generator.startDocument();
+			generator.startSheet(null);
+			fail();
+		}
+		catch(XMLSpreadsheetException xse) {
+			Assert.assertNotNull(xse);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
 }
