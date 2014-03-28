@@ -32,7 +32,7 @@ public class Style {
 	//private String name = "";
 	
 	/** Parent */
-	private String parent = "";
+	private String parent = null;
 	
 	// Children
 	

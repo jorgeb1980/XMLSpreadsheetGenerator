@@ -3,7 +3,11 @@
  */
 package tests.generator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,7 +33,10 @@ import xml.spreadsheet.style.Border.BorderPosition;
 import xml.spreadsheet.style.Border.BorderWeight;
 import xml.spreadsheet.style.Border.LineStyle;
 import xml.spreadsheet.style.Borders;
+import xml.spreadsheet.style.Font;
+import xml.spreadsheet.style.Font.VerticalAlignment;
 import xml.spreadsheet.style.NumberFormat;
+import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
 public class TestGenerator {
@@ -376,6 +383,134 @@ public class TestGenerator {
 	}
 	
 	@Test
+	public void testFont() {
+		try {
+			final String GREEN_COLOR = "#00ff00";
+			final String BLUE_COLOR = "#0000ff";
+			
+			File file = File.createTempFile("xmlspreadsheet", ".xml");
+			OutputStream os = new FileOutputStream(file);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+				
+			Style bold = generator.createStyle();
+			Font boldFont = bold.font();
+			boldFont.setBold(true);
+			assertTrue(boldFont == bold.font());
+			
+			Style italic = generator.createStyle();
+			Font italicFont = italic.font();
+			italicFont.setItalic(true);
+			assertTrue(italicFont == italic.font());
+			
+			Style color = generator.createStyle();
+			Font colorFont = color.font();
+			colorFont.setColor(GREEN_COLOR);
+			assertTrue(colorFont == color.font());
+			
+			Style blueBold = generator.createStyle();
+			Font blueBoldFont = blueBold.font();
+			blueBoldFont.setColor(BLUE_COLOR);
+			blueBoldFont.setBold(true);
+			assertTrue(blueBoldFont == blueBold.font());
+			
+			Style bottom = generator.createStyle();
+			Font bottomFont = bottom.font();
+			bottomFont.setVerticalAlign(VerticalAlignment.Subscript);
+			assertTrue(bottomFont == bottom.font());
+			
+			Style big = generator.createStyle();
+			Font bigFont = big.font();
+			bigFont.setSize(20.0d);
+			assertTrue(bigFont == big.font());
+			
+			generator.startDocument();
+			generator.startSheet("a sheet with font styles");
+			generator.startRow(); generator.closeRow();
+			generator.startRow();
+			generator.writeCell(bold, new Date());
+			generator.closeRow();
+			generator.startRow(); generator.closeRow();
+			generator.startRow();
+			generator.writeCell(italic, "lalalalala");
+			generator.closeRow();
+			generator.startRow(); generator.closeRow();
+			generator.startRow();
+			generator.writeCell(color, "this is green");
+			generator.closeRow();
+			generator.startRow(); generator.closeRow();
+			generator.startRow();
+			generator.writeCell(blueBold, "this is blue and bold");
+			generator.closeRow();
+			generator.startRow(); generator.closeRow();
+			generator.startRow();
+			generator.writeCell(bottom, "this is a subscript");
+			generator.closeRow();
+			generator.startRow(); generator.closeRow();
+			generator.startRow();
+			generator.writeCell(big, "this is a 20 size text");
+			generator.closeRow();
+			generator.closeSheet();
+			generator.closeDocument();
+			
+			
+			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
+			// Not empty and correct document
+			Document doc = GeneratorTestUtils.parseDocument(document);
+			assertNotNull(doc);
+			
+			List<Element> rows = GeneratorTestUtils.searchRows(doc, "a sheet with font styles");
+			// Validate bold style
+			Element row1 = rows.get(1);
+			Element boldCell = GeneratorTestUtils.searchCells(row1).get(0);
+			assertEquals(BooleanFormatHelper.format(true), getFontStyleAttribute(boldCell, "Bold"));
+			
+			// Validate italic style
+			Element row3 = rows.get(3);
+			Element italicCell = GeneratorTestUtils.searchCells(row3).get(0);
+			assertEquals(BooleanFormatHelper.format(true), getFontStyleAttribute(italicCell, "Italic"));
+			
+			// Validate green style
+			Element row5 = rows.get(5);
+			Element greenCell = GeneratorTestUtils.searchCells(row5).get(0);
+			assertEquals(GREEN_COLOR, getFontStyleAttribute(greenCell, "Color"));
+			
+			// Validate blue and bold style
+			Element row7 = rows.get(7);
+			Element blueBoldCell = GeneratorTestUtils.searchCells(row7).get(0);
+			assertEquals(BLUE_COLOR, getFontStyleAttribute(blueBoldCell, "Color"));
+			assertEquals(BooleanFormatHelper.format(true), getFontStyleAttribute(blueBoldCell, "Bold"));
+			
+			// Validate vertical alignment style
+			Element row9 = rows.get(9);
+			Element verticalCell = GeneratorTestUtils.searchCells(row9).get(0);
+			assertEquals(VerticalAlignment.Subscript.toString(), getFontStyleAttribute(verticalCell, "VerticalAlign"));
+			
+			os.write(baos.toByteArray());			
+			os.close();
+			System.out.println("Created file with font styles -> " + file.getAbsolutePath());	
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}	
+	}
+	
+	private String getFontStyleAttribute(Element cell, String attribute) throws JDOMException {
+		String ret = null;
+		Element style = GeneratorTestUtils.searchStyle(cell.getDocument(), cell);
+		List<Element> font =
+			XmlTestUtils.getDescendants(style, "ss:Font");
+		if (font != null && font.size() == 1) {
+			ret = XmlTestUtils.getAttributeValue(font.get(0), attribute, "ss");
+		}
+		else {
+			fail();
+		}
+		return ret;
+	}
+	
+	@Test
 	public void testBorders() {
 		try {
 			final Double FORMAT_WEIGHT = 2.0d;
@@ -385,6 +520,7 @@ public class TestGenerator {
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			
 			Style lightBorderStyle = generator.createStyle();
 			Borders lightBorders = lightBorderStyle.borders();
 			lightBorders.createBorder(BorderPosition.Bottom).setWeight(BorderWeight.Thin);
@@ -433,6 +569,7 @@ public class TestGenerator {
 			generator.closeRow();
 			generator.closeSheet();
 			generator.closeDocument();
+			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			
 			// Not empty and correct document
@@ -481,8 +618,7 @@ public class TestGenerator {
 	// Style of the bottom border
 	private String getBorderStyleAttribute(Element cell, String position, String attribute) throws JDOMException {
 		String ret = null;
-		Element style = GeneratorTestUtils.searchStyle(cell.getDocument(), 
-			 XmlTestUtils.getAttributeValue(cell, "StyleID", "ss"));
+		Element style = GeneratorTestUtils.searchStyle(cell.getDocument(), cell);
 		List<Element> bottomBorder = 
 			XmlTestUtils.getDescendants(style, "ss:Borders/ss:Border[@ss:Position='" + position + "']");
 		if (bottomBorder != null && bottomBorder.size() == 1) {

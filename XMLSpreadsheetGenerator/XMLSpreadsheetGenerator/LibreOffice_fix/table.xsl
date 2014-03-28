@@ -423,8 +423,9 @@
 		</xsl:element>
 	</xsl:template>
 
-	<!-- Optimization rule number 1: do not optimize
-		 Optimization rule number 2 (for advanced users): do not optimize yet
+	<!-- 
+		 Row repeating trying only to be functional and avoiding any intention
+		 to optimize the result.
 	-->
 	<xsl:template name="naive-row-repeating">
 		<xsl:param name="tableRow" />

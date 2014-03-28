@@ -12,6 +12,9 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
+import test.XmlTestUtils;
+
+@SuppressWarnings("unchecked")
 public class GeneratorTestUtils {
 
 	private GeneratorTestUtils() {}
@@ -45,5 +48,16 @@ public class GeneratorTestUtils {
 	// Returns the style as an Element object
 	public static Element searchStyle(Document doc, String styleId) throws JDOMException {
 		return (Element) XPath.selectSingleNode(doc, "//ss:Style[@ss:ID='" + styleId + "']");
+	}
+	
+	// Style of a certain cell
+	// Returns the style as an Element object
+	public static Element searchStyle(Document doc, Element cell) throws JDOMException {
+		Element ret = null;
+		String id = XmlTestUtils.getAttributeValue(cell, "StyleID", "ss");
+		if (id != null && id.trim().length() > 0) {
+			ret = (Element) XPath.selectSingleNode(doc, "//ss:Style[@ss:ID='" + id + "']");
+		}
+		return ret;
 	}
 }
