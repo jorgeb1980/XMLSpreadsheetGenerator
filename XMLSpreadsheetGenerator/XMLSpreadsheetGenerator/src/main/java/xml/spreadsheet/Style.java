@@ -29,7 +29,7 @@ public class Style {
 	private String id;
 	
 	/** Name */
-	private String name = "";
+	//private String name = "";
 	
 	/** Parent */
 	private String parent = "";
