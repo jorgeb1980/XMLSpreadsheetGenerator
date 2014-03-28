@@ -3,7 +3,7 @@
  */
 package tests.generator;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -16,7 +16,6 @@ import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.junit.Assert;
 import org.junit.Test;
 
 import test.XmlTestUtils;
@@ -25,8 +24,12 @@ import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Alignment.HorizontalAlignment;
+import xml.spreadsheet.style.Border;
 import xml.spreadsheet.style.Border.BorderPosition;
 import xml.spreadsheet.style.Border.BorderWeight;
+import xml.spreadsheet.style.Border.LineStyle;
+import xml.spreadsheet.style.Borders;
+import xml.spreadsheet.style.NumberFormat;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
 public class TestGenerator {
@@ -46,7 +49,7 @@ public class TestGenerator {
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			Document doc = GeneratorTestUtils.parseDocument(document);
-			Assert.assertNotNull(doc);
+			assertNotNull(doc);
 		}
 		catch(Exception e) {
 			fail();
@@ -115,7 +118,7 @@ public class TestGenerator {
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			Document doc = GeneratorTestUtils.parseDocument(document);
-			Assert.assertNotNull(doc);
+			assertNotNull(doc);
 			
 		}
 		catch(Exception e) {
@@ -142,7 +145,7 @@ public class TestGenerator {
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			Document doc = GeneratorTestUtils.parseDocument(document);
-			Assert.assertNotNull(doc);
+			assertNotNull(doc);
 			
 			StyleTestUtils.checkAttributeValue(
 				"ss", doc, "//ss:Style/ss:Alignment", "Horizontal", HorizontalAlignment.Center.toString());
@@ -172,7 +175,7 @@ public class TestGenerator {
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			Document doc = GeneratorTestUtils.parseDocument(document);
-			Assert.assertNotNull(doc);
+			assertNotNull(doc);
 			
 			StyleTestUtils.checkAttributeValue(
 				"ss", doc, "//ss:Style/ss:Borders/ss:Border", "Position", BorderPosition.Bottom.toString());
@@ -195,7 +198,7 @@ public class TestGenerator {
 			generator.closeDocument();
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			Document doc = GeneratorTestUtils.parseDocument(document);
-			Assert.assertNotNull(doc);
+			assertNotNull(doc);
 			os.write(baos.toByteArray());			
 			os.close();
 			System.out.println("Created empty file -> " + file.getAbsolutePath());
@@ -233,23 +236,23 @@ public class TestGenerator {
 			
 			// Not empty and correct document
 			Document doc = GeneratorTestUtils.parseDocument(document);
-			Assert.assertNotNull(doc);
+			assertNotNull(doc);
 			// Validate the position of cells
 			// Are there 4 rows?
 			List<Element> rows = GeneratorTestUtils.searchRows(doc, "My first sheet");
-			Assert.assertEquals(4, rows.size());
+			assertEquals(4, rows.size());
 			// For each row
 			Element firstRow = rows.get(0);
 			List<Element> firstRowCells = GeneratorTestUtils.searchCells(firstRow);
-			Assert.assertEquals(1, firstRowCells.size());
+			assertEquals(1, firstRowCells.size());
 			Element cell = firstRowCells.get(0);
-			Assert.assertEquals(TEXT_FIRST_ROW, ((Element)cell.getContent().get(0)).getText());
+			assertEquals(TEXT_FIRST_ROW, ((Element)cell.getContent().get(0)).getText());
 			// 2nd and 3rd left empty
 			Element fourthRow = rows.get(3);
 			List<Element> fourthRowCells = GeneratorTestUtils.searchCells(fourthRow);
-			Assert.assertEquals(1, fourthRowCells.size());
+			assertEquals(1, fourthRowCells.size());
 			cell = fourthRowCells.get(0);
-			Assert.assertEquals(TEXT_FOURTH_ROW, ((Element)cell.getContent().get(0)).getText());
+			assertEquals(TEXT_FOURTH_ROW, ((Element)cell.getContent().get(0)).getText());
 			
 			os.write(baos.toByteArray());			
 			os.close();
@@ -292,18 +295,18 @@ public class TestGenerator {
 			
 			// Not empty and correct document
 			Document doc = GeneratorTestUtils.parseDocument(document);
-			Assert.assertNotNull(doc);
+			assertNotNull(doc);
 			List<Element> rows1 = GeneratorTestUtils.searchRows(doc, "a sheet");
-			Assert.assertEquals(2, rows1.size());
+			assertEquals(2, rows1.size());
 			List<Element> cells1 = GeneratorTestUtils.searchCells(rows1.get(1));
-			Assert.assertEquals(TEXT_FIRST_ROW, ((Element)cells1.get(0).getContent().get(0)).getText());
+			assertEquals(TEXT_FIRST_ROW, ((Element)cells1.get(0).getContent().get(0)).getText());
 			List<Element> rows2 = GeneratorTestUtils.searchRows(doc, "yet another sheet");
-			Assert.assertEquals(0, rows2.size());
+			assertEquals(0, rows2.size());
 			List<Element> rows3 = GeneratorTestUtils.searchRows(doc, "the third sheet!");
-			Assert.assertEquals(1, rows3.size());
+			assertEquals(1, rows3.size());
 			List<Element> cells3 = GeneratorTestUtils.searchCells(rows3.get(0));
-			Assert.assertEquals(2, cells3.size());
-			Assert.assertEquals(NumberFormatHelper.format(NUMBER_THIRD_SHEET), 
+			assertEquals(2, cells3.size());
+			assertEquals(NumberFormatHelper.format(NUMBER_THIRD_SHEET), 
 					((Element)cells3.get(1).getContent().get(0)).getText());
 			
 			os.write(baos.toByteArray());			
@@ -329,7 +332,9 @@ public class TestGenerator {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 			Style dateStyle = generator.createStyle();
-			dateStyle.numberFormat().setFormat(DATE_FORMAT);
+			NumberFormat numberFormatObj = dateStyle.numberFormat();
+			numberFormatObj.setFormat(DATE_FORMAT);
+			assertTrue(numberFormatObj == dateStyle.numberFormat());
 			generator.startDocument();
 			generator.startSheet("a sheet with dates");
 			generator.startRow();
@@ -344,21 +349,21 @@ public class TestGenerator {
 			
 			// Not empty and correct document
 			Document doc = GeneratorTestUtils.parseDocument(document);
-			Assert.assertNotNull(doc);
+			assertNotNull(doc);
 			List<Element> rows1 = GeneratorTestUtils.searchRows(doc, "a sheet with dates");
-			Assert.assertEquals(2, rows1.size());
+			assertEquals(2, rows1.size());
 			// test date formats
 			Element cellNoFormat = GeneratorTestUtils.searchCells(rows1.get(0)).get(0);
-			Assert.assertNotEquals(dateStyle.getId(), XmlTestUtils.getAttributeValue(cellNoFormat, "StyleID", "ss"));
+			assertNotEquals(dateStyle.getId(), XmlTestUtils.getAttributeValue(cellNoFormat, "StyleID", "ss"));
 			Element cellWithFormat = GeneratorTestUtils.searchCells(rows1.get(1)).get(0);
-			Assert.assertEquals(dateStyle.getId(), XmlTestUtils.getAttributeValue(cellWithFormat, "StyleID", "ss"));
+			assertEquals(dateStyle.getId(), XmlTestUtils.getAttributeValue(cellWithFormat, "StyleID", "ss"));
 			
 			Element style = GeneratorTestUtils.searchStyle(doc, 
 				XmlTestUtils.getAttributeValue(cellWithFormat, "StyleID", "ss"));
-			Assert.assertNotNull(style);
+			assertNotNull(style);
 			// Get the format in the style
 			Element numberFormat = ((Element)style.getContent().get(0));
-			Assert.assertEquals(DATE_FORMAT, XmlTestUtils.getAttributeValue(numberFormat, "Format", "ss"));
+			assertEquals(DATE_FORMAT, XmlTestUtils.getAttributeValue(numberFormat, "Format", "ss"));
 			
 			os.write(baos.toByteArray());			
 			os.close();
@@ -374,22 +379,36 @@ public class TestGenerator {
 	public void testBorders() {
 		try {
 			final Double FORMAT_WEIGHT = 2.0d;
+			final String RED_COLOR = "#ff0000";
 			
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 			Style lightBorderStyle = generator.createStyle();
-			lightBorderStyle.borders().createBorder(BorderPosition.Bottom).setWeight(BorderWeight.Thin);
+			Borders lightBorders = lightBorderStyle.borders();
+			lightBorders.createBorder(BorderPosition.Bottom).setWeight(BorderWeight.Thin);
+			assertTrue(lightBorders == lightBorderStyle.borders());
 			Style mediumBorderStyle = generator.createStyle();
-			mediumBorderStyle.borders().createBorder(BorderPosition.Bottom).setWeight(BorderWeight.Medium);
+			Borders mediumBorders = mediumBorderStyle.borders();
+			Border mediumBorder = mediumBorders.createBorder(BorderPosition.Bottom);
+			mediumBorder.setWeight(BorderWeight.Medium);
+			mediumBorder.setColor(RED_COLOR);
+			assertTrue(mediumBorders == mediumBorderStyle.borders());
 			Style thickBorderStyle = generator.createStyle();
-			thickBorderStyle.borders().createBorder(BorderPosition.Bottom).setWeight(BorderWeight.Thick);
+			Borders thickBorders = thickBorderStyle.borders();
+			Border thickBorder = thickBorders.createBorder(BorderPosition.Bottom);
+			thickBorder.setWeight(BorderWeight.Thick);
+			thickBorder.setLineStyle(LineStyle.Dash);
+			assertTrue(thickBorders == thickBorderStyle.borders());
 			Style customBorderStyle = generator.createStyle();
-			customBorderStyle.borders().createBorder(BorderPosition.Bottom).setWeight(FORMAT_WEIGHT);
+			Borders customBorders = customBorderStyle.borders();
+			customBorders.createBorder(BorderPosition.Bottom).setWeight(FORMAT_WEIGHT);
+			assertTrue(customBorders == customBorderStyle.borders());
 			// Empty borders
 			Style emptyBorderStyle = generator.createStyle();
-			emptyBorderStyle.borders();
+			Borders emptyBorders = emptyBorderStyle.borders();
+			assertTrue(emptyBorders == emptyBorderStyle.borders());
 			generator.startDocument();
 			generator.startSheet("a sheet with border styles");
 			generator.startRow(); generator.closeRow();
@@ -418,26 +437,36 @@ public class TestGenerator {
 			
 			// Not empty and correct document
 			Document doc = GeneratorTestUtils.parseDocument(document);
-			Assert.assertNotNull(doc);			
+			assertNotNull(doc);			
 			
 			List<Element> rows = GeneratorTestUtils.searchRows(doc, "a sheet with border styles");
 			// remember empty rows left for space
-			Assert.assertEquals(10, rows.size());
+			assertEquals(10, rows.size());
 			// Check the bottom border position for every even row
 			// Light
-			Assert.assertEquals(
-					NumberFormatHelper.format(BorderWeight.Thin.getValue()), 
-					bottomBorderStyle(GeneratorTestUtils.searchCells(rows.get(1)).get(0)));
-			Assert.assertEquals(
+			assertEquals(
+				NumberFormatHelper.format(BorderWeight.Thin.getValue()), 
+				getBorderStyleAttribute(
+					GeneratorTestUtils.searchCells(rows.get(1)).get(0), BorderPosition.Bottom.toString(), "Weight"));
+			Element mediumBorderCell = GeneratorTestUtils.searchCells(rows.get(3)).get(0);
+			assertEquals(
 					NumberFormatHelper.format(BorderWeight.Medium.getValue()), 
-					bottomBorderStyle(GeneratorTestUtils.searchCells(rows.get(3)).get(0)));
-			Assert.assertEquals(
-					NumberFormatHelper.format(BorderWeight.Thick.getValue()), 
-					bottomBorderStyle(GeneratorTestUtils.searchCells(rows.get(5)).get(0)));
-			Assert.assertEquals(
-					NumberFormatHelper.format(FORMAT_WEIGHT), 
-					bottomBorderStyle(GeneratorTestUtils.searchCells(rows.get(7)).get(0)));
+					getBorderStyleAttribute(mediumBorderCell, BorderPosition.Bottom.toString(), "Weight"));
+			assertEquals(RED_COLOR, getBorderStyleAttribute(mediumBorderCell, BorderPosition.Bottom.toString(), "Color"));
+			
+			assertEquals(
+				NumberFormatHelper.format(BorderWeight.Thick.getValue()), 
+				getBorderStyleAttribute(
+					GeneratorTestUtils.searchCells(rows.get(5)).get(0), BorderPosition.Bottom.toString(), "Weight"));
+			assertEquals(
+				NumberFormatHelper.format(FORMAT_WEIGHT), 
+				getBorderStyleAttribute(
+					GeneratorTestUtils.searchCells(rows.get(7)).get(0), BorderPosition.Bottom.toString(), "Weight"));
 			// Empty style
+			Element cellEmptyStyle = GeneratorTestUtils.searchCells(rows.get(9)).get(0);
+			Element xmlEmptyStyle = GeneratorTestUtils.searchStyle(cellEmptyStyle.getDocument(),  
+					XmlTestUtils.getAttributeValue(cellEmptyStyle, "StyleID", "ss"));
+			assertEquals(0, xmlEmptyStyle.getChildren().size());
 			
 			os.write(baos.toByteArray());			
 			os.close();
@@ -450,14 +479,14 @@ public class TestGenerator {
 	}
 	
 	// Style of the bottom border
-	private String bottomBorderStyle(Element cell) throws JDOMException {
+	private String getBorderStyleAttribute(Element cell, String position, String attribute) throws JDOMException {
 		String ret = null;
 		Element style = GeneratorTestUtils.searchStyle(cell.getDocument(), 
 			 XmlTestUtils.getAttributeValue(cell, "StyleID", "ss"));
 		List<Element> bottomBorder = 
-			XmlTestUtils.getDescendants(style, "ss:Borders/ss:Border[@ss:Position='Bottom']");
+			XmlTestUtils.getDescendants(style, "ss:Borders/ss:Border[@ss:Position='" + position + "']");
 		if (bottomBorder != null && bottomBorder.size() == 1) {
-			ret = XmlTestUtils.getAttributeValue(bottomBorder.get(0), "Weight", "ss");
+			ret = XmlTestUtils.getAttributeValue(bottomBorder.get(0), attribute, "ss");
 		}
 		else {
 			fail();
@@ -484,7 +513,7 @@ public class TestGenerator {
 			fail();
 		}
 		catch(XMLSpreadsheetException xse) {
-			Assert.assertNotNull(xse);
+			assertNotNull(xse);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -502,7 +531,7 @@ public class TestGenerator {
 			fail();
 		}
 		catch(XMLSpreadsheetException xse) {
-			Assert.assertNotNull(xse);
+			assertNotNull(xse);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
