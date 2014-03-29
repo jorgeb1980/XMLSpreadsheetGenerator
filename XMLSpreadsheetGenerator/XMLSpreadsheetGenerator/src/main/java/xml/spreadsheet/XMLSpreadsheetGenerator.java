@@ -139,6 +139,16 @@ public class XMLSpreadsheetGenerator {
 	}
 	
 	/**
+	 * Writes an empty row into the document.
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void emptyRow() throws XMLSpreadsheetException {
+		startRow();
+		closeRow();
+	}
+	
+	/**
 	 * Use when all the styles are defined (no further definition of styles after this).
 	 * Streams the header of the document.  Sets the 
 	 * <code>CLEAN_DOCUMENT</code> state.

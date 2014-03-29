@@ -342,7 +342,6 @@
 							<xsl:with-param name="columnNodes" select="$columnNodes" />
 						</xsl:call-template>
 					</xsl:variable>
-					<!-- FIX -->
 					<!--<xsl:call-template name="optimized-row-repeating">
 						<xsl:with-param name="tableRow"     select="$tableRowTmp" />
 						<xsl:with-param name="repetition"   select="@table:number-rows-repeated - 1" />
@@ -521,6 +520,7 @@
 									<xsl:with-param name="calculatedCellPosition" select="$nextMatchedCellPosition - 1" />
 									<xsl:with-param name="calculatedRowPosition"  select="$calculatedRowPosition" />
 									<xsl:with-param name="columnNodes"  		  select="$columnNodes" />
+									<xsl:with-param name="StyleID"  		  	  select="@table:style-name" />
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:otherwise>
@@ -544,6 +544,7 @@
 							<xsl:call-template name="create-table-cell">
 								<xsl:with-param name="setIndex" select="false()" /><!-- copied cells may not have indices -->
 								<xsl:with-param name="columnNodes" select="$columnNodes" />
+								<xsl:with-param name="StyleID"  		  	  select="@table:style-name" />
 							</xsl:call-template>
 						</xsl:variable>
 						<xsl:call-template name="repeat-copy-table-cell">
@@ -565,6 +566,7 @@
 							<xsl:with-param name="calculatedCellPosition" select="$repetitionCellPosition" />
 							<xsl:with-param name="calculatedRowPosition" select="$calculatedRowPosition" />
 							<xsl:with-param name="columnNodes" select="$columnNodes" />
+							<xsl:with-param name="StyleID"  		  	  select="@table:style-name" />
 						</xsl:call-template>
 						<xsl:choose>
 							<!-- as long there is a repetition (higher '1') stay on the same cell node  -->
@@ -613,6 +615,7 @@
 									<xsl:with-param name="calculatedCellPosition" select="$nextMatchedCellPosition - 1" />
 									<xsl:with-param name="calculatedRowPosition"  select="$calculatedRowPosition" />
 									<xsl:with-param name="columnNodes" select="$columnNodes" />
+									<xsl:with-param name="StyleID"  		  	  select="@table:style-name" />
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:otherwise>
@@ -633,6 +636,7 @@
 							<xsl:with-param name="calculatedCellPosition" select="$calculatedCellPosition" />
 							<xsl:with-param name="calculatedRowPosition"  select="$calculatedRowPosition" />
 							<xsl:with-param name="columnNodes" select="$columnNodes" />
+							<xsl:with-param name="StyleID"  		  	  select="@table:style-name" />
 						</xsl:call-template>
 						<xsl:apply-templates select="$cellNodes[2]">
 							<xsl:with-param name="calculatedCellPosition" select="$nextMatchedCellPosition" />
@@ -665,8 +669,12 @@
 		<xsl:param name="calculatedCellPosition" />
 		<xsl:param name="calculatedRowPosition" />
 		<xsl:param name="columnNodes"  />
+		<xsl:param name="StyleID"  />
 
 		<xsl:element name="Cell" namespace="urn:schemas-microsoft-com:office:spreadsheet">
+			<xsl:if test="$StyleID">
+				<xsl:attribute name="ss:StyleID"><xsl:value-of select="$StyleID" /></xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$setIndex">
 				<xsl:attribute name="ss:Index">
 					<xsl:value-of select="$calculatedCellPosition"/>

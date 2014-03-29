@@ -1,0 +1,9 @@
+Issues related to the software used to test the generator:
+
+Libre Office ignores some border styles, rendering (and then saving them) as either
+continuous or double border.
+
+Libre Office ignores ShrinkToFit in alignment.  It will not render it, nor save it.
+
+Libre Office ignores any non-solid fill interior pattern.  It will not render it,
+nor save it.

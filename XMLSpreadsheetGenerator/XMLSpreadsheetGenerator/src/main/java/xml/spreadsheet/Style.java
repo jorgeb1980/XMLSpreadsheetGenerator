@@ -29,10 +29,10 @@ public class Style {
 	private String id;
 	
 	/** Name */
-	private String name = "";
+	//private String name = "";
 	
 	/** Parent */
-	private String parent = "";
+	private String parent = null;
 	
 	// Children
 	
@@ -117,7 +117,7 @@ public class Style {
 		return XmlHelper.element("ss:Style", 
 			new Table<Object>().
 				add("ss:ID", id).
-				add("ss:Name", name).
+				//add("ss:Name", name).
 				add("ss:Parent", parent),
 			new StringBuilder()
 				.append(alignment != null?alignment.toString():"")

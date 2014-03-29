@@ -20,7 +20,7 @@ public class Interior {
 	public static final String COLOR_AUTOMATIC = "Automatic";
 	
 	/** Fill pattern for the cell interior color. */
-	public enum FillPattern {
+	private enum FillPattern {
 		None, Solid 
 		// LibreOffice does not support these patterns... not exactly sure what
 		//	to do with them
@@ -47,12 +47,6 @@ public class Interior {
 	 */
 	private FillPattern pattern = null;
 	
-	/**
-	 * Specifies the secondary fill color of the cell when 
-	 * Pattern does not equal Solid.
-	 */
-	private String patternColor = null;
-	
 	//-------------------------------------------------------------------
 	// Class methods
 	
@@ -61,8 +55,7 @@ public class Interior {
 		return XmlHelper.element("ss:Interior",
 			new Table<Object>().
 				add("ss:Color", color).
-				add("ss:Pattern", pattern != null?pattern.toString():null).
-				add("ss:PatternColor", patternColor));
+				add("ss:Pattern", pattern != null?pattern.toString():null));
 	}
 
 	public Interior () {}
@@ -73,23 +66,10 @@ public class Interior {
 	 */
 	public void setColor(String color) {
 		this.color = color;
-	}
-
-	/**
-	 * @param pattern Specifies the fill pattern in the cell. The fill pattern determines 
-	 * how to blend the Color and PatternColor attributes to produce the 
-	 * cell's appearance. 
-	 */
-	public void setPattern(FillPattern pattern) {
-		this.pattern = pattern;
-	}
-
-	/**
-	 * @param patternColor Specifies the secondary fill color of the cell when 
-	 * Pattern does not equal Solid.
-	 */
-	public void setPatternColor(String patternColor) {
-		this.patternColor = patternColor;
+		// If the fill pattern is unspecified, use a solid fill pattern
+		if (this.pattern == null) {
+			this.pattern = FillPattern.Solid;
+		}
 	}
 	
 	
