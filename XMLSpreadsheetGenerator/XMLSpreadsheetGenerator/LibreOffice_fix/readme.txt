@@ -7,7 +7,7 @@ My choice to try this was Libre Office 4.1.4.2
 However, this format has been finding problems in both forks of the ancient 
 Star Office software.  Here are included some attempts to fix:
   
-+ a row-repeating recursive XSL macro wich prevented Libre
++ a problem with the row-repeating recursive XSL macro wich prevented Libre
 Office to save XML Spreadsheets with gaps (empty rows, etc.).
 + a problem which prevented Libre Office to save the XML spreadsheet 
 with the desired font styles.
