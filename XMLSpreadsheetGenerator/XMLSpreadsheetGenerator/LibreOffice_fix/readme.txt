@@ -1,10 +1,6 @@
-For the curious of mind and not willing to use dubious origin cracks of commercial 
-spreadsheet products, you can try Open Office and Libre Office.  There you will
-see that Microsoft XML Spreadsheet format is supported.
+My choice to try the generator was Libre Office 4.1.4.2
 
-My choice to try this was Libre Office 4.1.4.2
-
-However, this format has been finding problems in both forks of the ancient 
+However, the XML spreadsheet format has been finding problems in this fork of the ancient 
 Star Office software.  Here are included some attempts to fix:
   
 + a problem with the row-repeating recursive XSL macro wich prevented Libre
@@ -18,4 +14,4 @@ stylesheets under:
 
 LOCAL_DIRECTORY/share/xslt/export/spreadsheetml/*.xsl
 
-Do a backup of your original files before tampering with them!!
+Do a backup of your original files if you replace them with the fix!!

@@ -50,9 +50,6 @@ public class Alignment {
 	/** Horizontal alignment of the cell. */
 	private HorizontalAlignment horizontal = null;
 	
-	/** Number of indents. */
-	private Integer indent = null;
-	
 	/** Rotation of the cell.  
 	 * 90 is straight up, 0 is horizontal, and -90 is straight down
 	 */
@@ -86,7 +83,6 @@ public class Alignment {
 		return XmlHelper.element("ss:Alignment",
 			new Table<Object>().
 				add("ss:Horizontal", horizontal != null?horizontal.toString():null).
-				add("ss:Indent", indent).
 				add("ss:Rotate", rotate).
 				add("ss:ShrinkToFit", shrinkToFit).
 				add("ss:Vertical", vertical != null?vertical.toString():null).
@@ -102,13 +98,6 @@ public class Alignment {
 	 */
 	public void setHorizontal(HorizontalAlignment horizontal) {
 		this.horizontal = horizontal;
-	}
-
-	/**
-	 * @param indent Number of indents
-	 */
-	public void setIndent(int indent) {
-		this.indent = indent;
 	}
 
 	/**

@@ -36,6 +36,7 @@ import xml.spreadsheet.style.Border.LineStyle;
 import xml.spreadsheet.style.Borders;
 import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Font.VerticalAlignment;
+import xml.spreadsheet.style.Interior;
 import xml.spreadsheet.style.NumberFormat;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
@@ -388,6 +389,7 @@ public class TestGenerator {
 		try {
 			final String SHEET_CAPTION = "a sheet with alignment styles";
 			final String VERY_LONG_TEXT = "very long text very long text very long text very long text very long text very long text very long text ";
+			final Double ROTATE_DEGREES = 45d;
 			
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
@@ -418,6 +420,21 @@ public class TestGenerator {
 			Alignment wrapAlignment = wrapStyle.alignment();
 			wrapAlignment.setWrapText(true);
 			assertTrue(wrapAlignment == wrapStyle.alignment());
+			
+			Style rotateStyle = generator.createStyle();
+			Alignment rotateAlignment = rotateStyle.alignment();
+			rotateAlignment.setRotate(ROTATE_DEGREES);
+			assertTrue(rotateAlignment == rotateStyle.alignment());
+			
+			Style shrinkStyle = generator.createStyle();
+			Alignment shrinkAlignment = shrinkStyle.alignment();
+			shrinkAlignment.setShrinkToFit(true);
+			assertTrue(shrinkAlignment == shrinkStyle.alignment());
+			
+			Style verticalTextStyle = generator.createStyle();
+			Alignment verticalTextAlignment = verticalTextStyle.alignment();
+			verticalTextAlignment.setVerticalText(true);
+			assertTrue(verticalTextAlignment == verticalTextStyle.alignment());
 			 
 			generator.startDocument();
 			generator.startSheet(SHEET_CAPTION);
@@ -433,12 +450,12 @@ public class TestGenerator {
 			generator.closeRow();			
 			
 			generator.emptyRow();
-			generator.startRow();
+			generator.startRow(null, null, 55d, null, null);
 			generator.writeCell(topStyle, "top alignment");
 			generator.closeRow();		
 			
 			generator.emptyRow();
-			generator.startRow();
+			generator.startRow(null, null, 55d, null, null);
 			generator.writeCell(bottomStyle, "bottom alignment");
 			generator.closeRow();
 			
@@ -448,6 +465,21 @@ public class TestGenerator {
 			generator.closeRow();
 			generator.startRow(null, null, 35d, null, null);
 			generator.writeCell(wrapStyle, VERY_LONG_TEXT);
+			generator.closeRow();	
+			
+			generator.emptyRow();
+			generator.startRow(null, null, 55d, null, null);
+			generator.writeCell(rotateStyle, "rotated text");
+			generator.closeRow();		
+			
+			generator.emptyRow();
+			generator.startRow();
+			generator.writeCell(shrinkStyle, VERY_LONG_TEXT);
+			generator.closeRow();
+			
+			generator.emptyRow();
+			generator.startRow(null, null, 170d, null, null);
+			generator.writeCell(verticalTextStyle, "vertical text");
 			generator.closeRow();
 			
 			generator.closeSheet();
@@ -484,6 +516,21 @@ public class TestGenerator {
 			Element wrapCell = GeneratorTestUtils.searchCells(row10).get(0);
 			assertEquals(BooleanFormatHelper.format(true),
 					getAlignmentAttribute(wrapCell, "WrapText"));
+			
+			Element row12 = rows.get(12);
+			Element rotateCell = GeneratorTestUtils.searchCells(row12).get(0);
+			assertEquals(NumberFormatHelper.format(ROTATE_DEGREES),
+					getAlignmentAttribute(rotateCell, "Rotate"));
+			
+			Element row14 = rows.get(14);
+			Element shrinkCell = GeneratorTestUtils.searchCells(row14).get(0);
+			assertEquals(BooleanFormatHelper.format(true),
+					getAlignmentAttribute(shrinkCell, "ShrinkToFit"));
+			
+			Element row16 = rows.get(16);
+			Element verticalTextCell = GeneratorTestUtils.searchCells(row16).get(0);
+			assertEquals(BooleanFormatHelper.format(true),
+					getAlignmentAttribute(verticalTextCell, "VerticalText"));
 			
 			os.write(baos.toByteArray());			
 			os.close();
@@ -576,7 +623,7 @@ public class TestGenerator {
 			generator.writeCell(bottom, "this is a subscript");
 			generator.closeRow();
 			generator.emptyRow();
-			generator.startRow(null, true, null, null, null);
+			generator.startRow(null, true, 55d, null, null);
 			generator.writeCell(big, "this is a 20 size text");
 			generator.closeRow();
 			generator.emptyRow();
@@ -653,10 +700,10 @@ public class TestGenerator {
 	private String getChildAttribute(String child, Element cell, String attribute) throws JDOMException {
 		String ret = null;
 		Element style = GeneratorTestUtils.searchStyle(cell.getDocument(), cell);
-		List<Element> font =
+		List<Element> children =
 			XmlTestUtils.getDescendants(style, child);
-		if (font != null && font.size() == 1) {
-			ret = XmlTestUtils.getAttributeValue(font.get(0), attribute, "ss");
+		if (children != null && children.size() == 1) {
+			ret = XmlTestUtils.getAttributeValue(children.get(0), attribute, "ss");
 		}
 		else {
 			fail();
@@ -668,6 +715,10 @@ public class TestGenerator {
 		return getChildAttribute("ss:Font", cell, attribute);
 	}
 	
+	private String getInteriorStyleAttribute(Element cell, String attribute) throws JDOMException {
+		return getChildAttribute("ss:Interior", cell, attribute);
+	}
+	
 	private String getAlignmentAttribute(Element cell, String attribute) throws JDOMException {
 		return getChildAttribute("ss:Alignment", cell, attribute);
 	}
@@ -676,14 +727,37 @@ public class TestGenerator {
 	public void testInterior() {
 		try {
 			final String SHEET_CAPTION = "a sheet with interior styles";
+			final String RED_COLOR = "#ff0000";
+			final String GREEN_COLOR = "#00ff00";
 			
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 			
+			Style redInteriorStyle = generator.createStyle();
+			Interior redInterior = redInteriorStyle.interior();
+			redInterior.setColor(RED_COLOR);
+			assertTrue(redInterior == redInteriorStyle.interior());
+			
+			Style greenInteriorStyle = generator.createStyle();
+			Interior greenInterior = greenInteriorStyle.interior();
+			greenInterior.setColor(GREEN_COLOR);
+			assertTrue(greenInterior == greenInteriorStyle.interior());
+			
 			generator.startDocument();
 			generator.startSheet(SHEET_CAPTION);
+			
+			generator.emptyRow();
+			generator.startRow();
+			generator.writeCell(redInteriorStyle, "red background");
+			generator.closeRow();
+			
+			generator.emptyRow();
+			generator.startRow();
+			generator.writeCell(greenInteriorStyle, "green background");
+			generator.closeRow();
+			
 			generator.closeSheet();
 			generator.closeDocument();
 			
@@ -691,6 +765,19 @@ public class TestGenerator {
 			// Not empty and correct document
 			Document doc = GeneratorTestUtils.parseDocument(document);
 			assertNotNull(doc);	
+			
+			// rows
+			List<Element> rows = GeneratorTestUtils.searchRows(doc, SHEET_CAPTION);
+			
+			Element cellRedBackground = GeneratorTestUtils.searchCells(rows.get(1)).get(0);
+			assertEquals(RED_COLOR, getInteriorStyleAttribute(cellRedBackground, "Color"));
+			// Make sure the generator has written the solid pattern too
+			assertEquals("Solid", getInteriorStyleAttribute(cellRedBackground, "Pattern"));
+			
+			Element cellGreenBackground = GeneratorTestUtils.searchCells(rows.get(3)).get(0);
+			assertEquals(GREEN_COLOR, getInteriorStyleAttribute(cellGreenBackground, "Color"));
+			// Make sure the generator has written the solid pattern too
+			assertEquals("Solid", getInteriorStyleAttribute(cellGreenBackground, "Pattern"));
 			
 			os.write(baos.toByteArray());			
 			os.close();
@@ -742,23 +829,23 @@ public class TestGenerator {
 			generator.startSheet(SHEET_CAPTION);
 			generator.emptyRow();
 			generator.startRow();
-			generator.writeCell(lightBorderStyle, "aaa");
+			generator.writeCell(lightBorderStyle, "light border");
 			generator.closeRow();
 			generator.emptyRow();
 			generator.startRow();
-			generator.writeCell(mediumBorderStyle, "bbb");
+			generator.writeCell(mediumBorderStyle, "medium (and red) border");
 			generator.closeRow();
 			generator.emptyRow();
 			generator.startRow();
-			generator.writeCell(thickBorderStyle, "ccc");
+			generator.writeCell(thickBorderStyle, "thick border");
 			generator.closeRow();
 			generator.emptyRow();
 			generator.startRow();
-			generator.writeCell(customBorderStyle, "ddd");
+			generator.writeCell(customBorderStyle, "custom border");
 			generator.closeRow();
 			generator.emptyRow();
 			generator.startRow();
-			generator.writeCell(emptyBorderStyle, "eee");
+			generator.writeCell(emptyBorderStyle, "no borders defined");
 			generator.closeRow();
 			generator.closeSheet();
 			generator.closeDocument();

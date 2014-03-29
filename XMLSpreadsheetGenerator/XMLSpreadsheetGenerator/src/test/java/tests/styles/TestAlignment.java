@@ -60,19 +60,6 @@ public class TestAlignment {
 
 
 	@Test
-	public void testSetIndent() {
-		// Check the generated value for all the alternatives
-		alignment.setIndent(2);
-		StyleTestUtils.checkAttributeValue(alignment, "Indent", "2");
-		
-		alignment.setIndent(3);
-		StyleTestUtils.checkAttributeValue(alignment, "Indent", "3");
-		
-		alignment.setIndent(4);
-		StyleTestUtils.checkAttributeValue(alignment, "Indent", "4");
-	}
-
-	@Test
 	public void testSetReadingOrder() {
 		// ignored
 		Assert.assertTrue(true);
