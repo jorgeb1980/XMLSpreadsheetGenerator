@@ -16,6 +16,7 @@ import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
 import xml.spreadsheet.utils.AssertionHelper;
+import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.Table;
 import xml.spreadsheet.utils.XmlHelper;
 import xml.spreadsheet.utils.DateFormatHelper;
@@ -286,16 +287,31 @@ public class XMLSpreadsheetGenerator {
 	
 	/**
 	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
+	 * @param sheetName Sheet tab caption
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
 	public void startSheet(String sheetName) throws XMLSpreadsheetException {
+		startSheet(sheetName, false);
+	}
+	
+	/**
+	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
+	 * @param sheetName Sheet tab caption
+	 * @param protectedSheet If true, the sheet is protected
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void startSheet(String sheetName, boolean protectedSheet) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
 		// Validate that the sheet name is not null
 		AssertionHelper.assertion(sheetName != null, "The sheet name must be specified");
 		// Flush the start of the sheet template
 		flush(engine.applyTemplate("sheet_header", 
-			new Table<String>().add("sheetName", sheetName).map()));
+			new Table<String>().
+				add("sheetName", sheetName).
+				add("protected", BooleanFormatHelper.format(Boolean.valueOf(protectedSheet))).
+				map()));
 		// Current sheet row counter
 		rowCounter = 0;
 	}

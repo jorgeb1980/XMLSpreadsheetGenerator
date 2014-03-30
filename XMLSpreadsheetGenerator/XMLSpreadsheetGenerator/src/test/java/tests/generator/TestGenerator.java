@@ -38,6 +38,7 @@ import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Font.VerticalAlignment;
 import xml.spreadsheet.style.Interior;
 import xml.spreadsheet.style.NumberFormat;
+import xml.spreadsheet.style.Protection;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
@@ -719,8 +720,60 @@ public class TestGenerator {
 		return getChildAttribute("ss:Interior", cell, attribute);
 	}
 	
+	private String getProtectionStyleAttribute(Element cell, String attribute) throws JDOMException {
+		return getChildAttribute("ss:Protection", cell, attribute);
+	}
+	
 	private String getAlignmentAttribute(Element cell, String attribute) throws JDOMException {
 		return getChildAttribute("ss:Alignment", cell, attribute);
+	}
+	
+	@Test
+	public void testProtection() {
+		try {
+			final String SHEET_CAPTION = "a sheet with protected cells";
+			
+			File file = File.createTempFile("xmlspreadsheet", ".xml");
+			OutputStream os = new FileOutputStream(file);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+
+			Style protectedCellStyle = generator.createStyle();
+			Protection protection = protectedCellStyle.protection();
+			protection.setProtectedCell(true);
+			assertTrue(protection == protectedCellStyle.protection());
+			
+			generator.startDocument();
+			generator.startSheet(SHEET_CAPTION, true);
+			
+			generator.emptyRow();
+			generator.startRow();
+			generator.writeCell(protectedCellStyle, 35.09d);
+			generator.closeRow();
+			
+			generator.closeSheet();
+			generator.closeDocument();
+			
+			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));		
+			// Not empty and correct document
+			Document doc = GeneratorTestUtils.parseDocument(document);
+			assertNotNull(doc);	
+			
+			List<Element> rows = GeneratorTestUtils.searchRows(doc, SHEET_CAPTION);
+			Element cellProtection = GeneratorTestUtils.searchCells(rows.get(1)).get(0);
+			assertEquals(BooleanFormatHelper.format(true),
+				getProtectionStyleAttribute(cellProtection, "Protected"));
+			
+			
+			os.write(baos.toByteArray());			
+			os.close();
+			System.out.println("Created file with protected cells -> " + file.getAbsolutePath());
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}	
 	}
 	
 	@Test

@@ -7,3 +7,9 @@ Libre Office ignores ShrinkToFit in alignment.  It will not render it, nor save 
 
 Libre Office ignores any non-solid fill interior pattern.  It will not render it,
 nor save it.
+
+Libre Office ignores individual Protection styles on cells that belong to 
+unprotected sheets (OK).  However, when the sheet is protected and the cell has
+a style with a specific Protection element, it behaves as unprotected.  The rest of
+the document behaves as protected in that case (so, the Protected cell is the
+only one that can be modified).

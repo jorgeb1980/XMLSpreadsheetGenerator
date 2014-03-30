@@ -1,2 +1,2 @@
-<ss:Worksheet ss:Name="$sheetName">
+<ss:Worksheet ss:Name="$sheetName" ss:Protected="$protected">
   <Table>
