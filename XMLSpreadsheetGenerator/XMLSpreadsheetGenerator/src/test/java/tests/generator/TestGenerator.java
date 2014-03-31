@@ -22,7 +22,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.junit.Test;
 
-import test.XmlTestUtils;
+import tests.XmlTestUtils;
 import tests.styles.StyleTestUtils;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetException;

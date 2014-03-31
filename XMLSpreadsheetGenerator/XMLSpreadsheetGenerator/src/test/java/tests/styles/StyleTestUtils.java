@@ -10,7 +10,7 @@ import org.jdom.Element;
 import org.jdom.xpath.XPath;
 import org.junit.Assert;
 
-import test.XmlTestUtils;
+import tests.XmlTestUtils;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
 /**
