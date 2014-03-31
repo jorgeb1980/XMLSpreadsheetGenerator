@@ -856,7 +856,9 @@ public class TestGenerator {
 			
 			Style lightBorderStyle = generator.createStyle();
 			Borders lightBorders = lightBorderStyle.borders();
-			lightBorders.createBorder(BorderPosition.Bottom).setWeight(BorderWeight.Thin);
+			Border lightBorder = lightBorders.createBorder(BorderPosition.Bottom);
+			lightBorder.setWeight(BorderWeight.Thin);
+			lightBorder.setLineStyle(LineStyle.Double);
 			assertTrue(lightBorders == lightBorderStyle.borders());
 			Style mediumBorderStyle = generator.createStyle();
 			Borders mediumBorders = mediumBorderStyle.borders();
@@ -866,38 +868,44 @@ public class TestGenerator {
 			assertTrue(mediumBorders == mediumBorderStyle.borders());
 			Style thickBorderStyle = generator.createStyle();
 			Borders thickBorders = thickBorderStyle.borders();
-			Border thickBorder = thickBorders.createBorder(BorderPosition.Bottom);
-			thickBorder.setWeight(BorderWeight.Thick);
+			Border thickBorder = thickBorders.createBorder(BorderPosition.Right);
 			thickBorder.setLineStyle(LineStyle.Dash);
+			thickBorder.setWeight(BorderWeight.Thick);
 			assertTrue(thickBorders == thickBorderStyle.borders());
 			Style customBorderStyle = generator.createStyle();
 			Borders customBorders = customBorderStyle.borders();
-			customBorders.createBorder(BorderPosition.Bottom).setWeight(FORMAT_WEIGHT);
+			customBorders.createBorder(BorderPosition.Left).setWeight(FORMAT_WEIGHT);
 			assertTrue(customBorders == customBorderStyle.borders());
 			// Empty borders
 			Style emptyBorderStyle = generator.createStyle();
 			Borders emptyBorders = emptyBorderStyle.borders();
 			assertTrue(emptyBorders == emptyBorderStyle.borders());
+			
 			generator.startDocument();
 			generator.startSheet(SHEET_CAPTION);
 			generator.emptyRow();
 			generator.startRow();
+			generator.writeEmptyCell();
 			generator.writeCell(lightBorderStyle, "light border");
 			generator.closeRow();
 			generator.emptyRow();
 			generator.startRow();
+			generator.writeEmptyCell();
 			generator.writeCell(mediumBorderStyle, "medium (and red) border");
 			generator.closeRow();
 			generator.emptyRow();
 			generator.startRow();
+			generator.writeEmptyCell();
 			generator.writeCell(thickBorderStyle, "thick border");
 			generator.closeRow();
 			generator.emptyRow();
 			generator.startRow();
+			generator.writeEmptyCell();
 			generator.writeCell(customBorderStyle, "custom border");
 			generator.closeRow();
 			generator.emptyRow();
 			generator.startRow();
+			generator.writeEmptyCell();
 			generator.writeCell(emptyBorderStyle, "no borders defined");
 			generator.closeRow();
 			generator.closeSheet();
@@ -917,8 +925,9 @@ public class TestGenerator {
 			assertEquals(
 				NumberFormatHelper.format(BorderWeight.Thin.getValue()), 
 				getBorderStyleAttribute(
-					GeneratorTestUtils.searchCells(rows.get(1)).get(0), BorderPosition.Bottom.toString(), "Weight"));
-			Element mediumBorderCell = GeneratorTestUtils.searchCells(rows.get(3)).get(0);
+					GeneratorTestUtils.searchCells(rows.get(1)).get(1), BorderPosition.Bottom.toString(), "Weight"));
+			
+			Element mediumBorderCell = GeneratorTestUtils.searchCells(rows.get(3)).get(1);
 			assertEquals(
 					NumberFormatHelper.format(BorderWeight.Medium.getValue()), 
 					getBorderStyleAttribute(mediumBorderCell, BorderPosition.Bottom.toString(), "Weight"));
@@ -927,13 +936,15 @@ public class TestGenerator {
 			assertEquals(
 				NumberFormatHelper.format(BorderWeight.Thick.getValue()), 
 				getBorderStyleAttribute(
-					GeneratorTestUtils.searchCells(rows.get(5)).get(0), BorderPosition.Bottom.toString(), "Weight"));
+					GeneratorTestUtils.searchCells(rows.get(5)).get(1), BorderPosition.Right.toString(), "Weight"));
+			
 			assertEquals(
 				NumberFormatHelper.format(FORMAT_WEIGHT), 
 				getBorderStyleAttribute(
-					GeneratorTestUtils.searchCells(rows.get(7)).get(0), BorderPosition.Bottom.toString(), "Weight"));
+					GeneratorTestUtils.searchCells(rows.get(7)).get(1), BorderPosition.Left.toString(), "Weight"));
+			
 			// Empty style
-			Element cellEmptyStyle = GeneratorTestUtils.searchCells(rows.get(9)).get(0);
+			Element cellEmptyStyle = GeneratorTestUtils.searchCells(rows.get(9)).get(1);
 			Element xmlEmptyStyle = GeneratorTestUtils.searchStyle(cellEmptyStyle.getDocument(),  
 					XmlTestUtils.getAttributeValue(cellEmptyStyle, "StyleID", "ss"));
 			assertEquals(0, xmlEmptyStyle.getChildren().size());
