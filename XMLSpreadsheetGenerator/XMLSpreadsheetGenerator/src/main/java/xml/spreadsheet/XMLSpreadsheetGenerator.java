@@ -231,13 +231,7 @@ public class XMLSpreadsheetGenerator {
 	
 	/**
 	 * Writes a single empty <code>&lt;ss:Row&gt;</code> element with the desired span and formatting
-	 * @param span Specifies the number of adjacent rows with the same formatting as this row. 
-	 * When a Span attribute is used, the spanned row elements are not written out.
-	 * Rows must not overlap. Doing so results in an XML Spreadsheet document that is invalid. 
-	 * Care must be taken with this attribute to ensure that the span does not include another 
-	 * row index that is specified. Unlike columns, rows with the Span attribute must be empty. 
-	 * A row that contains a Span attribute and one or more Cell elements is considered invalid. 
-	 * The Span attribute for rows is a short-hand method for setting formatting properties for multiple, empty rows.
+	 * @param emptyRows Number of empty rows to write with this method
 	 * @param autoFitHeight f this attribute is True, it means that this row should be autosized
 	 * @param height Specifies the height of a row in points. This value must be greater than or equal to 0
 	 * @param style Style object to be applied to these rows
@@ -245,25 +239,34 @@ public class XMLSpreadsheetGenerator {
 	 * any other library-related exception arises
 	 */
 	public void writeEmptyRows(
-			Long span, 
+			Long emptyRows, 
 			Boolean autoFitHeight, 
 			Double height, 
 			Style style) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
-		if (span != null) {
+	/*	Specifies the number of adjacent rows with the same formatting as this row. 
+	 * When a Span attribute is used, the spanned row elements are not written out.
+	 * Rows must not overlap. Doing so results in an XML Spreadsheet document that is invalid. 
+	 * Care must be taken with this attribute to ensure that the span does not include another 
+	 * row index that is specified. Unlike columns, rows with the Span attribute must be empty. 
+	 * A row that contains a Span attribute and one or more Cell elements is considered invalid. 
+	 * The Span attribute for rows is a short-hand method for setting formatting properties for multiple, empty rows. */
+		if (emptyRows != null) {
 			// Flush the row
-			rowCounter += span;
+			rowCounter += emptyRows;
 		}
 		else {
 			rowCounter++;
 		}
 		flush(XmlHelper.element("ss:Row", new Table<Object>().
-			add("ss:Span", span).
+			// Since I want (emptyRows) empty consecutive rows, I must substract 1 to the
+			//	span attribute
+			add("ss:Span", (emptyRows != null && emptyRows > 1)?emptyRows - 1:null).
 			add("ss:Height", height!=null?height.doubleValue():null).
 			add("ss:AutoFitHeight", autoFitHeight).
 			add("ss:StyleID", style!=null?style.getId():null)
 			));
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
 		showRowCounter = true;
 	}
 	
