@@ -1,5 +1,7 @@
 Issues related to the software used to test the generator:
 
+(The following applies to Libre Office v4.1.4.2, Open Office v4.0.1) 
+
 Libre Office ignores some border styles, rendering (and then saving them) as either
 continuous or double border.
 
@@ -12,4 +14,4 @@ Libre Office ignores individual Protection styles on cells that belong to
 unprotected sheets (OK).  However, when the sheet is protected and the cell has
 a style with a specific Protection element, it behaves as unprotected.  The rest of
 the document behaves as protected in that case (so, the Protected cell is the
-only one that can be modified).
+only one that can be modified).  The same thing happens with Open Office.
