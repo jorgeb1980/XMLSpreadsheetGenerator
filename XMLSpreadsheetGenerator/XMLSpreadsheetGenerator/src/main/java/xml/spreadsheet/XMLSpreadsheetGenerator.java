@@ -30,7 +30,7 @@ import xml.spreadsheet.utils.NumberFormatHelper;
  * <br/>
  * <code>
  * Constructor -> [Create style]* -> startDocument -> 
- * [openSheet -> [openRow -> [openCell -> closeCell]* -> closeRow]* -> closeSheet ]* -> 
+ * [openSheet -> [column]* -> [openRow -> [openCell -> closeCell]* -> closeRow]* -> closeSheet ]* -> 
  * closeDocument
  * </code><br/>
  * The Generator will throw a <code>XMLSpreadsheetException</code> if 
@@ -268,7 +268,7 @@ public class XMLSpreadsheetGenerator {
 	 * any other library-related exception arises
 	 */
 	public void closeRow() throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET_ROWS);
 		if (emptyCurrentRow) {
 			flush(XmlHelper.element("ss:Cell", 
 				new Table<Object>().
