@@ -15,3 +15,5 @@ stylesheets under:
 LOCAL_DIRECTORY/share/xslt/export/spreadsheetml/*.xsl
 
 Do a backup of your original files if you replace them with the fix!!
+I have tried the fix with Open Office 4.0.1 and it seems to work nice, at least
+as far as I need it.

@@ -1,4 +1,4 @@
-package test.misc;
+package tests.misc;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,7 +6,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.junit.Test;
 
-import test.XmlTestUtils;
+import tests.XmlTestUtils;
 import xml.spreadsheet.utils.Table;
 import xml.spreadsheet.utils.XmlHelper;
 

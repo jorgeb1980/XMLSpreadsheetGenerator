@@ -21,11 +21,3 @@
             </Color>
         </Colors>
     </OfficeDocumentSettings>
-    <ExcelWorkbook xmlns = "urn:schemas-microsoft-com:office:excel">
-        <WindowHeight>$height</WindowHeight>
-        <WindowWidth>$width</WindowWidth>
-        <WindowTopX>$topX</WindowTopX>
-        <WindowTopY>$topY</WindowTopY>
-        <ProtectStructure>False</ProtectStructure>
-        <ProtectWindows>False</ProtectWindows>
-    </ExcelWorkbook>

@@ -111,6 +111,10 @@ public class Border {
 	 */
 	public void setColor(String color) {
 		this.color = color;
+		// sets the line style if it is empty
+		if (lineStyle == null) {
+			lineStyle = LineStyle.Continuous;
+		}
 	}
 
 	/**
@@ -133,13 +137,17 @@ public class Border {
 	 */
 	public void setWeight(double weight) {
 		this.weight = weight;
+		// sets the line style if it is empty
+		if (lineStyle == null) {
+			lineStyle = LineStyle.Continuous;
+		}
 	}
 	
 	/**
 	 * @param weight Specifies the weight (or thickness) of this border
 	 */
 	public void setWeight(BorderWeight weight) {
-		this.weight = weight.getValue();
+		setWeight(weight.getValue());
 	}
 	
 	@Override

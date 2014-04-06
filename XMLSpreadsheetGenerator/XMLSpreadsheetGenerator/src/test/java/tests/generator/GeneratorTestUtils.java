@@ -12,7 +12,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
-import test.XmlTestUtils;
+import tests.XmlTestUtils;
 
 @SuppressWarnings("unchecked")
 public class GeneratorTestUtils {

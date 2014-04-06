@@ -16,6 +16,7 @@ import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
 import xml.spreadsheet.utils.AssertionHelper;
+import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.Table;
 import xml.spreadsheet.utils.XmlHelper;
 import xml.spreadsheet.utils.DateFormatHelper;
@@ -29,7 +30,7 @@ import xml.spreadsheet.utils.NumberFormatHelper;
  * <br/>
  * <code>
  * Constructor -> [Create style]* -> startDocument -> 
- * [openSheet -> [openRow -> [openCell -> closeCell]* -> closeRow]* -> closeSheet ]* -> 
+ * [openSheet -> [column]* -> [openRow -> [openCell -> closeCell]* -> closeRow]* -> closeSheet ]* -> 
  * closeDocument
  * </code><br/>
  * The Generator will throw a <code>XMLSpreadsheetException</code> if 
@@ -66,15 +67,12 @@ public class XMLSpreadsheetGenerator {
 	// Is empty the current row?  This will be set to true every time
 	//	a new row is started, and false if a cell is written into it.
 	private boolean emptyCurrentRow = true;
-	// Row counter for the current sheet
-	private int rowCounter = 0;
-	// Cell counter for the current row
-	//private int cellCounter = 0;
-	// Should the next row show its row counter?
-	private boolean showRowCounter = false;
-	// Should the next cell show its cell counter?
-	//private boolean showCellCounter = false;
 	
+	// This class used to have a row counter in order to display the
+	//	ss:Index attribute, which was needed by Libre Office.  Since the rest
+	//	of spreadsheet products do not need it, or even fail to render the 
+	//	spreadsheet if it is included, I have dropped it.
+
 	// The generator stores a predefined default date format
 	private Style dateFormat = null;
 	
@@ -221,22 +219,14 @@ public class XMLSpreadsheetGenerator {
 				add("ss:Height", height).
 				add("ss:AutoFitHeight", autoFitHeight).
 				add("ss:Hidden", hidden).
-				add("ss:StyleID", style != null?style.getId():null).
-				add("ss:Index", showRowCounter?rowCounter:null),
+				add("ss:StyleID", style != null?style.getId():null),
 			// Don't close!
 			false));
-		rowCounter++;
 	}
 	
 	/**
 	 * Writes a single empty <code>&lt;ss:Row&gt;</code> element with the desired span and formatting
-	 * @param span Specifies the number of adjacent rows with the same formatting as this row. 
-	 * When a Span attribute is used, the spanned row elements are not written out.
-	 * Rows must not overlap. Doing so results in an XML Spreadsheet document that is invalid. 
-	 * Care must be taken with this attribute to ensure that the span does not include another 
-	 * row index that is specified. Unlike columns, rows with the Span attribute must be empty. 
-	 * A row that contains a Span attribute and one or more Cell elements is considered invalid. 
-	 * The Span attribute for rows is a short-hand method for setting formatting properties for multiple, empty rows.
+	 * @param emptyRows Number of empty rows to write with this method
 	 * @param autoFitHeight f this attribute is True, it means that this row should be autosized
 	 * @param height Specifies the height of a row in points. This value must be greater than or equal to 0
 	 * @param style Style object to be applied to these rows
@@ -244,26 +234,30 @@ public class XMLSpreadsheetGenerator {
 	 * any other library-related exception arises
 	 */
 	public void writeEmptyRows(
-			Long span, 
+			Long emptyRows, 
 			Boolean autoFitHeight, 
 			Double height, 
 			Style style) throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
-		if (span != null) {
-			// Flush the row
-			rowCounter += span;
+		// This method used to implement a single ss:Row with an ss:Span attribute, from which
+		// 	follows its documentation:
+		
+		/*	Specifies the number of adjacent rows with the same formatting as this row. 
+		 * When a Span attribute is used, the spanned row elements are not written out.
+		 * Rows must not overlap. Doing so results in an XML Spreadsheet document that is invalid. 
+		 * Care must be taken with this attribute to ensure that the span does not include another 
+		 * row index that is specified. Unlike columns, rows with the Span attribute must be empty. 
+		 * A row that contains a Span attribute and one or more Cell elements is considered invalid. 
+		 * The Span attribute for rows is a short-hand method for setting formatting properties for multiple, empty rows. */
+		
+		// However, since this way to render the empty rows is not well supported by every 
+		//	spreadsheet product I tried, I decided to remain with this procedural implementation of
+		//	the same functionality.
+		Long times = emptyRows == null? 1l : emptyRows;
+		for (int i = 0; i < times; i++) {
+			startRow(null, autoFitHeight, height, false, style);
+			writeEmptyCell();
+			closeRow();
 		}
-		else {
-			rowCounter++;
-		}
-		flush(XmlHelper.element("ss:Row", new Table<Object>().
-			add("ss:Span", span).
-			add("ss:Height", height!=null?height.doubleValue():null).
-			add("ss:AutoFitHeight", autoFitHeight).
-			add("ss:StyleID", style!=null?style.getId():null)
-			));
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
-		showRowCounter = true;
 	}
 	
 	/**
@@ -274,30 +268,42 @@ public class XMLSpreadsheetGenerator {
 	 * any other library-related exception arises
 	 */
 	public void closeRow() throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
+		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET_ROWS);
 		if (emptyCurrentRow) {
 			flush(XmlHelper.element("ss:Cell", 
 				new Table<Object>().
 					add("ss:Index", "1")));
 		}
 		flush(engine.applyTemplate("row_foot"));
-		showRowCounter = false;
 	}
 	
 	/**
 	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
+	 * @param sheetName Sheet tab caption
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
 	public void startSheet(String sheetName) throws XMLSpreadsheetException {
+		startSheet(sheetName, false);
+	}
+	
+	/**
+	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
+	 * @param sheetName Sheet tab caption
+	 * @param protectedSheet If true, the sheet is protected
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void startSheet(String sheetName, boolean protectedSheet) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
 		// Validate that the sheet name is not null
 		AssertionHelper.assertion(sheetName != null, "The sheet name must be specified");
 		// Flush the start of the sheet template
 		flush(engine.applyTemplate("sheet_header", 
-			new Table<String>().add("sheetName", sheetName).map()));
-		// Current sheet row counter
-		rowCounter = 0;
+			new Table<String>().
+				add("sheetName", sheetName).
+				add("protected", BooleanFormatHelper.format(Boolean.valueOf(protectedSheet))).
+				map()));
 	}
 	
 	/**
@@ -409,10 +415,6 @@ public class XMLSpreadsheetGenerator {
 	private void writeCellImpl(Style style, String value, CellType type) throws XMLSpreadsheetException {
 		if (emptyCurrentRow) {
 			emptyCurrentRow = false;
-			if (showRowCounter) {
-				// Show row counter only if necessary
-				showRowCounter = false;
-			}
 		}
 		// write the contents of the cell
 		flush(XmlHelper.element("ss:Cell", 
