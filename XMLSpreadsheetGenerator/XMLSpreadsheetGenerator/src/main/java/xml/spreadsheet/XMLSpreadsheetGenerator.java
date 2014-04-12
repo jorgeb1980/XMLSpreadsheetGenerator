@@ -76,6 +76,9 @@ public class XMLSpreadsheetGenerator {
 	// The generator stores a predefined default date format
 	private Style dateFormat = null;
 	
+	// The generator keeps a column count for the current sheet
+	private long columnCount = 0;
+	
 	//---------------------------------------------------------------
 	// Class methods
 	
@@ -304,6 +307,7 @@ public class XMLSpreadsheetGenerator {
 				add("sheetName", sheetName).
 				add("protected", BooleanFormatHelper.format(Boolean.valueOf(protectedSheet))).
 				map()));
+		columnCount = 0;
 	}
 	
 	/**
@@ -314,6 +318,97 @@ public class XMLSpreadsheetGenerator {
 	public void closeSheet() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.CLEAN_DOCUMENT);
 		flush(engine.applyTemplate("sheet_foot"));
+	}
+	
+	/**
+	 * Defines the formatting for one or more adjacent columns. This element contains no data; 
+	 * all cell data is stored within Row elements. All Column
+	 * elements must appear before the first Row element.
+	 * @param caption (optional) Specifies the caption that should appear when the 
+	 * Component's custom row and column headers are showing 
+	 * @param autoFitWidth (optional) If this attribute is specified as True, 
+	 * it means that this column should be autosized for numeric and date values only. 
+	 * We do not autofit textual values.<br/>
+
+		If both ss:Width and ss:AutoFitWidth exist, the behavior is as follows:<br/>
+
+	    ss:AutoFitWidth="1" and ss:Width is unspecified: Autofit the column width to fit the content.<br/>
+	    ss:AutoFitWidth="1" and ss:Width is specified: Set the column to the specified width and 
+	    only autofit if the size of the content is larger than the specified width.<br/>
+	    ss:AutoFitWidth="0" and ss:Width is unspecified: Use the default column width.<br/>
+	    ss:AutoFitWidth="0" and ss:Width is specified: Use the specified width.<br/>
+
+	 * @param hidden (optional) True specifies that this column is hidden. False (or omitted) 
+	 * specifies that this column is shown
+	 * @param index (optional) Specifies the position of this column within the table.<br/>
+
+			If this tag is not specified, the first instance has an assumed Index="1". 
+			Each additional Column element has an assumed Index that is one higher.<br/>
+			
+			Indices must appear in strictly increasing order. Failure to do so will result in an 
+			XML Spreadsheet document that is invalid. Indices do not need to be sequential, however.
+			Omitted indices are formatted with the default style's format.<br/>
+			
+			Indices must not overlap. If duplicates exist, the behavior is unspecified and the 
+			XML Spreadsheet document is considered invalid. An easy way to create overlap is 
+			through careless use of the Span attribute. 
+	 * @param span (optional) Specifies the number of adjacent columns with the same formatting as 
+	 * this column. When a Span attribute is used, the spanned column elements are not written out.<br/>
+
+		As mentioned in the Index tag, columns must not overlap. Doing so results in an XML 
+		Spreadsheet document that is invalid. Care must be taken with this attribute to ensure 
+		that the span does not include another column index that is specified. <br/>
+	 * @param style (optional) Specifies a reference to a previously defined <code>Style</code>. 
+	 * This reference indicates that this <code>Style</code> should be used to format this element. 
+	 * If this attribute is not present, the default <code>Style</code> should be applied to this element. 
+	 * @param width (optional) Specifies the width of a column in points. This value must be greater than or equal to 0. 
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void column(String caption, Boolean autoFitWidth, 
+					   Boolean hidden, Long index, Long span, 
+					   Style style, Double width) throws XMLSpreadsheetException {
+		state = GeneratorState.validateTransition(state, 
+				GeneratorState.WRITING_COLUMN);
+		// Do some validations on indexes
+		if (index != null) {
+			AssertionHelper.assertion(index > columnCount, "Column overlap!");
+			// Jump to the index
+			columnCount = index;
+		}
+		else {
+			columnCount++;
+		}
+		if (span != null) {
+			columnCount += (span - 1);
+		}
+		flush(XmlHelper.element("ss:Column", new Table<Object>().
+				add("c:Caption", caption).
+				add("ss:AutoFitWidth", autoFitWidth).
+				add("ss:Hidden", hidden).
+				add("ss:Index", index).
+				add("ss:Span", span).
+				add("ss:StyleID", style==null?null:style.getId()).
+				add("ss:Width", width)				
+				));		
+		state = GeneratorState.validateTransition(state, 
+				GeneratorState.WRITING_SHEET);
+	}
+	
+	/**
+	 * Defines the formatting for one or more adjacent columns. This element contains no data; 
+	 * all cell data is stored within Row elements. All Column
+	 * elements must appear before the first Row element.  This method tries to give a useful
+	 * shortcut for the (hopefuly) more often used options. 
+	 * @param style (optional) Specifies a reference to a previously defined <code>Style</code>. 
+	 * This reference indicates that this <code>Style</code> should be used to format this element. 
+	 * If this attribute is not present, the default <code>Style</code> should be applied to this element. 
+	 * @param width (optional) Specifies the width of a column in points. This value must be greater than or equal to 0. 
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public void column(Style style, Double width) throws XMLSpreadsheetException {
+		column(null, null, null, null, null, style, width);
 	}
 	
 	/**
