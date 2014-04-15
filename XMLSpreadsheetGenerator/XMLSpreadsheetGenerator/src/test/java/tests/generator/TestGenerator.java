@@ -36,6 +36,7 @@ import xml.spreadsheet.style.Border.LineStyle;
 import xml.spreadsheet.style.Borders;
 import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Font.VerticalAlignment;
+import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.style.Interior;
 import xml.spreadsheet.style.NumberFormat;
 import xml.spreadsheet.style.Protection;
@@ -1031,6 +1032,84 @@ public class TestGenerator {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+	
+	@Test 
+	public void testColumns() {
+		try {
+			final String SHEET_CAPTION = "a sheet with columns";
+			final String BLUE_BACKGROUND = "#0000ff";
+			final String RED_BACKGROUND = "#ff0000";
+			
+			File file = File.createTempFile("xmlspreadsheet", ".xml");
+			OutputStream os = new FileOutputStream(file);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			
+			Style styleBlueBackground = generator.createStyle();
+			Interior blueInterior = styleBlueBackground.interior();
+			blueInterior.setColor(BLUE_BACKGROUND);
+			assertTrue(blueInterior == styleBlueBackground.interior());
+			
+			Style styleRedBackground = generator.createStyle();
+			Interior redInterior = styleRedBackground.interior();
+			redInterior.setColor(RED_BACKGROUND);
+			assertTrue(redInterior == styleRedBackground.interior());
+			
+			Style styleItalicRedBackground = generator.createStyle();
+			Interior redItalicInterior = styleItalicRedBackground.interior();
+			redItalicInterior.setColor(RED_BACKGROUND);
+			styleItalicRedBackground.font().setItalic(true);
+			assertTrue(redItalicInterior == styleItalicRedBackground.interior());
+			
+			Style styleBlueBoldBackground = generator.createStyle();
+			Interior blueBoldInterior = styleBlueBoldBackground.interior();
+			styleBlueBoldBackground.font().setBold(true);
+			styleBlueBoldBackground.numberFormat().setFormat(Format.Standard);
+			blueBoldInterior.setColor(BLUE_BACKGROUND);
+			assertTrue(blueBoldInterior == styleBlueBoldBackground.interior());
+			
+			generator.startDocument();
+			generator.startSheet(SHEET_CAPTION);
+			generator.startColumns();
+			generator.column(null, null, null, null, 2l, styleRedBackground, null);
+			generator.column(null, null, null, 4l, null, styleBlueBackground, 35d);
+			generator.column(null, null, null, null, null, styleItalicRedBackground, null);
+			generator.column(null, null, true, null, 1l, styleBlueBackground, null);
+			generator.column(null, null, null, null, 2l, styleRedBackground, 250d);
+			generator.column(null, true, null, 11l, 3l, styleBlueBoldBackground, null);
+			generator.column(null, null, null, 15l, null, styleRedBackground, null);
+			generator.closeColumns();
+			for (int i = 0; i < 15; i++) {
+				generator.startRow();
+				for (double j = 0; j < 20; j++) {
+					generator.writeCell(j);
+				}
+				generator.closeRow();
+			}
+			generator.closeSheet();
+			generator.closeDocument();
+			
+			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+			
+			// Not empty and correct document
+			Document doc = GeneratorTestUtils.parseDocument(document);
+			assertNotNull(doc);		
+			
+			List<Element> columns = GeneratorTestUtils.searchColumns(doc, SHEET_CAPTION);
+			// There is a column without styles closing the set and another two closing the gaps
+			//	before #4 , #9 and #15
+			assertEquals(11, columns.size());
+			
+			os.write(baos.toByteArray());			
+			os.close();
+			System.out.println("Created file with columns -> " + file.getAbsolutePath());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
 	}
 	
 	@Test

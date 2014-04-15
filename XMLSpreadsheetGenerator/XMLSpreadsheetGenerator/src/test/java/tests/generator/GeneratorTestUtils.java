@@ -38,6 +38,12 @@ public class GeneratorTestUtils {
 		return (List<Element>) XPath.selectNodes(doc, "//ss:Worksheet[@ss:Name='" + sheetName + "']//ss:Row");
 	}
 	
+	// List of columns of a certain sheet
+	// Returns columns as Element objects
+	public static List<Element> searchColumns(Document doc, String sheetName) throws JDOMException {
+		return (List<Element>) XPath.selectNodes(doc, "//ss:Worksheet[@ss:Name='" + sheetName + "']//ss:Column");
+	}
+	
 	// List of cells of a certain row
 	// Returns cells as Element objects
 	public static List<Element> searchCells(Element row) throws JDOMException {

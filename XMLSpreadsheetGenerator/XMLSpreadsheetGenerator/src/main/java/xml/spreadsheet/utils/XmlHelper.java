@@ -77,6 +77,15 @@ public class XmlHelper {
 	/**
 	 * Creates an empty and closed xml node with the indicated attributes
 	 * @param elementName Name of the element
+	 * @return String representation of the XML node
+	 */
+	public static String element(String elementName) {
+		return element(elementName, null, null, true);		
+	}
+	
+	/**
+	 * Creates an empty and closed xml node with the indicated attributes
+	 * @param elementName Name of the element
 	 * @param closure Table with the attributes
 	 * @return String representation of the XML node
 	 */

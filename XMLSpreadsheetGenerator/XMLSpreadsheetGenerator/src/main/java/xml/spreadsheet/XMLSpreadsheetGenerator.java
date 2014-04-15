@@ -321,6 +321,28 @@ public class XMLSpreadsheetGenerator {
 	}
 	
 	/**
+	 * Starts a columns section (must be included in a sheet, before the first row
+	 * is written)
+	 * @throws XMLSpreadsheetException
+	 */
+	public void startColumns() throws XMLSpreadsheetException {
+		state = GeneratorState.validateTransition(state, 
+				GeneratorState.WRITING_COLUMNS);
+	}
+	
+	/**
+	 * Closes a columns section (must be included in a sheet, before the first row
+	 * is written)
+	 * @throws XMLSpreadsheetException
+	 */
+	public void closeColumns() throws XMLSpreadsheetException {
+		state = GeneratorState.validateTransition(state, 
+				GeneratorState.WRITING_SHEET);
+		// Empty column
+		flush(XmlHelper.element("ss:Column"));
+	}
+	
+	/**
 	 * Defines the formatting for one or more adjacent columns. This element contains no data; 
 	 * all cell data is stored within Row elements. All Column
 	 * elements must appear before the first Row element.
@@ -354,10 +376,11 @@ public class XMLSpreadsheetGenerator {
 			through careless use of the Span attribute. 
 	 * @param span (optional) Specifies the number of adjacent columns with the same formatting as 
 	 * this column. When a Span attribute is used, the spanned column elements are not written out.<br/>
-
 		As mentioned in the Index tag, columns must not overlap. Doing so results in an XML 
 		Spreadsheet document that is invalid. Care must be taken with this attribute to ensure 
-		that the span does not include another column index that is specified. <br/>
+		that the span does not include another column index that is specified. 
+		This value follows the rules of the span attribute in HTML rather than the specified in the documentation,
+		so a value of 'X' will mean a total number of X columns with the specified style, width, etc., counting the first one<br/>
 	 * @param style (optional) Specifies a reference to a previously defined <code>Style</code>. 
 	 * This reference indicates that this <code>Style</code> should be used to format this element. 
 	 * If this attribute is not present, the default <code>Style</code> should be applied to this element. 
@@ -368,17 +391,26 @@ public class XMLSpreadsheetGenerator {
 	public void column(String caption, Boolean autoFitWidth, 
 					   Boolean hidden, Long index, Long span, 
 					   Style style, Double width) throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, 
-				GeneratorState.WRITING_COLUMN);
+		AssertionHelper.assertion(state == GeneratorState.WRITING_COLUMNS, 
+			"Cannot write a column if not inside the columns section");
 		// Do some validations on indexes
 		if (index != null) {
 			AssertionHelper.assertion(index > columnCount, "Column overlap!");
+			// Should we cover a gap?
+			if ((index - columnCount) > 1) {
+				long gap = (index - columnCount) - 1;
+				flush(XmlHelper.element("ss:Column",
+						new Table<Object>().
+							add("ss:Span", gap > 1?gap-1:null)
+					));
+			}
 			// Jump to the index
 			columnCount = index;
 		}
 		else {
 			columnCount++;
 		}
+		// add the span to the column count
 		if (span != null) {
 			columnCount += (span - 1);
 		}
@@ -387,12 +419,10 @@ public class XMLSpreadsheetGenerator {
 				add("ss:AutoFitWidth", autoFitWidth).
 				add("ss:Hidden", hidden).
 				add("ss:Index", index).
-				add("ss:Span", span).
+				add("ss:Span", span!=null && span > 1?span-1:null).
 				add("ss:StyleID", style==null?null:style.getId()).
 				add("ss:Width", width)				
 				));		
-		state = GeneratorState.validateTransition(state, 
-				GeneratorState.WRITING_SHEET);
 	}
 	
 	/**
