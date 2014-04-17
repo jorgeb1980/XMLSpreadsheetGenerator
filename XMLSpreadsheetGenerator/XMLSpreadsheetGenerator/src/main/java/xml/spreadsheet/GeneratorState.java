@@ -10,7 +10,7 @@ import java.util.List;
  * The generator works as a state machine, as documented in the diagram state_machine.jpg							
  */
 enum GeneratorState {
-	INITIALIZATION, CLEAN_DOCUMENT, WRITING_SHEET, WRITING_COLUMN, WRITING_SHEET_ROWS, WRITING_ROW, WRITING_CELL, DONE;
+	INITIALIZATION, CLEAN_DOCUMENT, WRITING_SHEET, WRITING_COLUMNS, WRITING_SHEET_ROWS, WRITING_ROW, WRITING_CELL, DONE;
 	
 	// Possible states to go for every state
 	private List<GeneratorState> states = new LinkedList<GeneratorState>();
@@ -22,11 +22,11 @@ enum GeneratorState {
 		CLEAN_DOCUMENT.states.add(WRITING_SHEET);
 		CLEAN_DOCUMENT.states.add(DONE);
 		
-		WRITING_SHEET.states.add(WRITING_COLUMN);
+		WRITING_SHEET.states.add(WRITING_COLUMNS);
 		WRITING_SHEET.states.add(WRITING_ROW);
 		WRITING_SHEET.states.add(CLEAN_DOCUMENT);
 		
-		WRITING_COLUMN.states.add(WRITING_SHEET);
+		WRITING_COLUMNS.states.add(WRITING_SHEET);
 		
 		WRITING_ROW.states.add(WRITING_SHEET_ROWS);
 		WRITING_ROW.states.add(WRITING_CELL);
