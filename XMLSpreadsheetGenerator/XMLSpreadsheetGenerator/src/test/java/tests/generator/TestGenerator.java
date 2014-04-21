@@ -3,11 +3,7 @@
  */
 package tests.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -36,9 +32,9 @@ import xml.spreadsheet.style.Border.LineStyle;
 import xml.spreadsheet.style.Borders;
 import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Font.VerticalAlignment;
-import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.style.Interior;
 import xml.spreadsheet.style.NumberFormat;
+import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.style.Protection;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
@@ -1072,13 +1068,24 @@ public class TestGenerator {
 			generator.startDocument();
 			generator.startSheet(SHEET_CAPTION);
 			generator.startColumns();
+			// first column
 			generator.column(null, null, null, null, 2l, styleRedBackground, null);
+			// second column: gap (width: 1)
+			// third column
 			generator.column(null, null, null, 4l, null, styleBlueBackground, 35d);
-			generator.column(null, null, null, null, null, styleItalicRedBackground, null);
-			generator.column(null, null, true, null, 1l, styleBlueBackground, null);
+			// fourth column
+			generator.column(styleItalicRedBackground, null);
+			// fifth column
+			generator.column(null, null, true, null, 2l, styleBlueBackground, null);
+			// sixth column
 			generator.column(null, null, null, null, 2l, styleRedBackground, 250d);
-			generator.column(null, true, null, 11l, 3l, styleBlueBoldBackground, null);
-			generator.column(null, null, null, 15l, null, styleRedBackground, null);
+			// seventh column: gap (width: 2)
+			// eighth column
+			generator.column(null, true, null, 12l, 3l, styleBlueBoldBackground, null);
+			// ninth column: gap (width: 1)
+			// tenth column
+			generator.column(null, null, null, 16l, null, styleRedBackground, null);
+			// eleventh column: closing
 			generator.closeColumns();
 			for (int i = 0; i < 15; i++) {
 				generator.startRow();
@@ -1101,6 +1108,81 @@ public class TestGenerator {
 			//	before #4 , #9 and #15
 			assertEquals(11, columns.size());
 			
+			// Test column styles
+			Element col0 = columns.get(0);
+			// Span = 2 -> an additional column
+			// red background style
+			assertEquals(NumberFormatHelper.format(1d), 
+					XmlTestUtils.getAttributeValue(col0, "Span", "ss"));
+			assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col0, "Color"));
+			
+			// Gap of 1
+			Element col1 = columns.get(1);
+			verifyGap(col1, 1);
+			
+			// blue background
+			// width of 35d
+			Element col2 = columns.get(2);
+			assertEquals(NumberFormatHelper.format(4d), 
+					XmlTestUtils.getAttributeValue(col2, "Index", "ss"));
+			assertEquals(BLUE_BACKGROUND, getInteriorStyleAttribute(col2, "Color"));
+			assertEquals(NumberFormatHelper.format(35d), 
+					XmlTestUtils.getAttributeValue(col2, "Width", "ss"));
+			
+			// italic, red background
+			Element col3 = columns.get(3);
+			assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col3, "Color"));
+			assertEquals(BooleanFormatHelper.format(Boolean.TRUE), 
+					getFontStyleAttribute(col3, "Italic"));
+			
+			// blue background
+			/// Span = 2 -> 1 additional column
+			Element col4 = columns.get(4);
+			assertEquals(BLUE_BACKGROUND, getInteriorStyleAttribute(col4, "Color"));
+			assertEquals(NumberFormatHelper.format(1d), 
+					XmlTestUtils.getAttributeValue(col0, "Span", "ss"));
+			
+			// red background
+			// width: 250
+			// span = 2 -> 1 additional column
+			Element col5 = columns.get(5);
+			assertEquals(NumberFormatHelper.format(1d), 
+					XmlTestUtils.getAttributeValue(col5, "Span", "ss"));
+			assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col5, "Color"));
+			assertEquals(NumberFormatHelper.format(250d), 
+					XmlTestUtils.getAttributeValue(col5, "Width", "ss"));
+			
+			// Gap of 2
+			Element col6 = columns.get(6);
+			verifyGap(col6, 2);
+			
+			// blue background
+			// index = 12
+			// span = 3 -> 2 additional columns
+			Element col7 = columns.get(7);
+			assertEquals(BLUE_BACKGROUND, getInteriorStyleAttribute(col7, "Color"));
+			assertEquals(NumberFormatHelper.format(12d), 
+					XmlTestUtils.getAttributeValue(col7, "Index", "ss"));
+			assertEquals(NumberFormatHelper.format(2d), 
+					XmlTestUtils.getAttributeValue(col7, "Span", "ss"));
+			
+			// Gap of 1
+			Element col8 = columns.get(8);
+			verifyGap(col8, 1);
+			
+			// index = 16
+			// red background
+			Element col9 = columns.get(9);
+			assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col9, "Color"));
+			assertEquals(NumberFormatHelper.format(16d), 
+					XmlTestUtils.getAttributeValue(col9, "Index", "ss"));
+			
+			// last column: the closing one
+			Element col10 = columns.get(10);
+			assertTrue(null == XmlTestUtils.getAttributeValue(col10, "StyleID", "ss"));
+			assertTrue(null == XmlTestUtils.getAttributeValue(col10, "Span", "ss"));
+			assertTrue(null == XmlTestUtils.getAttributeValue(col10, "Index", "ss"));
+			
 			os.write(baos.toByteArray());			
 			os.close();
 			System.out.println("Created file with columns -> " + file.getAbsolutePath());
@@ -1110,6 +1192,20 @@ public class TestGenerator {
 			fail(e.getMessage());
 		}
 		
+	}
+	
+	// Asserts that the element is a column and is empty
+	private void verifyGap(Element column, int width) throws JDOMException {
+		assertEquals(column.getName(), "Column");
+		if (width > 1) {
+			assertEquals(NumberFormatHelper.format(new Double(width - 1)), 
+				XmlTestUtils.getAttributeValue(column, "Span", "ss"));
+		}
+		else if (width == 1) {
+			assertTrue(null == XmlTestUtils.getAttributeValue(column, "Span", "ss"));
+		}
+		// No style
+		assertTrue(null == GeneratorTestUtils.searchStyle(column.getDocument(), column));
 	}
 	
 	@Test
@@ -1254,7 +1350,7 @@ public class TestGenerator {
 			ret = XmlTestUtils.getAttributeValue(bottomBorder.get(0), attribute, "ss");
 		}
 		else {
-			fail();
+			fail(); 
 		}
 		return ret;
 	}
@@ -1267,8 +1363,8 @@ public class TestGenerator {
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.startDocument();
 			generator.startSheet("this will fail");
-			generator.writeCell("adasf");
-			fail();
+			generator.writeCell("adasf"); // not the proper place
+			fail(); // Should not get here!
 		}
 		catch (XMLSpreadsheetException e) {
 			assertNotNull(e);
@@ -1285,8 +1381,8 @@ public class TestGenerator {
 			OutputStream os = new FileOutputStream(file);
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.startDocument();
-			generator.writeCell("adasf");
-			fail();
+			generator.writeCell("adasf"); // not the proper place
+			fail(); // Should not get here!
 		}
 		catch (XMLSpreadsheetException e) {
 			assertNotNull(e);
@@ -1304,8 +1400,8 @@ public class TestGenerator {
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.startDocument();
 			generator.startSheet("this will fail");
-			generator.closeDocument();
-			fail();
+			generator.closeDocument(); // Should jump here with an XMLSpreadsheetException
+			fail(); // Should not get here!
 		}
 		catch (XMLSpreadsheetException e) {
 			assertNotNull(e);
@@ -1325,13 +1421,13 @@ public class TestGenerator {
 			generator.startSheet("this will fail");
 			generator.startRow();
 			generator.closeDocument();
-			fail();
+			fail(); // Should not get here!
 		}
 		catch (XMLSpreadsheetException e) {
 			assertNotNull(e);
 		}
 		catch (Throwable t) {
-			fail();
+			fail(); 
 		}
 	}
 	
@@ -1343,7 +1439,7 @@ public class TestGenerator {
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.startDocument();
 			generator.writeCell(new Date());
-			fail();
+			fail(); // Should not get here!
 		}
 		catch (XMLSpreadsheetException e) {
 			assertNotNull(e);
@@ -1360,7 +1456,7 @@ public class TestGenerator {
 			OutputStream os = new FileOutputStream(file);
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.writeCell(new Date());
-			fail();
+			fail(); // Should not get here!
 		}
 		catch (XMLSpreadsheetException e) {
 			assertNotNull(e);
@@ -1386,7 +1482,7 @@ public class TestGenerator {
 			generator.closeRow();
 			generator.closeSheet();
 			generator.closeDocument();
-			fail();
+			fail(); // Should not get here!
 		}
 		catch(XMLSpreadsheetException xse) {
 			assertNotNull(xse);
@@ -1403,8 +1499,8 @@ public class TestGenerator {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 			generator.startDocument();
-			generator.startSheet(null);
-			fail();
+			generator.startSheet(null);  // Should jump with an XMLSpreadsheetException
+			fail();  // Should not get here!
 		}
 		catch(XMLSpreadsheetException xse) {
 			assertNotNull(xse);
@@ -1415,4 +1511,45 @@ public class TestGenerator {
 		}
 	}
 	
+	@Test
+	public void testMisplacedColumn() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			generator.startDocument();
+			generator.startSheet("This will fail");
+			generator.startRow();
+			generator.column(null, 34d); // Should pop an exception
+			fail(); // Should not get here!
+		}
+		catch(XMLSpreadsheetException xse) {
+			assertNotNull(xse);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testOverlapColumns() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			generator.startDocument();
+			generator.startSheet("This will fail");
+			generator.startColumns();
+			generator.column(null, null, null, null, 2L, null, 15d); // 2 columns
+			generator.column(null, null, null, 2L, null, null, 34d); // Should pop an exception: tried to fit it
+																	 // into index=2, but it is already occupied
+			fail(); // Should not get here!
+		}
+		catch(XMLSpreadsheetException xse) {
+			assertNotNull(xse);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
 }

@@ -4,6 +4,7 @@
 package xml.spreadsheet.utils;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -76,8 +77,7 @@ public class PropertiesReader {
 	 * Returns an ordered list of properties by an specified index.  It respects
 	 * the order the user wrote the properties in at the .properties file. 
 	 * @param prefix Property prefix
-	 * @return List of properties with that exact prefix, in the same
-	 * order they were written in the .properties file
+	 * @return List of properties with that exact prefix, ordered by their index
 	 * @throws XMLSpreadsheetException
 	 */
 	public static List<String> propertiesByPrefix(String prefix)
@@ -90,6 +90,7 @@ public class PropertiesReader {
 				strings.add(sKey);
 			}
 		}
+		Collections.sort(strings);
 		return strings;
 	}
 }

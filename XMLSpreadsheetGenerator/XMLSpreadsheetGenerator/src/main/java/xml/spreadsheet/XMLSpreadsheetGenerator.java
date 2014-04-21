@@ -374,6 +374,8 @@ public class XMLSpreadsheetGenerator {
 			Indices must not overlap. If duplicates exist, the behavior is unspecified and the 
 			XML Spreadsheet document is considered invalid. An easy way to create overlap is 
 			through careless use of the Span attribute. 
+			
+			1 <= Index <= Total columns
 	 * @param span (optional) Specifies the number of adjacent columns with the same formatting as 
 	 * this column. When a Span attribute is used, the spanned column elements are not written out.<br/>
 		As mentioned in the Index tag, columns must not overlap. Doing so results in an XML 

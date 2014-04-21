@@ -47,6 +47,7 @@ public class XmlTestUtils {
 	}
 	
 	// Given a certain element, returns a list of descendants determined by an XPath query
+	@SuppressWarnings("unchecked")
 	public static List<Element> getDescendants(Element element, String query) throws JDOMException {
 		return (List<Element>) XPath.selectNodes(element, query);
 	}
