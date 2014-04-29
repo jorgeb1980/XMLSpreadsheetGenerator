@@ -55,28 +55,31 @@ public class XMLSpreadsheetGenerator {
 	
 	/** Every instance of the generator is tied to an OutputStream. */
 	private Writer writer;
-	/** Generator state. */
+	/** Generator state.  The machine state validations are implemented on this
+	 * variable. */
 	private GeneratorState state = GeneratorState.INITIALIZATION;
-	/** Style counter. */
+	/** Style counter. Will be used to generate the Style IDs. */
 	private int styleCounter = 1;
-	/** Styles. */
+	/** Styles. Every new Style will be added to this List and flushed into
+	 * the output stream as soon as the document gets started. */
 	private List<Style> styles;
-	/** Template engine */
+	/** Template engine.  Used to recover predefined document fragments and
+	 * merge values into them. */
 	private TemplateEngine engine = null;
 	
-	// Is empty the current row?  This will be set to true every time
-	//	a new row is started, and false if a cell is written into it.
+	/** Is empty the current row?  This will be set to true every time
+	 * a new row is started, and false if a cell is written into it. */
 	private boolean emptyCurrentRow = true;
 	
-	// This class used to have a row counter in order to display the
-	//	ss:Index attribute, which was needed by Libre Office.  Since the rest
-	//	of spreadsheet products do not need it, or even fail to render the 
-	//	spreadsheet if it is included, I have dropped it.
+	/** This class used to have a row counter in order to display the
+	 *	ss:Index attribute, which was needed by Libre Office.  Since the rest
+	 *	of spreadsheet products do not need it, or even fail to render the 
+	 *	spreadsheet if it is included, I have dropped it. */
 
-	// The generator stores a predefined default date format
+	/** The generator stores a predefined default date format */
 	private Style dateFormat = null;
 	
-	// The generator keeps a column count for the current sheet
+	/** The generator keeps a column count for the current sheet */
 	private long columnCount = 0;
 	
 	//---------------------------------------------------------------
