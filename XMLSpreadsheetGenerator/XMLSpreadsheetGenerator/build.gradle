@@ -2,6 +2,7 @@ apply plugin: 'java'
 // Integration with eclipse IDE (optional; should and must work if you are brave
 // and bold enough to edit with vim)
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 
 repositories {
     mavenCentral()
@@ -9,6 +10,8 @@ repositories {
 
 sourceCompatibility = 1.6
 version = '1.0'
+group = 'xml.spreadsheet'
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'XML Spreadsheet Generator', 'Implementation-Version': version
