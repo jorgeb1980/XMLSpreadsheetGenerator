@@ -1,8 +1,0 @@
-<Row c:Caption="$caption"
-	 ss:AutoFitHeight="$autoFitHeight"
-	 ss:Height="$height"
-	 ss:Hidden="$hidden"
-	 ss:Index="$index"
-	 ss:Span="$span"
-	 ss:StyleID="$styleId"	 
->
