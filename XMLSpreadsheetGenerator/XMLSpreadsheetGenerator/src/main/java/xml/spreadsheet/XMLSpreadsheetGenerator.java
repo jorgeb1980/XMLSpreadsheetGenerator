@@ -280,7 +280,7 @@ public class XMLSpreadsheetGenerator {
 				new Table<Object>().
 					add("ss:Index", "1")));
 		}
-		flush(engine.applyTemplate("row_foot"));
+		flush("</ss:Row>");
 	}
 	
 	/**

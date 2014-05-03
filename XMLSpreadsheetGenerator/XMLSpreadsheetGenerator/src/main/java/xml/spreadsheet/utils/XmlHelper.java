@@ -21,7 +21,9 @@ public class XmlHelper {
 	 * @param value Non null value to fill into the string
 	 */
 	private static void att(StringBuilder sb, String att, String value) {
-		sb.append(" " + att + "=\"");
+		sb.append(" ");
+		sb.append(att);
+		sb.append("=\"");		
 		sb.append(value.toString());
 		sb.append("\"");
 	}
@@ -133,7 +135,7 @@ public class XmlHelper {
 		sb.append(elementName);
 		if (closure != null) {
 			Map<String, Object> map = closure.map();
-			if (map != null && map.values().size() != 0) {
+			if (map != null && map.size() != 0) {
 				sb.append(" ");
 				for (String key: map.keySet()) {
 					Object value = map.get(key);
