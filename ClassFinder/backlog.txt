@@ -1,0 +1,6 @@
+- Representación de los resultados en JTree
+- Checkbox de inmersión - ¿límite de inmersión?
+- Implementación de expresiones regulares en los patrones de búsqueda
+- Información del recurso encontrado - tamaño original, tamaño comprimido, % de compresión - ¿tooltip? ¿popup?
+- ¿Previsualización del recurso encontrado?  ¿Para ficheros de texto (properties, txt, etc.)?
+- ¿Conexión con un descompilador?
