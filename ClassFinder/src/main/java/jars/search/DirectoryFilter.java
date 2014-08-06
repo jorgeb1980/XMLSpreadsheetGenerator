@@ -1,10 +1,10 @@
-package jars.busqueda;
+package jars.search;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
-public class FiltroDirectorios extends FileFilter {
-	public FiltroDirectorios(PanelBúsqueda paramPanelBúsqueda) {
+public class DirectoryFilter extends FileFilter {
+	public DirectoryFilter(SearchPanel searchPanel) {
 	}
 
 	public boolean accept(File f) {
@@ -12,6 +12,6 @@ public class FiltroDirectorios extends FileFilter {
 	}
 
 	public String getDescription() {
-		return "Directorios";
+		return "Directories";
 	}
 }
