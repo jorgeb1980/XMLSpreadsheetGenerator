@@ -15,12 +15,13 @@ import java.util.List;
 import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
-import xml.spreadsheet.utils.AssertionHelper;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.Table;
 import xml.spreadsheet.utils.XmlHelper;
 import xml.spreadsheet.utils.DateFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
+
+import static xml.spreadsheet.utils.AssertionHelper.*;
 
 /**
  * Partial implementation of the spreadsheet format described in the article<br/>
@@ -114,7 +115,7 @@ public class XMLSpreadsheetGenerator {
 	 * any other library-related exception arises
 	 */
 	public Style createStyle() throws XMLSpreadsheetException {
-		AssertionHelper.assertion(state == GeneratorState.INITIALIZATION, 
+		assertion(state == GeneratorState.INITIALIZATION, 
 				"It is not possible to add styles to a generator in state: " + state);
 		Style style = new Style("ce" + Integer.toString(styleCounter++));
 		styles.add(style);
@@ -303,7 +304,7 @@ public class XMLSpreadsheetGenerator {
 	public void startSheet(String sheetName, boolean protectedSheet) throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
 		// Validate that the sheet name is not null
-		AssertionHelper.assertion(sheetName != null, "The sheet name must be specified");
+		assertion(sheetName != null, "The sheet name must be specified");
 		// Flush the start of the sheet template
 		flush(engine.applyTemplate("sheet_header", 
 			new Table<String>().
@@ -396,11 +397,11 @@ public class XMLSpreadsheetGenerator {
 	public void column(String caption, Boolean autoFitWidth, 
 					   Boolean hidden, Long index, Long span, 
 					   Style style, Double width) throws XMLSpreadsheetException {
-		AssertionHelper.assertion(state == GeneratorState.WRITING_COLUMNS, 
+		assertion(state == GeneratorState.WRITING_COLUMNS, 
 			"Cannot write a column if not inside the columns section");
 		// Do some validations on indexes
 		if (index != null) {
-			AssertionHelper.assertion(index > columnCount, "Column overlap!");
+			assertion(index > columnCount, "Column overlap!");
 			// Should we cover a gap?
 			if ((index - columnCount) > 1) {
 				long gap = (index - columnCount) - 1;
