@@ -34,4 +34,14 @@ buildscript {
 	}
 }
 
+/**
+ * Call this task in order to generate the docs/javadoc folder of the project
+ */
+task generateJavadocFolder(dependsOn:'build')<< {
+	File srcFolder = new File(project.projectDir.getCanonicalPath() + "/src/main/java")
+	File docsFolder = new File(project.projectDir.getCanonicalPath() + "/docs/javadoc")
+	ant.javadoc(sourcepath: srcFolder, destdir: docsFolder)
+}
+
+
 apply plugin: 'cobertura'
