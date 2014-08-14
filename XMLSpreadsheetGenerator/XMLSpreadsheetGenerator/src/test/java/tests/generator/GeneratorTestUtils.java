@@ -3,6 +3,8 @@
  */
 package tests.generator;
 
+import static org.junit.Assert.fail;
+
 import java.io.StringReader;
 import java.util.List;
 
@@ -65,5 +67,36 @@ public class GeneratorTestUtils {
 			ret = (Element) XPath.selectSingleNode(doc, "//ss:Style[@ss:ID='" + id + "']");
 		}
 		return ret;
+	}
+	
+	// Get the value of an attribute of a certain element
+	public static String getChildAttribute(String child, Element element, String attribute) throws JDOMException {
+		String ret = null;
+		Element style = GeneratorTestUtils.searchStyle(element.getDocument(), element);
+		List<Element> children =
+			XmlTestUtils.getDescendants(style, child);
+		if (children != null && children.size() == 1) {
+			ret = XmlTestUtils.getAttributeValue(children.get(0), attribute, "ss");
+		}
+		else {
+			fail();
+		}
+		return ret;
+	}
+	
+	public static String getFontStyleAttribute(Element element, String attribute) throws JDOMException {
+		return getChildAttribute("ss:Font", element, attribute);
+	}
+	
+	public static String getInteriorStyleAttribute(Element element, String attribute) throws JDOMException {
+		return getChildAttribute("ss:Interior", element, attribute);
+	}
+	
+	public static String getProtectionStyleAttribute(Element element, String attribute) throws JDOMException {
+		return getChildAttribute("ss:Protection", element, attribute);
+	}
+	
+	public static String getAlignmentAttribute(Element element, String attribute) throws JDOMException {
+		return getChildAttribute("ss:Alignment", element, attribute);
 	}
 }
