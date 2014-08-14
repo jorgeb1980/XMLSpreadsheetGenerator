@@ -19,6 +19,8 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.junit.Test;
 
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
+
 import tests.XmlTestUtils;
 import tests.styles.StyleTestUtils;
 import xml.spreadsheet.Style;
@@ -680,6 +682,69 @@ public class TestGeneratorStyles {
 		}
 	}
 	
+	@Test 
+	public void testParentStyle() {
+		try {
+			final String GREEN_COLOR = "#00ff00";
+			final String SHEET_CAPTION = "a sheet with parent styles";
+			
+			File file = File.createTempFile("xmlspreadsheet", ".xml");
+			OutputStream os = new FileOutputStream(file);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			
+			Style color = generator.createStyle();
+			Font colorFont = color.font();
+			colorFont.setColor(GREEN_COLOR);
+			assertTrue(colorFont == color.font());
+			
+			
+			Style rightStyle = generator.createStyle(color);
+			Alignment rightAlignment = rightStyle.alignment();
+			rightAlignment.setHorizontal(HorizontalAlignment.Right);
+			assertTrue(rightAlignment == rightStyle.alignment());		
+			
+			
+			generator.startDocument();
+			generator.startSheet(SHEET_CAPTION);
+			
+			generator.startRow();
+			generator.writeCell(color, "aaaa");
+			generator.closeRow();
+			
+			generator.emptyRow();
+			generator.emptyRow();
+			generator.emptyRow();
+			
+			generator.startRow();
+			generator.writeCell(rightStyle, "bbbb");
+			generator.closeRow();
+			
+			
+			generator.closeSheet();
+			generator.closeDocument();
+			
+			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
+			// Not empty and correct document
+			Document doc = GeneratorTestUtils.parseDocument(document);
+			assertNotNull(doc);			
+			
+			// Further validations
+			// does the right alignment style have a parent?
+			Element rightStyleElement = searchStyle(doc, rightStyle.getId());
+			assertEquals(color.getId(), XmlTestUtils.getAttributeValue(rightStyleElement, "Parent", "ss"));
+			
+			os.write(baos.toByteArray());			
+			os.close();
+			System.out.println("Created file with parent styles -> " + file.getAbsolutePath());
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
 	@Test
 	public void testBorders() {
 		try {
@@ -826,4 +891,6 @@ public class TestGeneratorStyles {
 		}
 		return ret;
 	}
+	
+	
 }

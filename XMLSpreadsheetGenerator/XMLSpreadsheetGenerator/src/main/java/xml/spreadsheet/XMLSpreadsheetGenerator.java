@@ -121,6 +121,23 @@ public class XMLSpreadsheetGenerator {
 	}
 	
 	/**
+	 * This method creates a style attached to this spreadsheet generator object,
+	 * extending the specified parent style.
+	 * It is only able to do that if the generator is in INITIALIZATION state
+	 * @param parent Parent style 
+	 * @return Empty style object
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public Style createStyle(Style parent) throws XMLSpreadsheetException {
+		assertion(state == GeneratorState.INITIALIZATION, 
+				"It is not possible to add styles to a generator in state: " + state);
+		Style style = new Style("ce" + Integer.toString(styleCounter++), parent);
+		styles.add(style);
+		return style;
+	}
+	
+	/**
 	 * This method creates a style attached to this spreadsheet generator object.
 	 * It is only able to do that if the generator is in INITIALIZATION state 
 	 * @return Empty style object
@@ -128,11 +145,7 @@ public class XMLSpreadsheetGenerator {
 	 * any other library-related exception arises
 	 */
 	public Style createStyle() throws XMLSpreadsheetException {
-		assertion(state == GeneratorState.INITIALIZATION, 
-				"It is not possible to add styles to a generator in state: " + state);
-		Style style = new Style("ce" + Integer.toString(styleCounter++));
-		styles.add(style);
-		return style;
+		return createStyle(null);
 	}
 	
 	// Flushes a string down the output stream

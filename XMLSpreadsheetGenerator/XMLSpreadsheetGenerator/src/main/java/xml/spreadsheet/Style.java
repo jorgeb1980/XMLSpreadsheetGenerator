@@ -57,9 +57,24 @@ public class Style {
 	//-----------------------------------------------------------
 	// Style methods
 	
-	
+	/**
+	 * Standalone style
+	 * @param id Current style id
+	 */
 	Style(String id) {
 		this.id = id;
+	}
+	
+	/**
+	 * Style built on another available style
+	 * @param id Current style id
+	 * @param parent Parent style
+	 */
+	Style(String id, Style parent) {
+		this(id);
+		if (parent != null) {
+			this.parent = parent.getId();
+		}
 	}
 	
 	/** Creates an Alignment element */
