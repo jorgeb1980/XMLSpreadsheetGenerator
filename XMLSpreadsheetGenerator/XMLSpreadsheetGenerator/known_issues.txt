@@ -1,16 +1,19 @@
-Issues related to the software used to test the generator:
+Issues related to the rendering of XML spreadsheet documents in the software used to test the generator:
 
 (The following applies to Libre Office v4.1.4.2, Open Office v4.0.1) 
 
-Libre Office ignores some border styles, rendering (and then saving them) as either
+Libre Office apparently ignores some border styles, rendering (and then saving them) as either
 continuous or double border.
 
-Libre Office ignores ShrinkToFit in alignment.  It will not render it, nor save it.
+Libre Office apparently ignores ShrinkToFit in alignment.  It will not render it, nor save it.
 
-Libre Office ignores any non-solid fill interior pattern.  It will not render it,
+Libre Office apparently ignores any non-solid fill interior pattern.  It will not render it,
 nor save it.
 
-Libre Office ignores individual Protection styles on cells that belong to 
+Libre Office and Open Office apparently ignore and will not render style inheritance as defined in
+the official documentation (http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:style)
+
+Libre Office apparently ignores individual Protection styles on cells that belong to 
 unprotected sheets (OK).  However, when the sheet is protected and the cell has
 a style with a specific Protection element, it behaves as unprotected.  The rest of
 the document behaves as protected in that case (so, the Protected cell is the
