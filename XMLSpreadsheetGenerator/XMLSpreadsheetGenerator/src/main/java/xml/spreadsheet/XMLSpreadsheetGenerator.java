@@ -86,18 +86,31 @@ public class XMLSpreadsheetGenerator {
 	//---------------------------------------------------------------
 	// Class methods
 	
-		
+	
 	/**
 	 * Builds a generator tied to the OutputStream passed as a parameter.
-	 * Sets the <code>INITIALIZATION</code> state.
+	 * Sets the <code>INITIALIZATION</code> state.  Takes the default BUFFER_SIZE.
 	 * @param output Where the generator is going to write its output to.
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
 	public XMLSpreadsheetGenerator(OutputStream output) 
 				throws XMLSpreadsheetException {
+		this(output, BUFFER_SIZE);
+	}
+	
+	/**
+	 * Builds a generator tied to the OutputStream passed as a parameter.
+	 * Sets the <code>INITIALIZATION</code> state.
+	 * @param output Where the generator is going to write its output to.
+	 * @param bufferSize Output buffer size in bytes
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public XMLSpreadsheetGenerator(OutputStream output, int bufferSize) 
+				throws XMLSpreadsheetException {
 		writer = new OutputStreamWriter(
-			new BufferedOutputStream(output, BUFFER_SIZE), CHARSET);
+			new BufferedOutputStream(output, bufferSize), CHARSET);
 		// Initialization state: we can define styles
 		styles = new LinkedList<Style>();
 		// Template engine
