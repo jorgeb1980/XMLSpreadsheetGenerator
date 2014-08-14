@@ -38,15 +38,6 @@ buildscript {
  * Call this task in order to generate the docs/javadoc folder of the project
  */
 task generateJavadocFolder(dependsOn:'build')<< {
-	// Copy all resources generated into ./docs/javadoc
-	/*File docsFolder = new File(project.projectDir.getCanonicalPath() + "/docs/javadoc")
-	println "Erasing ${docsFolder}..."
-	docsFolder.deleteDir()
-	File justBuiltDocs = new File(project.buildDir.getCanonicalPath() + "/docs")
-	String sourceDir = SOURCE_DIR_PATH
-	String destinationDir = DESTINATION_DIR_PATH
-	new AntBuilder().copy(todir: destinationDir) {
-	    fileset(dir: sourceDir)*/
 	File srcFolder = new File(project.projectDir.getCanonicalPath() + "/src/main/java")
 	File docsFolder = new File(project.projectDir.getCanonicalPath() + "/docs/javadoc")
 	ant.javadoc(sourcepath: srcFolder, destdir: docsFolder)
