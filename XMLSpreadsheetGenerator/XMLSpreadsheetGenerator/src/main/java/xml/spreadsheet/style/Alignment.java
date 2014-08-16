@@ -91,7 +91,21 @@ public class Alignment {
 			);
 	}
 	
+	/** Default constructor. */
 	public Alignment() {}
+	
+	/**
+	 * Copy constructor.
+	 * @param alignment Original alignment
+	 */
+	public Alignment(Alignment alignment) {
+		this.horizontal = alignment.horizontal;
+		this.rotate = alignment.rotate;
+		this.shrinkToFit = alignment.shrinkToFit;
+		this.vertical = alignment.vertical;
+		this.verticalText = alignment.verticalText;
+		this.wrapText = alignment.wrapText;
+	}
 	
 	/**
 	 * @param horizontal Specifies the left-to-right alignment of text within a cell

@@ -99,4 +99,20 @@ public class GeneratorTestUtils {
 	public static String getAlignmentAttribute(Element element, String attribute) throws JDOMException {
 		return getChildAttribute("ss:Alignment", element, attribute);
 	}
+	
+	// Style of the bottom border
+	public static String getBorderStyleAttribute(Element cell, String position, String attribute) throws JDOMException {
+		String ret = null;
+		Element style = GeneratorTestUtils.searchStyle(cell.getDocument(), cell);
+		List<Element> bottomBorder = 
+			XmlTestUtils.getDescendants(style, "ss:Borders/ss:Border[@ss:Position='" + position + "']");
+		if (bottomBorder != null && bottomBorder.size() == 1) {
+			ret = XmlTestUtils.getAttributeValue(bottomBorder.get(0), attribute, "ss");
+		}
+		else {
+			fail(); 
+		}
+		return ret;
+	}
+	
 }

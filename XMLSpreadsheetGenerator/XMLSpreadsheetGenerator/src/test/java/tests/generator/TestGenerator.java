@@ -10,6 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ 
 	TestGeneratorStyles.class,
 	TestGeneratorTransitions.class,
+	TestStylesInheritance.class,
 	TestGeneratorMisc.class})
 public class TestGenerator {
 

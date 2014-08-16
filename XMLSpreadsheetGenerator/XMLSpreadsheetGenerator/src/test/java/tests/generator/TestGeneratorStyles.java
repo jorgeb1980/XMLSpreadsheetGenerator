@@ -16,10 +16,7 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
 import org.junit.Test;
-
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 import tests.XmlTestUtils;
 import tests.styles.StyleTestUtils;
@@ -27,16 +24,16 @@ import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Alignment;
-import xml.spreadsheet.style.Border;
-import xml.spreadsheet.style.Borders;
-import xml.spreadsheet.style.Font;
-import xml.spreadsheet.style.Interior;
-import xml.spreadsheet.style.Protection;
 import xml.spreadsheet.style.Alignment.HorizontalAlignment;
+import xml.spreadsheet.style.Border;
 import xml.spreadsheet.style.Border.BorderPosition;
 import xml.spreadsheet.style.Border.BorderWeight;
 import xml.spreadsheet.style.Border.LineStyle;
+import xml.spreadsheet.style.Borders;
+import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Font.VerticalAlignment;
+import xml.spreadsheet.style.Interior;
+import xml.spreadsheet.style.Protection;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
@@ -603,6 +600,169 @@ public class TestGeneratorStyles {
 	}
 	
 	@Test
+	public void testNamedStyles() {
+		try {
+			final String SHEET_CAPTION = "a sheet with named styles";
+			final String RED_COLOR = "#ff0000";
+			final String GREEN_COLOR = "#00ff00";
+			
+			final String RED_STYLE = "Red_background";
+			final String GREEN_STYLE = "Green_background";
+			
+			File file = File.createTempFile("xmlspreadsheet", ".xml");
+			OutputStream os = new FileOutputStream(file);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			
+			Style redInteriorStyle = generator.createStyle(RED_STYLE);
+			Interior redInterior = redInteriorStyle.interior();
+			redInterior.setColor(RED_COLOR);
+			assertTrue(redInterior == redInteriorStyle.interior());
+			
+			Style greenInteriorStyle = generator.createStyle(GREEN_STYLE);
+			Interior greenInterior = greenInteriorStyle.interior();
+			greenInterior.setColor(GREEN_COLOR);
+			assertTrue(greenInterior == greenInteriorStyle.interior());
+			
+			generator.startDocument();
+			generator.startSheet(SHEET_CAPTION);
+			
+			generator.emptyRow();
+			generator.startRow();
+			generator.writeCell(redInteriorStyle, "red background");
+			generator.closeRow();
+			
+			generator.emptyRow();
+			generator.startRow();
+			generator.writeCell(greenInteriorStyle, "green background");
+			generator.closeRow();
+			
+			generator.closeSheet();
+			generator.closeDocument();
+			
+			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
+			// Not empty and correct document
+			Document doc = GeneratorTestUtils.parseDocument(document);
+			assertNotNull(doc);	
+			
+			// rows
+			List<Element> rows = GeneratorTestUtils.searchRows(doc, SHEET_CAPTION);
+			
+			Element cellRedBackground = GeneratorTestUtils.searchCells(rows.get(1)).get(0);
+			assertEquals(RED_COLOR, getInteriorStyleAttribute(cellRedBackground, "Color"));
+			// Make sure the generator has written the solid pattern too
+			assertEquals("Solid", getInteriorStyleAttribute(cellRedBackground, "Pattern"));
+			
+			Element cellGreenBackground = GeneratorTestUtils.searchCells(rows.get(3)).get(0);
+			assertEquals(GREEN_COLOR, getInteriorStyleAttribute(cellGreenBackground, "Color"));
+			// Make sure the generator has written the solid pattern too
+			assertEquals("Solid", getInteriorStyleAttribute(cellGreenBackground, "Pattern"));
+			
+			Element greenStyle = GeneratorTestUtils.searchStyle(doc, greenInteriorStyle.getId());
+			Element redStyle = GeneratorTestUtils.searchStyle(doc, redInteriorStyle.getId());
+			
+			assertEquals(GREEN_STYLE, XmlTestUtils.getAttributeValue(greenStyle, "Name", "ss"));
+			assertEquals(RED_STYLE, XmlTestUtils.getAttributeValue(redStyle, "Name", "ss"));
+			
+			os.write(baos.toByteArray());			
+			os.close();
+			System.out.println("Created file with named styles -> " + file.getAbsolutePath());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}	
+	}
+	
+	@Test 
+	public void testCombinedNamedStyles() {
+		try {
+			final String SHEET_CAPTION = "a sheet with combined named styles";
+			final String BLUE_COLOR = "#0000ff";
+			final String RED_COLOR = "#ff0000";
+			final String BLUE_STYLE = "Blue background";
+			final String RED_STYLE = "Red background";
+			
+			File file = File.createTempFile("xmlspreadsheet", ".xml");
+			OutputStream os = new FileOutputStream(file);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			
+			Style blueBackground = generator.createStyle(BLUE_STYLE);
+			Interior blueInterior = blueBackground.interior();
+			blueInterior.setColor(BLUE_COLOR);
+			assertTrue(blueInterior == blueBackground.interior());
+			
+			Style redBackground = generator.createStyle(RED_STYLE);
+			Interior redInterior = redBackground.interior();
+			redInterior.setColor(RED_COLOR);
+			assertTrue(redInterior == redBackground.interior());
+			
+			generator.startDocument();
+			generator.startSheet(SHEET_CAPTION);
+			generator.emptyRow();
+			generator.startRow(null, null, null, null, blueBackground);
+			// blue
+			generator.writeEmptyCell();
+			// red
+			generator.writeEmptyCell(redBackground);
+			// blue
+			generator.writeEmptyCell();
+			// red
+			generator.writeEmptyCell(redBackground);
+			// blue
+			generator.writeEmptyCell();
+			// red
+			generator.writeEmptyCell(redBackground);
+			// blue
+			generator.writeEmptyCell();
+			// red
+			generator.writeEmptyCell(redBackground);
+			// blue
+			generator.writeEmptyCell();
+			// red
+			generator.writeEmptyCell(redBackground);
+			generator.closeRow();
+			generator.closeSheet();
+			generator.closeDocument();
+			
+			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
+			// Not empty and correct document
+			Document doc = GeneratorTestUtils.parseDocument(document);
+			assertNotNull(doc);		
+			
+			List<Element> rows = GeneratorTestUtils.searchRows(doc, SHEET_CAPTION);
+			assertEquals(2, rows.size());
+			
+			Element row = rows.get(1);
+						
+			assertEquals(BLUE_COLOR, getInteriorStyleAttribute(row, "Color"));
+			
+			List<Element> cells = GeneratorTestUtils.searchCells(row);
+			// 2nd, 4th, 6th, 8th, 10th cells have the same style
+			assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(1), "Color"));
+			assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(3), "Color"));
+			assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(5), "Color"));
+			assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(7), "Color"));
+			assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(9), "Color"));
+			
+			Element blueStyle = GeneratorTestUtils.searchStyle(doc, blueBackground.getId());
+			Element redStyle = GeneratorTestUtils.searchStyle(doc, redBackground.getId());
+			
+			assertEquals(BLUE_STYLE, XmlTestUtils.getAttributeValue(blueStyle, "Name", "ss"));
+			assertEquals(RED_STYLE, XmlTestUtils.getAttributeValue(redStyle, "Name", "ss"));
+			
+			os.write(baos.toByteArray());			
+			os.close();
+			System.out.println("Created file with combined named styles -> " + file.getAbsolutePath());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
 	public void testCombinedStyles() {
 		try {
 			final String SHEET_CAPTION = "a sheet with combined styles";
@@ -675,69 +835,6 @@ public class TestGeneratorStyles {
 			os.write(baos.toByteArray());			
 			os.close();
 			System.out.println("Created file with combined styles -> " + file.getAbsolutePath());
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	}
-	
-	@Test 
-	public void testParentStyle() {
-		try {
-			final String GREEN_COLOR = "#00ff00";
-			final String SHEET_CAPTION = "a sheet with parent styles";
-			
-			File file = File.createTempFile("xmlspreadsheet", ".xml");
-			OutputStream os = new FileOutputStream(file);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
-			
-			Style color = generator.createStyle();
-			Font colorFont = color.font();
-			colorFont.setColor(GREEN_COLOR);
-			assertTrue(colorFont == color.font());
-			
-			
-			Style rightStyle = generator.createStyle(color);
-			Alignment rightAlignment = rightStyle.alignment();
-			rightAlignment.setHorizontal(HorizontalAlignment.Right);
-			assertTrue(rightAlignment == rightStyle.alignment());		
-			
-			
-			generator.startDocument();
-			generator.startSheet(SHEET_CAPTION);
-			
-			generator.startRow();
-			generator.writeCell(color, "aaaa");
-			generator.closeRow();
-			
-			generator.emptyRow();
-			generator.emptyRow();
-			generator.emptyRow();
-			
-			generator.startRow();
-			generator.writeCell(rightStyle, "bbbb");
-			generator.closeRow();
-			
-			
-			generator.closeSheet();
-			generator.closeDocument();
-			
-			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
-			// Not empty and correct document
-			Document doc = GeneratorTestUtils.parseDocument(document);
-			assertNotNull(doc);			
-			
-			// Further validations
-			// does the right alignment style have a parent?
-			Element rightStyleElement = searchStyle(doc, rightStyle.getId());
-			assertEquals(color.getId(), XmlTestUtils.getAttributeValue(rightStyleElement, "Parent", "ss"));
-			
-			os.write(baos.toByteArray());			
-			os.close();
-			System.out.println("Created file with parent styles -> " + file.getAbsolutePath());
-			
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -877,20 +974,6 @@ public class TestGeneratorStyles {
 		}
 	}
 	
-	// Style of the bottom border
-	private String getBorderStyleAttribute(Element cell, String position, String attribute) throws JDOMException {
-		String ret = null;
-		Element style = GeneratorTestUtils.searchStyle(cell.getDocument(), cell);
-		List<Element> bottomBorder = 
-			XmlTestUtils.getDescendants(style, "ss:Borders/ss:Border[@ss:Position='" + position + "']");
-		if (bottomBorder != null && bottomBorder.size() == 1) {
-			ret = XmlTestUtils.getAttributeValue(bottomBorder.get(0), attribute, "ss");
-		}
-		else {
-			fail(); 
-		}
-		return ret;
-	}
 	
 	
 }

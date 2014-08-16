@@ -11,7 +11,11 @@ Libre Office apparently ignores any non-solid fill interior pattern.  It will no
 nor save it.
 
 Libre Office and Open Office apparently ignore and will not render style inheritance as defined in
-the official documentation (http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:style)
+the official documentation (http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:style).
+However, I have decided to implement it just by programmatically copying every element inside the
+parent style to the children.  This would always lead to correct style definitions by
+the documentation, just that they would be redundant given a proper implementation of
+style inheritance. 
 
 Libre Office apparently ignores individual Protection styles on cells that belong to 
 unprotected sheets (OK).  However, when the sheet is protected and the cell has

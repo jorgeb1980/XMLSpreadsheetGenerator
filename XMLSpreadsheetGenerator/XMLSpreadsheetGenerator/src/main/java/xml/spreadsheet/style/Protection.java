@@ -34,7 +34,17 @@ public class Protection {
 	//-------------------------------------------------------------------
 	// Class methods
 	
+	/** Default constructor. */
 	public Protection() {}
+	
+	/**
+	 * Copy constructor.
+	 * @param protection Original protection
+	 */
+	public Protection(Protection protection) {
+		this.hideFormula = protection.hideFormula;
+		this.protectedCell = protection.protectedCell;
+	}
 
 	/**
 	 * @param protectedCell the protectedCell to set

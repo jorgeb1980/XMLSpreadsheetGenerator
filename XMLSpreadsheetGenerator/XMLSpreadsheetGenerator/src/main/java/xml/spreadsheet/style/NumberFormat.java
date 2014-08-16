@@ -73,7 +73,16 @@ public class NumberFormat {
 	//-------------------------------------------------------------------
 	// Class methods
 	
+	/** Default constructor. */
 	public NumberFormat() {}
+	
+	/**
+	 * Copy constructor.
+	 * @param numberFormat Original number format to copy
+	 */
+	public NumberFormat(NumberFormat numberFormat) {
+		this.format = numberFormat.format;
+	}
 	
 	@Override
 	public String toString() {

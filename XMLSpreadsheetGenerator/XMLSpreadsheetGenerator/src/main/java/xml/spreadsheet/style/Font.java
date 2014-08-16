@@ -140,7 +140,27 @@ public class Font {
 				add("x:Family", family != null?family.toString():null));
 	}
 	
+	/** Default constructor. */
 	public Font() {}
+	
+	/**
+	 * Copy constructor.
+	 * @param font Original font to copy
+	 */
+	public Font(Font font) {
+		this.bold = font.bold;
+		this.charSet = font.charSet;
+		this.color = font.color;
+		this.family = font.family;
+		this.fontName = font.fontName;
+		this.italic = font.italic;
+		this.outline = font.outline;
+		this.shadow = font.shadow;
+		this.size = font.size;
+		this.strikeThrough = font.strikeThrough;
+		this.underline = font.underline;
+		this.verticalAlign = font.verticalAlign;
+	}
 	
 	/**
 	 * @param bold Specifies the bold state of the font. If the parent 
