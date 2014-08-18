@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xml.spreadsheet.XMLSpreadsheetException;
+import xml.spreadsheet.style.Border.BorderPosition;
 
 /**
  * Defines the border properties for cells referencing this style. The Borders 
@@ -24,9 +25,22 @@ public class Borders {
 	//-----------------------------------------------------------
 	// Class methods
 	
-	
+	/** Default constructor. */
 	public Borders() {
 		borders = new HashMap<Border.BorderPosition, Border>();
+	}
+	
+	/**
+	 * Copy constructor.
+	 * @param originalBorders Original borders
+	 */
+	public Borders(Borders originalBorders) {
+		this();
+		for (BorderPosition originalPosition: originalBorders.borders.keySet()) {
+			Border originalBorder = originalBorders.borders.get(originalPosition);
+			Border border = new Border(originalBorder);
+			this.borders.put(originalPosition, border);
+		}		
 	}
 	
 	/**

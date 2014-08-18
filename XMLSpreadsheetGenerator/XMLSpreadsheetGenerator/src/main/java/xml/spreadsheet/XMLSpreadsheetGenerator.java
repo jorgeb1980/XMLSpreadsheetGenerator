@@ -31,7 +31,7 @@ import static xml.spreadsheet.utils.AssertionHelper.*;
  * <br/>
  * <code>
  * Constructor -> [Create style]* -> startDocument -> 
- * [openSheet -> [column]* -> [openRow -> [openCell -> closeCell]* -> closeRow]* -> closeSheet ]* -> 
+ * [openSheet -> [column]* -> [openRow -> [writeCell]* -> closeRow]* -> closeSheet ]* -> 
  * closeDocument
  * </code><br/>
  * The Generator will throw a <code>XMLSpreadsheetException</code> if 
@@ -86,7 +86,6 @@ public class XMLSpreadsheetGenerator {
 	//---------------------------------------------------------------
 	// Class methods
 	
-	
 	/**
 	 * Builds a generator tied to the OutputStream passed as a parameter.
 	 * Sets the <code>INITIALIZATION</code> state.  Takes the default BUFFER_SIZE.
@@ -115,37 +114,82 @@ public class XMLSpreadsheetGenerator {
 		styles = new LinkedList<Style>();
 		// Template engine
 		engine = TemplateEngineFactory.factory().engine();
-		// Create the date format
+		
+		// Default styles
+		
+		// LibreOffice and OpenOffice engine expect some 'Default' empty style to
+		//	exist
+		createStyle("Default", "Default", null);
+		// Create the default date format
 		dateFormat = createStyle();
 		dateFormat.numberFormat().setFormat(Format.LongDate);
 	}
 	
 	/**
-	 * This method creates a style attached to this spreadsheet generator object,
+	 * This method creates a named style attached to this spreadsheet generator object,
 	 * extending the specified parent style.
 	 * It is only able to do that if the generator is in INITIALIZATION state
+	 * @param name Style name
 	 * @param parent Parent style 
-	 * @return Empty style object
+	 * @return Empty style object, inheriting parent's attributes
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public Style createStyle(Style parent) throws XMLSpreadsheetException {
+	public Style createStyle(String name, Style parent) throws XMLSpreadsheetException {
+		return createStyle("ce" + Integer.toString(styleCounter++), name, parent);
+	}
+	
+	/**
+	 * This method creates a named style attached to this spreadsheet generator object,
+	 * extending the specified parent style.
+	 * It is only able to do that if the generator is in INITIALIZATION state
+	 * @param name Style name
+	 * @param parent Parent style 
+	 * @return Empty style object, inheriting parent's attributes
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	private Style createStyle(String id, String name, Style parent) throws XMLSpreadsheetException {
 		assertion(state == GeneratorState.INITIALIZATION, 
 				"It is not possible to add styles to a generator in state: " + state);
-		Style style = new Style("ce" + Integer.toString(styleCounter++), parent);
+		Style style = new Style(id, name, parent);
 		styles.add(style);
 		return style;
 	}
 	
 	/**
-	 * This method creates a style attached to this spreadsheet generator object.
+	 * This method creates an anonymous style attached to this spreadsheet generator object,
+	 * extending the specified parent style.
+	 * It is only able to do that if the generator is in INITIALIZATION state
+	 * @param parent Parent style 
+	 * @return Empty style object, inheriting parent's attributes
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public Style createStyle(Style parent) throws XMLSpreadsheetException {
+		return createStyle(null, parent);
+	}
+	
+	/**
+	 * This method creates an anonymous style attached to this spreadsheet generator object.
 	 * It is only able to do that if the generator is in INITIALIZATION state 
 	 * @return Empty style object
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
 	public Style createStyle() throws XMLSpreadsheetException {
-		return createStyle(null);
+		return createStyle(null, null);
+	}
+	
+	/**
+	 * This method creates a named style attached to this spreadsheet generator object.
+	 * It is only able to do that if the generator is in INITIALIZATION state 
+	 * @return Empty style object
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises
+	 */
+	public Style createStyle(String name) throws XMLSpreadsheetException {
+		return createStyle(name, null);
 	}
 	
 	// Flushes a string down the output stream
@@ -577,7 +621,7 @@ public class XMLSpreadsheetGenerator {
 		flush(XmlHelper.element("ss:Cell", 
 			new Table<Object>().add("ss:StyleID", style!=null?style.getId():null), 
 			XmlHelper.element("ss:Data", 
-				new Table<Object>().add("ss:Type", type.toString()), value)));
+				new Table<Object>().add("ss:Type", type.toString()), XmlHelper.cdata(value))));
 	}
 	
 	

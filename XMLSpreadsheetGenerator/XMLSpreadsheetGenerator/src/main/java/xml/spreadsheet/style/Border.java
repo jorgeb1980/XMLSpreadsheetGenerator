@@ -102,6 +102,17 @@ public class Border {
 	Border(BorderPosition position) {
 		this.position = position;
 	}
+	
+	/**
+	 * Copy constructor.
+	 * @param border original border
+	 */
+	Border(Border border) {
+		this.color = border.color;
+		this.lineStyle = border.lineStyle;
+		this.position = border.position;
+		this.weight = border.weight;
+	}
 
 	/**
 	 * @param color Specifies the color of this border. This value can be, among other things,

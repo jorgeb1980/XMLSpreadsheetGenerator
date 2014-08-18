@@ -58,7 +58,17 @@ public class Interior {
 				add("ss:Pattern", pattern != null?pattern.toString():null));
 	}
 
+	/** Default constructor. */
 	public Interior () {}
+	
+	/**
+	 * Copy constructor.
+	 * @param interior Original interior to copy
+	 */
+	public Interior(Interior interior) {
+		this.color = interior.color;
+		this.pattern = interior.pattern;
+	}
 	
 	/**
 	 * @param color Specifies the fill color of the cell. This value can be a 

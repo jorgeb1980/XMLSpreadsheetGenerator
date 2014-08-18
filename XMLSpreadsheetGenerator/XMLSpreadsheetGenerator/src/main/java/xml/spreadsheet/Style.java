@@ -28,8 +28,9 @@ public class Style {
 	/** Unique id */
 	private String id;
 	
-	/** Name */
-	//private String name = "";
+	/** Name.  This will be used by the software to identify named styles and
+	 * offer them to the user in some dialogs. */
+	private String name = "";
 	
 	/** Parent */
 	private String parent = null;
@@ -66,14 +67,62 @@ public class Style {
 	}
 	
 	/**
+	 * Standalone, named style
+	 * @param id Current style id
+	 * @param name Style name
+	 */
+	Style(String id, String name) {
+		this(id);
+		this.name = name;
+	}
+	
+	/**
 	 * Style built on another available style
 	 * @param id Current style id
 	 * @param parent Parent style
 	 */
 	Style(String id, Style parent) {
-		this(id);
+		this(id, null, parent);
+	}
+	
+	/**
+	 * Style built on another available style
+	 * @param id Current style id
+	 * @param name Style name
+	 * @param parent Parent style
+	 */
+	Style(String id, String name, Style parent) {
+		this(id, name);
 		if (parent != null) {
 			this.parent = parent.getId();
+			// Since available software won't implement this, the solution we
+			//	will take is this:
+			// The official documentation defines style inheritance, and makes
+			//	clear that all the styles can be redefined in the child style.
+			//	Since this is possible, we will simply copy the parent style
+			//	attributes to the child, and let it redefine them later if they
+			//	fell like it.  This way	we have a correct implementation of the style 
+			//	inheritance contract (just by manual means under the hood)
+			
+			// Copy all the attributes
+			if (parent.alignment != null) {
+				this.alignment = new Alignment(parent.alignment);
+			}
+			if (parent.borders != null) {
+				this.borders = new Borders(parent.borders);
+			}
+			if (parent.font != null) {
+				this.font = new Font(parent.font); 
+			}
+			if (parent.interior != null) {
+				this.interior = new Interior(parent.interior);
+			}
+			if (parent.numberFormat != null) {
+				this.numberFormat = new NumberFormat(parent.numberFormat);
+			}
+			if (parent.protection != null) {
+				this.protection = new Protection(parent.protection);
+			}
 		}
 	}
 	
@@ -132,8 +181,10 @@ public class Style {
 		return XmlHelper.element("ss:Style", 
 			new Table<Object>().
 				add("ss:ID", id).
-				//add("ss:Name", name).
+				add("ss:Name", name).
 				add("ss:Parent", parent),
+			// Compose every inner style element XML representation inside 
+			//	the Style element
 			new StringBuilder()
 				.append(alignment != null?alignment.toString():"")
 				.append(borders != null?borders.toString():"")

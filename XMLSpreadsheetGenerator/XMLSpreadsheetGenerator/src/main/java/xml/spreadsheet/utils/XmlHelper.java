@@ -28,6 +28,23 @@ public class XmlHelper {
 		sb.append("\"");
 	}
 	
+	/**
+	 * Encloses a string into a CDATA construct as defined in its 
+	 * <a href="http://www.w3schools.com/xml/xml_cdata.asp">documentation</a> 
+	 * @param string Original string
+	 * @return String enclosed by CDATA structure
+	 */
+	public static String cdata(String string) {
+		String ret = null;
+		if (string != null) {
+			StringBuilder sb = new StringBuilder("<![CDATA[");
+			sb.append(string);
+			sb.append("]]>");
+			ret = sb.toString();
+		}
+		return ret;
+	}
+
 	/** 
 	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String

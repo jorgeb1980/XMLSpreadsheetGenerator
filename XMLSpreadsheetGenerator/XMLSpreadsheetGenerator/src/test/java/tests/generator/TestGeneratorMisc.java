@@ -84,8 +84,8 @@ public class TestGeneratorMisc {
 	public void createFileCells() {
 		try {
 			
-			final String TEXT_FIRST_ROW = "aaa";
-			final String TEXT_FOURTH_ROW = "fesfefsf";
+			final String TEXT_FIRST_ROW = "a<<4~~4~~aa";
+			final String TEXT_FOURTH_ROW = "fesfe>>&&fsf";
 			
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
@@ -139,7 +139,7 @@ public class TestGeneratorMisc {
 	public void createFileSheets() {
 		try {
 			
-			final String TEXT_FIRST_ROW = "aaa";
+			final String TEXT_FIRST_ROW = "<aaa<>";
 			final Double NUMBER_THIRD_SHEET = 123.3d;
 			
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
