@@ -3,22 +3,23 @@ Issues related to the rendering of XML spreadsheet documents in the software use
 (The following applies to Libre Office v4.1.4.2, Open Office v4.0.1) 
 
 Libre Office apparently ignores some border styles, rendering (and then saving them) as either
-continuous or double border.
+continuous or double border (OK with documentation, however).
 
-Libre Office apparently ignores ShrinkToFit in alignment.  It will not render it, nor save it.
+Libre Office apparently ignores ShrinkToFit in alignment.  It will not render it, nor 
+save it (OK with documentation, however).
 
 Libre Office apparently ignores any non-solid fill interior pattern.  It will not render it,
-nor save it.
+nor save it (OK with documentation, however).
 
-Libre Office and Open Office apparently ignore and will not render style inheritance as defined in
+Libre Office and Open Office apparently ignore and will not render style inheritance exactly as defined in
 the official documentation (http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:style).
-However, I have decided to implement it just by programmatically copying every element inside the
+I have decided to implement it just like both engines do, by copying every element inside the
 parent style to the children.  This would always lead to correct style definitions by
 the documentation, just that they would be redundant given a proper implementation of
 style inheritance. 
 
 Libre Office apparently ignores individual Protection styles on cells that belong to 
-unprotected sheets (OK).  However, when the sheet is protected and the cell has
+unprotected sheets (OK with documentation).  However, when the sheet is protected and the cell has
 a style with a specific Protection element, it behaves as unprotected.  The rest of
 the document behaves as protected in that case (so, the Protected cell is the
 only one that can be modified).  The same thing happens with Open Office.

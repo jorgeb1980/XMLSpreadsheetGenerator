@@ -100,6 +100,10 @@ public class GeneratorTestUtils {
 		return getChildAttribute("ss:Alignment", element, attribute);
 	}
 	
+	public static String getNumberFormatAttribute(Element element, String attribute) throws JDOMException {
+		return getChildAttribute("ss:NumberFormat", element, attribute);
+	}
+	
 	// Style of the bottom border
 	public static String getBorderStyleAttribute(Element cell, String position, String attribute) throws JDOMException {
 		String ret = null;
