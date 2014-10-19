@@ -42,7 +42,7 @@ buildscript {
 task generateJavadocFolder(dependsOn:'build')<< {
 	File srcFolder = new File(project.projectDir.getCanonicalPath() + "/src/main/java")
 	File docsFolder = new File(project.projectDir.getCanonicalPath() + "/docs/javadoc")
-	ant.javadoc(sourcepath: srcFolder, destdir: docsFolder)
+	ant.javadoc(classpath: configurations.compile.asPath, sourcepath: srcFolder, destdir: docsFolder)
 }
 
 

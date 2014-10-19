@@ -16,8 +16,9 @@ public interface TemplateEngine {
 	 * Returns the value of the template, after making the proper substitutions
 	 * @param templateId Template identifier according to template engine
 	 * rules
-	 * @param values Substitutions to apply (key -> value)
+	 * @param values Substitutions to apply (key -&gt; value)
 	 * @return Value of the template after making the proper substitutions
+	 * @throws TemplateException If found any error (no template found, etc.)
 	 */
 	String applyTemplate(String templateId, Map<String, String> values) throws TemplateException;
 	
@@ -26,6 +27,7 @@ public interface TemplateEngine {
 	 * @param templateId Template identifier according to template engine
 	 * rules
 	 * @return Value of the template 
+	 * @throws TemplateException If found any error (no template found, etc.)
 	 */
 	String applyTemplate(String templateId) throws TemplateException;
 	

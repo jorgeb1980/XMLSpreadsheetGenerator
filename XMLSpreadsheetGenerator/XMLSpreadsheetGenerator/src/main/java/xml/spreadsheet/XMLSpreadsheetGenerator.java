@@ -30,8 +30,8 @@ import static xml.spreadsheet.utils.AssertionHelper.*;
  * The generator will follow this state machine:
  * <br/>
  * <code>
- * Constructor -> [Create style]* -> startDocument -> 
- * [openSheet -> [column]* -> [openRow -> [writeCell]* -> closeRow]* -> closeSheet ]* -> 
+ * Constructor -&gt; [Create style]* -&gt; startDocument -&gt; 
+ * [openSheet -&gt; [column]* -&gt; [openRow -&gt; [writeCell]* -&gt; closeRow]* -&gt; closeSheet ]* -&gt; 
  * closeDocument
  * </code><br/>
  * The Generator will throw a <code>XMLSpreadsheetException</code> if 
@@ -183,7 +183,8 @@ public class XMLSpreadsheetGenerator {
 	
 	/**
 	 * This method creates a named style attached to this spreadsheet generator object.
-	 * It is only able to do that if the generator is in INITIALIZATION state 
+	 * It is only able to do that if the generator is in INITIALIZATION state
+	 * @param name Name that will be shown for the style 
 	 * @return Empty style object
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
@@ -397,7 +398,8 @@ public class XMLSpreadsheetGenerator {
 	/**
 	 * Starts a columns section (must be included in a sheet, before the first row
 	 * is written)
-	 * @throws XMLSpreadsheetException
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises 
 	 */
 	public void startColumns() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, 
@@ -407,7 +409,8 @@ public class XMLSpreadsheetGenerator {
 	/**
 	 * Closes a columns section (must be included in a sheet, before the first row
 	 * is written)
-	 * @throws XMLSpreadsheetException
+	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * any other library-related exception arises 
 	 */
 	public void closeColumns() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, 
@@ -449,7 +452,7 @@ public class XMLSpreadsheetGenerator {
 			XML Spreadsheet document is considered invalid. An easy way to create overlap is 
 			through careless use of the Span attribute. 
 			
-			1 <= Index <= Total columns
+			1 &lt;= Index &lt;= Total columns
 	 * @param span (optional) Specifies the number of adjacent columns with the same formatting as 
 	 * this column. When a Span attribute is used, the spanned column elements are not written out.<br/>
 		As mentioned in the Index tag, columns must not overlap. Doing so results in an XML 
@@ -602,7 +605,7 @@ public class XMLSpreadsheetGenerator {
 	
 	/**
 	 * Writes an empty cell to the document.
-	 * @style Cell style
+	 * @param style Cell style
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */

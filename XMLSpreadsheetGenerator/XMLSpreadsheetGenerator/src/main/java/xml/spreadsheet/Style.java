@@ -126,7 +126,7 @@ public class Style {
 		}
 	}
 	
-	/** Creates an Alignment element */
+	/** @return an Alignment element */
 	public Alignment alignment() {
 		if (alignment == null) {
 			alignment = new Alignment();
@@ -134,7 +134,7 @@ public class Style {
 		return  alignment;
 	}
 	
-	/** Creates a Borders element */
+	/** @return a Borders element */
 	public Borders borders() {
 		if (borders == null) {
 			borders = new Borders();
@@ -142,7 +142,7 @@ public class Style {
 		return borders;
 	}
 	
-	/** Creates a Font element */
+	/** @return a Font element */
 	public Font font() {
 		if (font == null) {
 			font = new Font();
@@ -150,7 +150,7 @@ public class Style {
 		return font;
 	}
 	
-	/** Creates an Interior element */
+	/** @return an Interior element */
 	public Interior interior() {
 		if (interior == null) {
 			interior = new Interior();
@@ -158,7 +158,7 @@ public class Style {
 		return interior;
 	}
 	
-	/** Creates a NumberFormat element */
+	/** @return a NumberFormat element */
 	public NumberFormat numberFormat() {
 		if (numberFormat == null) {
 			numberFormat = new NumberFormat();
@@ -167,7 +167,7 @@ public class Style {
 		
 	}
 	
-	/** Creates a Protection element */
+	/** @return a Protection element */
 	public Protection protection() {
 		if (protection == null) {
 			protection = new Protection();
