@@ -10,6 +10,7 @@ repositories {
 }
 
 sourceCompatibility = 1.6
+// Will fail tests if updated to target 1.7 ...
 targetCompatibility = 1.6
 version = '1.0'
 group = 'xml.spreadsheet'
