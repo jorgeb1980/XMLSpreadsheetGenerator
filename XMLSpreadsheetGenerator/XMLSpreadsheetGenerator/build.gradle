@@ -9,6 +9,7 @@ repositories {
 }
 
 sourceCompatibility = 1.6
+targetCompatibility = 1.6
 version = '1.0'
 group = 'xml.spreadsheet'
 
@@ -30,7 +31,7 @@ buildscript {
 	    mavenCentral()
 	}
 	dependencies {		
-		classpath 'com.eriwen:gradle-cobertura-plugin:1.1.0' //'com.eriwen:gradle-cobertura-plugin:1.1.1'
+		classpath 'com.eriwen:gradle-cobertura-plugin:1.1.1' //'com.eriwen:gradle-cobertura-plugin:1.1.1'
 	}
 }
 
