@@ -24,6 +24,7 @@ public class ClasspathFileReader {
 	 * @param path Resource path inside the classpath
 	 * @return Contents of the resource
 	 * @throws IOException In case of any input/output exception
+	 * @throws TemplateException If found any error applying the template
 	 */
 	public static String retrieveFile(String path) 
 			throws IOException, TemplateException {

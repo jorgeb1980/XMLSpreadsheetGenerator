@@ -62,6 +62,7 @@ public class TemplateEngineFactory {
 	/**
 	 * Public entry point to get a reference to the factory singleton
 	 * @return Singleton of the template engines factory
+	 * @throws XMLSpreadsheetException If found any error instantiating the factory
 	 */
 	public static TemplateEngineFactory factory() throws XMLSpreadsheetException {
 		if (factory == null) {
@@ -73,6 +74,7 @@ public class TemplateEngineFactory {
 	/**
 	 * Returns the default template engine
 	 * @return Instance of a template engine
+	 * @throws XMLSpreadsheetException If found any error instantiating the engine
 	 */
 	public TemplateEngine engine() throws XMLSpreadsheetException {
 		if (engines == null) {
@@ -91,11 +93,11 @@ public class TemplateEngineFactory {
 	 * Returns the engine identified by the parameter.
 	 * @param id Template identifier
 	 * @return Requested implementation of the template engine
+	 * @throws TemplateException If found any error instantiating the engine
 	 */
 	public TemplateEngine engine(String id) throws TemplateException {
 		String engineId = PROPERTY_ENGINE_PREFIX + id;
 		if (!engines.containsKey(engineId)) {
-			//throw new NullPointerException("No template engine found for id " + id);
 			// Try to instantiate it
 			throw new TemplateException("No template engine registered for id " + id);
 		}		

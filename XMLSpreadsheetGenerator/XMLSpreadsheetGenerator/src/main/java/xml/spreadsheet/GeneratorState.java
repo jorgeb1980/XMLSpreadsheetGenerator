@@ -52,8 +52,15 @@ enum GeneratorState {
 		// There is no valid transition from DONE state
 		if (!valid) {
 			// Inform valid states from the current state			
-			StringBuilder sb = new StringBuilder("Invalid transition: " 
-					+ previous + " -> " + next + System.getProperty("line.separator") + "Valid transitions from " + previous + ": ");
+			StringBuilder sb = new StringBuilder(200);
+			sb.append("Invalid transition: "); 
+			sb.append(previous);
+			sb.append(" -> ");
+			sb.append(next);
+			sb.append(System.getProperty("line.separator"));
+			sb.append("Valid transitions from ");
+			sb.append(previous);
+			sb.append(": ");
 			for (GeneratorState state: previous.states) {
 				sb.append(System.getProperty("line.separator"));
 				sb.append(state);

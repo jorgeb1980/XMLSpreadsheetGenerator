@@ -67,6 +67,8 @@ public class PropertiesReader {
 	 * Returns the requested property value
 	 * @param property Name of the property
 	 * @return Value of the property
+	 * @throws XMLSpreadsheetException If had any problem finding the
+	 * properties file
 	 */
 	public static String property(String property)
 			throws XMLSpreadsheetException {
@@ -78,7 +80,8 @@ public class PropertiesReader {
 	 * the order the user wrote the properties in at the .properties file. 
 	 * @param prefix Property prefix
 	 * @return List of properties with that exact prefix, ordered by their index
-	 * @throws XMLSpreadsheetException
+	 * @throws XMLSpreadsheetException If had any problem finding the
+	 * properties file
 	 */
 	public static List<String> propertiesByPrefix(String prefix)
 			throws XMLSpreadsheetException {
