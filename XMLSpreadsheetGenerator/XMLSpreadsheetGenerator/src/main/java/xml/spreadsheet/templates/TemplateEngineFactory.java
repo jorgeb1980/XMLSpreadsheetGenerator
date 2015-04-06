@@ -98,7 +98,6 @@ public class TemplateEngineFactory {
 	public TemplateEngine engine(String id) throws TemplateException {
 		String engineId = PROPERTY_ENGINE_PREFIX + id;
 		if (!engines.containsKey(engineId)) {
-			//throw new NullPointerException("No template engine found for id " + id);
 			// Try to instantiate it
 			throw new TemplateException("No template engine registered for id " + id);
 		}		
