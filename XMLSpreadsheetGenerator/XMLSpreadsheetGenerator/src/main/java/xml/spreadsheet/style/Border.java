@@ -87,10 +87,10 @@ public class Border {
 	 *  Specifies the weight (or thickness) of this border. This measurement 
 	 *  is specified in points
 
-			0—Hairline
-			1—Thin
-			2—Medium
-			3—Thick 
+			0-Hairline
+			1-Thin
+			2-Medium
+			3-Thick 
 	 */
 	private Double weight = null;
 	
@@ -138,13 +138,13 @@ public class Border {
 	/**
 	 * @param weight Specifies the weight (or thickness) of this border. 
 	 * This measurement is specified in points, and the following values map to: <br/>
-			0—Hairline
+			0-Hairline
 			<br/>
-			1—Thin
+			1-Thin
 			<br/>
-			2—Medium
+			2-Medium
 			<br/>
-			3—Thick 
+			3-Thick 
 	 */
 	public void setWeight(double weight) {
 		this.weight = weight;
