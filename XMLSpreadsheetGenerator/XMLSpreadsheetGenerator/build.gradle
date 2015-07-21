@@ -3,6 +3,7 @@ apply plugin: 'java'
 // and bold enough to edit with vim)
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'cobertura'
 
 repositories {
     mavenCentral()
@@ -47,4 +48,3 @@ task generateJavadocFolder(dependsOn:'build')<< {
 }
 
 
-apply plugin: 'cobertura'

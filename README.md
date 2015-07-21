@@ -1,4 +1,4 @@
-XMLSpreadsheetGenerator
+XMLSpreadsheetGenerator [![Build Status](https://drone.io/github.com/jorgeb1980/XMLSpreadsheetGenerator/status.png)](https://drone.io/github.com/jorgeb1980/XMLSpreadsheetGenerator/latest)
 =======================
 
 XMLSpreadsheetGenerator - Java library that writes XML spreadsheet documents according to Excel 2003 specification
