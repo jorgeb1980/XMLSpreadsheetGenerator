@@ -105,53 +105,53 @@ public class XmlHelper {
 	/**
 	 * Creates an empty and closed xml node with the indicated attributes
 	 * @param elementName Name of the element
-	 * @param closure Table with the attributes
+	 * @param table Table with the attributes
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Table<Object> closure) {
-		return element(elementName, closure, null, true);		
+	public static String element(String elementName, Table<Object> table) {
+		return element(elementName, table, null, true);		
 	}
 	
 	/**
 	 * Creates an empty xml node with the indicated attributes
 	 * @param elementName Name of the element
-	 * @param closure Table with the attributes
+	 * @param table Table with the attributes
 	 * @param close If it is true, the method closes the xml node; if false, it
 	 * does not
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Table<Object> closure, boolean close) {
-		return element(elementName, closure, null, close);		
+	public static String element(String elementName, Table<Object> table, boolean close) {
+		return element(elementName, table, null, close);		
 	}
 	
 	/**
 	 * Creates a closed xml node with the indicated attributes and content
 	 * @param elementName Name of the element
-	 * @param closure Table with the attributes
+	 * @param table Table with the attributes
 	 * @param content Content of the XML node 
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Table<Object> closure, 
+	public static String element(String elementName, Table<Object> table, 
 			String content) {
-		return element(elementName, closure, content, true);
+		return element(elementName, table, content, true);
 	}
 	
 	/**
 	 * Creates an xml node with the indicated attributes and content
 	 * @param elementName Name of the element
-	 * @param closure Table with the attributes
+	 * @param table Table with the attributes
 	 * @param content Content of the XML node 
 	 * @param close If it is true, the method closes the xml node; if false, it
 	 * does not
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Table<Object> closure, 
+	public static String element(String elementName, Table<Object> table, 
 			String content, boolean close) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<");
 		sb.append(elementName);
-		if (closure != null) {
-			Map<String, Object> map = closure.map();
+		if (table != null) {
+			Map<String, Object> map = table.map();
 			if (map != null && map.size() != 0) {
 				sb.append(" ");
 				for (String key: map.keySet()) {
