@@ -20,6 +20,8 @@ public class TestGeneratorTransitions {
 		try {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
+			// Don't mind here to have a warning that the resource is never closed
+			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.startDocument();
 			generator.startSheet("this will fail");
@@ -39,6 +41,8 @@ public class TestGeneratorTransitions {
 		try {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
+			// Don't mind here to have a warning that the resource is never closed
+			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.startDocument();
 			generator.writeCell("adasf"); // not the proper place
@@ -60,7 +64,7 @@ public class TestGeneratorTransitions {
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.startDocument();
 			generator.startSheet("this will fail");
-			generator.closeDocument(); // Should jump here with an XMLSpreadsheetException
+			generator.close(); // Should jump here with an XMLSpreadsheetException
 			fail(); // Should not get here!
 		}
 		catch (XMLSpreadsheetException e) {
@@ -80,7 +84,7 @@ public class TestGeneratorTransitions {
 			generator.startDocument();
 			generator.startSheet("this will fail");
 			generator.startRow();
-			generator.closeDocument();
+			generator.close();
 			fail(); // Should not get here!
 		}
 		catch (XMLSpreadsheetException e) {
@@ -96,6 +100,8 @@ public class TestGeneratorTransitions {
 		try {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
+			// Don't mind here to have a warning that the resource is never closed
+			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.startDocument();
 			generator.writeCell(new Date());
@@ -114,6 +120,8 @@ public class TestGeneratorTransitions {
 		try {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
+			// Don't mind here to have a warning that the resource is never closed
+			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
 			generator.writeCell(new Date());
 			fail(); // Should not get here!

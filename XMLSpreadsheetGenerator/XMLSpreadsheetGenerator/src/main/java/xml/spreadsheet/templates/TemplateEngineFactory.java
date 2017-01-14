@@ -48,6 +48,7 @@ public class TemplateEngineFactory {
 				String className = PropertiesReader.property(id);
 				if (className != null && className.trim().length() > 0 
 						&& !id.equals(PROPERTY_DEFAULT_ENGINE)) {
+					@SuppressWarnings("rawtypes")
 					Class clazz = Class.forName(className.trim());  
 					TemplateEngine t = (TemplateEngine) clazz.newInstance();
 					engines.put(id, t);

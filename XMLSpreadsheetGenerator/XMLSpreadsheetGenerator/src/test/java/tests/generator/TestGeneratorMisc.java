@@ -43,9 +43,9 @@ public class TestGeneratorMisc {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
 		try {		
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
-			generator.startDocument();
-			generator.closeDocument();
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				generator.startDocument();
+			}
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			Document doc = GeneratorTestUtils.parseDocument(document);
@@ -64,9 +64,9 @@ public class TestGeneratorMisc {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
-			generator.startDocument();
-			generator.closeDocument();
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				generator.startDocument();
+			}
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			Document doc = GeneratorTestUtils.parseDocument(document);
 			assertNotNull(doc);
@@ -90,19 +90,19 @@ public class TestGeneratorMisc {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
-			generator.startDocument();
-			generator.startSheet("My first sheet");
-			generator.startRow();
-			generator.writeCell(TEXT_FIRST_ROW);
-			generator.closeRow();
-			generator.emptyRow();
-			generator.emptyRow();
-			generator.startRow();
-			generator.writeCell(TEXT_FOURTH_ROW);
-			generator.closeRow();
-			generator.closeSheet();
-			generator.closeDocument();
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				generator.startDocument();
+				generator.startSheet("My first sheet");
+				generator.startRow();
+				generator.writeCell(TEXT_FIRST_ROW);
+				generator.closeRow();
+				generator.emptyRow();
+				generator.emptyRow();
+				generator.startRow();
+				generator.writeCell(TEXT_FOURTH_ROW);
+				generator.closeRow();
+				generator.closeSheet();
+			}
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			
 			// Not empty and correct document
@@ -145,23 +145,23 @@ public class TestGeneratorMisc {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
-			generator.startDocument();
-			generator.startSheet("a sheet");
-			generator.emptyRow();
-			generator.startRow();
-			generator.writeCell(TEXT_FIRST_ROW);
-			generator.closeRow();
-			generator.closeSheet();
-			generator.startSheet("yet another sheet");
-			generator.closeSheet();
-			generator.startSheet("the third sheet!");
-			generator.startRow();
-			generator.writeEmptyCell();
-			generator.writeCell(NUMBER_THIRD_SHEET);
-			generator.closeRow();
-			generator.closeSheet();
-			generator.closeDocument();
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				generator.startDocument();
+				generator.startSheet("a sheet");
+				generator.emptyRow();
+				generator.startRow();
+				generator.writeCell(TEXT_FIRST_ROW);
+				generator.closeRow();
+				generator.closeSheet();
+				generator.startSheet("yet another sheet");
+				generator.closeSheet();
+				generator.startSheet("the third sheet!");
+				generator.startRow();
+				generator.writeEmptyCell();
+				generator.writeCell(NUMBER_THIRD_SHEET);
+				generator.closeRow();
+				generator.closeSheet();
+			}
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			
 			// Not empty and correct document
@@ -201,21 +201,25 @@ public class TestGeneratorMisc {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
-			Style dateStyle = generator.createStyle();
-			NumberFormat numberFormatObj = dateStyle.numberFormat();
-			numberFormatObj.setFormat(DATE_FORMAT);
-			assertTrue(numberFormatObj == dateStyle.numberFormat());
-			generator.startDocument();
-			generator.startSheet("a sheet with dates");
-			generator.startRow();
-			generator.writeCell(NO_FORMAT_DATE);
-			generator.closeRow();
-			generator.startRow();
-			generator.writeCell(dateStyle, FORMAT_DATE);
-			generator.closeRow();
-			generator.closeSheet();
-			generator.closeDocument();
+			// Keep a reference to it just for verification purposes, should 
+			//	never be needed out of the try-with-resources statemente in any
+			//	other case
+			Style dateStyle = null;
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				dateStyle = generator.createStyle();
+				NumberFormat numberFormatObj = dateStyle.numberFormat();
+				numberFormatObj.setFormat(DATE_FORMAT);
+				assertTrue(numberFormatObj == dateStyle.numberFormat());
+				generator.startDocument();
+				generator.startSheet("a sheet with dates");
+				generator.startRow();
+				generator.writeCell(NO_FORMAT_DATE);
+				generator.closeRow();
+				generator.startRow();
+				generator.writeCell(dateStyle, FORMAT_DATE);
+				generator.closeRow();
+				generator.closeSheet();
+			}
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			
 			// Not empty and correct document
@@ -260,56 +264,55 @@ public class TestGeneratorMisc {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 			
-			Style blueBackground = generator.createStyle();
-			Interior blueInterior = blueBackground.interior();
-			blueInterior.setColor(BLUE_COLOR);
-			assertTrue(blueInterior == blueBackground.interior());
-			
-			Style redBackground = generator.createStyle();
-			Interior redInterior = redBackground.interior();
-			redInterior.setColor(RED_COLOR);
-			assertTrue(redInterior == redBackground.interior());
-			
-			Style greenBackground = generator.createStyle();
-			Interior greenInterior = greenBackground.interior();
-			greenInterior.setColor(GREEN_COLOR);
-			assertTrue(greenInterior == greenBackground.interior());
-			Font greenFont = greenBackground.font();
-			greenFont.setSize(GREEN_FONT_SIZE);
-			assertTrue(greenFont == greenBackground.font());
-						
-			generator.startDocument();
-			
-			generator.startSheet(SHEET_CAPTION);
-			generator.startRow();
-			generator.writeCell("Here come 3 empty blue rows");
-			generator.closeRow();
-			generator.writeEmptyRows(3l, null, BLUE_HEIGHT, blueBackground);			
-			generator.startRow();
-			generator.writeCell("After 3 empty rows");
-			generator.closeRow();
-			generator.emptyRow();
-			generator.startRow();
-			generator.writeCell("Here come 5 empty red rows");
-			generator.closeRow();
-			generator.writeEmptyRows(5l, null, RED_HEIGHT, redBackground);
-			generator.startRow();
-			generator.writeCell("After 5 empty red rows");
-			generator.closeRow();
-			generator.emptyRow();
-			generator.startRow();
-			generator.writeCell("Here comes an empty green row");
-			generator.closeRow();
-			generator.writeEmptyRows(null, true, null, greenBackground);
-			generator.startRow();
-			generator.writeCell("After an empty green row");
-			generator.closeRow();
-			
-			generator.closeSheet();
-			
-			generator.closeDocument();
+				Style blueBackground = generator.createStyle();
+				Interior blueInterior = blueBackground.interior();
+				blueInterior.setColor(BLUE_COLOR);
+				assertTrue(blueInterior == blueBackground.interior());
+				
+				Style redBackground = generator.createStyle();
+				Interior redInterior = redBackground.interior();
+				redInterior.setColor(RED_COLOR);
+				assertTrue(redInterior == redBackground.interior());
+				
+				Style greenBackground = generator.createStyle();
+				Interior greenInterior = greenBackground.interior();
+				greenInterior.setColor(GREEN_COLOR);
+				assertTrue(greenInterior == greenBackground.interior());
+				Font greenFont = greenBackground.font();
+				greenFont.setSize(GREEN_FONT_SIZE);
+				assertTrue(greenFont == greenBackground.font());
+							
+				generator.startDocument();
+				
+				generator.startSheet(SHEET_CAPTION);
+				generator.startRow();
+				generator.writeCell("Here come 3 empty blue rows");
+				generator.closeRow();
+				generator.writeEmptyRows(3l, null, BLUE_HEIGHT, blueBackground);			
+				generator.startRow();
+				generator.writeCell("After 3 empty rows");
+				generator.closeRow();
+				generator.emptyRow();
+				generator.startRow();
+				generator.writeCell("Here come 5 empty red rows");
+				generator.closeRow();
+				generator.writeEmptyRows(5l, null, RED_HEIGHT, redBackground);
+				generator.startRow();
+				generator.writeCell("After 5 empty red rows");
+				generator.closeRow();
+				generator.emptyRow();
+				generator.startRow();
+				generator.writeCell("Here comes an empty green row");
+				generator.closeRow();
+				generator.writeEmptyRows(null, true, null, greenBackground);
+				generator.startRow();
+				generator.writeCell("After an empty green row");
+				generator.closeRow();
+				
+				generator.closeSheet();
+			}
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
 			// Not empty and correct document
@@ -367,62 +370,62 @@ public class TestGeneratorMisc {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			try(XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 			
-			Style styleBlueBackground = generator.createStyle();
-			Interior blueInterior = styleBlueBackground.interior();
-			blueInterior.setColor(BLUE_BACKGROUND);
-			assertTrue(blueInterior == styleBlueBackground.interior());
-			
-			Style styleRedBackground = generator.createStyle();
-			Interior redInterior = styleRedBackground.interior();
-			redInterior.setColor(RED_BACKGROUND);
-			assertTrue(redInterior == styleRedBackground.interior());
-			
-			Style styleItalicRedBackground = generator.createStyle();
-			Interior redItalicInterior = styleItalicRedBackground.interior();
-			redItalicInterior.setColor(RED_BACKGROUND);
-			styleItalicRedBackground.font().setItalic(true);
-			assertTrue(redItalicInterior == styleItalicRedBackground.interior());
-			
-			Style styleBlueBoldBackground = generator.createStyle();
-			Interior blueBoldInterior = styleBlueBoldBackground.interior();
-			styleBlueBoldBackground.font().setBold(true);
-			styleBlueBoldBackground.numberFormat().setFormat(Format.Standard);
-			blueBoldInterior.setColor(BLUE_BACKGROUND);
-			assertTrue(blueBoldInterior == styleBlueBoldBackground.interior());
-			
-			generator.startDocument();
-			generator.startSheet(SHEET_CAPTION);
-			generator.startColumns();
-			// first column
-			generator.column(null, null, null, null, 2l, styleRedBackground, null);
-			// second column: gap (width: 1)
-			// third column
-			generator.column(null, null, null, 4l, null, styleBlueBackground, 35d);
-			// fourth column
-			generator.column(styleItalicRedBackground, null);
-			// fifth column
-			generator.column(null, null, true, null, 2l, styleBlueBackground, null);
-			// sixth column
-			generator.column(null, null, null, null, 2l, styleRedBackground, 250d);
-			// seventh column: gap (width: 2)
-			// eighth column
-			generator.column(null, true, null, 12l, 3l, styleBlueBoldBackground, null);
-			// ninth column: gap (width: 1)
-			// tenth column
-			generator.column(null, null, null, 16l, null, styleRedBackground, null);
-			// eleventh column: closing
-			generator.closeColumns();
-			for (int i = 0; i < 15; i++) {
-				generator.startRow();
-				for (double j = 0; j < 20; j++) {
-					generator.writeCell(j);
+				Style styleBlueBackground = generator.createStyle();
+				Interior blueInterior = styleBlueBackground.interior();
+				blueInterior.setColor(BLUE_BACKGROUND);
+				assertTrue(blueInterior == styleBlueBackground.interior());
+				
+				Style styleRedBackground = generator.createStyle();
+				Interior redInterior = styleRedBackground.interior();
+				redInterior.setColor(RED_BACKGROUND);
+				assertTrue(redInterior == styleRedBackground.interior());
+				
+				Style styleItalicRedBackground = generator.createStyle();
+				Interior redItalicInterior = styleItalicRedBackground.interior();
+				redItalicInterior.setColor(RED_BACKGROUND);
+				styleItalicRedBackground.font().setItalic(true);
+				assertTrue(redItalicInterior == styleItalicRedBackground.interior());
+				
+				Style styleBlueBoldBackground = generator.createStyle();
+				Interior blueBoldInterior = styleBlueBoldBackground.interior();
+				styleBlueBoldBackground.font().setBold(true);
+				styleBlueBoldBackground.numberFormat().setFormat(Format.Standard);
+				blueBoldInterior.setColor(BLUE_BACKGROUND);
+				assertTrue(blueBoldInterior == styleBlueBoldBackground.interior());
+				
+				generator.startDocument();
+				generator.startSheet(SHEET_CAPTION);
+				generator.startColumns();
+				// first column
+				generator.column(null, null, null, null, 2l, styleRedBackground, null);
+				// second column: gap (width: 1)
+				// third column
+				generator.column(null, null, null, 4l, null, styleBlueBackground, 35d);
+				// fourth column
+				generator.column(styleItalicRedBackground, null);
+				// fifth column
+				generator.column(null, null, true, null, 2l, styleBlueBackground, null);
+				// sixth column
+				generator.column(null, null, null, null, 2l, styleRedBackground, 250d);
+				// seventh column: gap (width: 2)
+				// eighth column
+				generator.column(null, true, null, 12l, 3l, styleBlueBoldBackground, null);
+				// ninth column: gap (width: 1)
+				// tenth column
+				generator.column(null, null, null, 16l, null, styleRedBackground, null);
+				// eleventh column: closing
+				generator.closeColumns();
+				for (int i = 0; i < 15; i++) {
+					generator.startRow();
+					for (double j = 0; j < 20; j++) {
+						generator.writeCell(j);
+					}
+					generator.closeRow();
 				}
-				generator.closeRow();
+				generator.closeSheet();
 			}
-			generator.closeSheet();
-			generator.closeDocument();
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
 			
@@ -540,17 +543,17 @@ public class TestGeneratorMisc {
 		try {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
-			generator.startDocument();
-			generator.startSheet("this will fail");
-			generator.startRow();
-			// This will make the generator to fail, not later than the call to
-			//	closeDocument
-			os.close();
-			generator.writeCell("aaa");
-			generator.closeRow();
-			generator.closeSheet();
-			generator.closeDocument();
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os)) {
+				generator.startDocument();
+				generator.startSheet("this will fail");
+				generator.startRow();
+				// This will make the generator to fail, not later than the call to
+				//	closeDocument
+				os.close();
+				generator.writeCell("aaa");
+				generator.closeRow();
+				generator.closeSheet();
+			}
 			fail(); // Should not get here!
 		}
 		catch(XMLSpreadsheetException xse) {
@@ -566,6 +569,8 @@ public class TestGeneratorMisc {
 	public void testStartNamelessSheet() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			// Don't mind here to have a warning that the resource is never closed
+			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 			generator.startDocument();
 			generator.startSheet(null);  // Should jump with an XMLSpreadsheetException
@@ -584,6 +589,8 @@ public class TestGeneratorMisc {
 	public void testMisplacedColumn() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			// Don't mind here to have a warning that the resource is never closed
+			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 			generator.startDocument();
 			generator.startSheet("This will fail");
@@ -604,6 +611,8 @@ public class TestGeneratorMisc {
 	public void testOverlapColumns() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			// Don't mind here to have a warning that the resource is never closed
+			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 			generator.startDocument();
 			generator.startSheet("This will fail");

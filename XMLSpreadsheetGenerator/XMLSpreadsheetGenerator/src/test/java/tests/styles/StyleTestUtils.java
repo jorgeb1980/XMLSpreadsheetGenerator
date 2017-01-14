@@ -25,11 +25,22 @@ public class StyleTestUtils {
  	private static final String PREFIX = "ss";
 
 	
-	
+	// Retrieves the value of a certain attribute of an element inside an XML
+ 	//	document
 	public static String attributeValue(Document doc, String selector, String attribute) {
 		return attributeValue(PREFIX, doc, selector, attribute);
 	}
 	
+	/** 
+	 * It will retrieve the actual value of a certain attribute of an 
+	 * element of the XML document.
+	 * @param prefix XSL schema prefix of the element
+	 * @param doc XML document
+	 * @param selector XPath selector to find the element
+	 * @param attribute Attribute of the element to be retrieved
+	 * @return Value of the specified attribute in the element located in the
+	 * specified XPath of the document
+	 */
 	public static String attributeValue(String prefix, Document doc, String selector, String attribute) {
 		String ret = null;
 		try {
@@ -44,31 +55,45 @@ public class StyleTestUtils {
 		return ret;
 	}
 	
+	// Compares the value of an attribute in an element of an XML document against
+	//	an expected value
 	public static void checkAttributeValue(Object styleElement, String attribute, String value) {
 		checkAttributeValue(PREFIX, styleElement, attribute, value);
 	}
 	
+	// Compares the value of an attribute in an element of an XML document against
+	//	an expected value
 	public static void checkAttributeValue(String prefix, Object styleElement, String attribute, String value) {
 		checkAttributeValue(prefix, styleElement, "//ss:" + styleElement.getClass().getSimpleName(), attribute, value);
 	}
 	
+	// Compares the value of an attribute in an element of an XML document against
+	//	an expected value
 	public static void checkAttributeValue(Object styleElement, String selector, String attribute, double value) {
 		checkAttributeValue(styleElement, selector, attribute, NumberFormatHelper.format(value));
 	}
 	
+	// Compares the value of an attribute in an element of an XML document against
+	//	an expected value
 	public static void checkAttributeValue(Object styleElement, String attribute, double value) {
 		checkAttributeValue(styleElement, attribute, NumberFormatHelper.format(value));
 	}
 	
+	// Compares the value of an attribute in an element of an XML document against
+	//	an expected value
 	public static void checkAttributeValue(Object styleElement, String selector, String attribute, String value) {
 		checkAttributeValue(PREFIX, styleElement, selector, attribute, value);
 	}
 	
+	// Compares the value of an attribute in an element of an XML document against
+	//	an expected value
 	public static void checkAttributeValue(String prefix, Object styleElement, String selector, String attribute, String value) {
 		Document doc = XmlTestUtils.parseElement(styleElement);
 		checkAttributeValue(prefix, doc, selector, attribute, value);
 	}
 	
+	// Compares the value of an attribute in an element of an XML document against
+	//	an expected value
 	public static void checkAttributeValue(String prefix, Document doc, String selector, String attribute, String value) {
 		if (value != null) {
 			Assert.assertEquals(value, 
