@@ -20,6 +20,8 @@ public class TestNumberFormat {
 	@Before
 	public void init() {
 		try { 
+			// Don't mind here to have a warning that the resource is never closed
+			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
 			Style style = generator.createStyle();
 			

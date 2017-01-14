@@ -48,38 +48,41 @@ public class TestStylesInheritance {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
-			
-			Style color = generator.createStyle();
-			Font colorFont = color.font();
-			colorFont.setColor(GREEN_COLOR);
-			assertTrue(colorFont == color.font());
-			
-			
-			Style rightStyle = generator.createStyle(color);
-			Alignment rightAlignment = rightStyle.alignment();
-			rightAlignment.setHorizontal(HorizontalAlignment.Right);
-			assertTrue(rightAlignment == rightStyle.alignment());		
-			
-			
-			generator.startDocument();
-			generator.startSheet(SHEET_CAPTION);
-			
-			generator.startRow();
-			generator.writeCell(color, "aa>>aa");
-			generator.closeRow();
-			
-			generator.emptyRow();
-			generator.emptyRow();
-			generator.emptyRow();
-			
-			generator.startRow();
-			generator.writeCell(rightStyle, "bb<<bb");
-			generator.closeRow();
-			
-			
-			generator.closeSheet();
-			generator.closeDocument();
+			// The references to the styles are kept in order to make assertions
+			//	on them later, if it were not in a unit test it would not be necessary
+			Style rightStyle = null;
+			Style color = null;
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {			
+				color = generator.createStyle();
+				Font colorFont = color.font();
+				colorFont.setColor(GREEN_COLOR);
+				assertTrue(colorFont == color.font());
+				
+				
+				rightStyle = generator.createStyle(color);
+				Alignment rightAlignment = rightStyle.alignment();
+				rightAlignment.setHorizontal(HorizontalAlignment.Right);
+				assertTrue(rightAlignment == rightStyle.alignment());		
+				
+				
+				generator.startDocument();
+				generator.startSheet(SHEET_CAPTION);
+				
+				generator.startRow();
+				generator.writeCell(color, "aa>>aa");
+				generator.closeRow();
+				
+				generator.emptyRow();
+				generator.emptyRow();
+				generator.emptyRow();
+				
+				generator.startRow();
+				generator.writeCell(rightStyle, "bb<<bb");
+				generator.closeRow();
+				
+				
+				generator.closeSheet();
+			}
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
 			// Not empty and correct document
@@ -124,38 +127,40 @@ public class TestStylesInheritance {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
-			
-			
-			Style rightStyle = generator.createStyle();
-			Alignment rightAlignment = rightStyle.alignment();
-			rightAlignment.setHorizontal(HorizontalAlignment.Right);
-			assertTrue(rightAlignment == rightStyle.alignment());		
-			
-			Style color = generator.createStyle(rightStyle);
-			Font colorFont = color.font();
-			colorFont.setColor(GREEN_COLOR);
-			assertTrue(colorFont == color.font());
-			
-			
-			generator.startDocument();
-			generator.startSheet(SHEET_CAPTION);
-			
-			generator.startRow();
-			generator.writeCell(color, "aa>>aa");
-			generator.closeRow();
-			
-			generator.emptyRow();
-			generator.emptyRow();
-			generator.emptyRow();
-			
-			generator.startRow();
-			generator.writeCell(rightStyle, "bb<<bb");
-			generator.closeRow();
-			
-			
-			generator.closeSheet();
-			generator.closeDocument();
+			// The references to the styles are kept in order to make assertions
+			//	on them later, if it were not in a unit test it would not be necessary
+			Style rightStyle = null;
+			Style color = null;
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				rightStyle = generator.createStyle();
+				Alignment rightAlignment = rightStyle.alignment();
+				rightAlignment.setHorizontal(HorizontalAlignment.Right);
+				assertTrue(rightAlignment == rightStyle.alignment());		
+				
+				color = generator.createStyle(rightStyle);
+				Font colorFont = color.font();
+				colorFont.setColor(GREEN_COLOR);
+				assertTrue(colorFont == color.font());
+				
+				
+				generator.startDocument();
+				generator.startSheet(SHEET_CAPTION);
+				
+				generator.startRow();
+				generator.writeCell(color, "aa>>aa");
+				generator.closeRow();
+				
+				generator.emptyRow();
+				generator.emptyRow();
+				generator.emptyRow();
+				
+				generator.startRow();
+				generator.writeCell(rightStyle, "bb<<bb");
+				generator.closeRow();
+				
+				
+				generator.closeSheet();
+			}
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
 			// Not empty and correct document
@@ -198,38 +203,41 @@ public class TestStylesInheritance {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);	
-			
-			Style thickBorderStyle = generator.createStyle();
-			Borders thickBorders = thickBorderStyle.borders();
-			Border thickBorder = thickBorders.createBorder(BorderPosition.Right);
-			thickBorder.setLineStyle(LineStyle.Dash);
-			thickBorder.setWeight(BorderWeight.Thick);
-			
-			Style rightStyle = generator.createStyle(thickBorderStyle);
-			Alignment rightAlignment = rightStyle.alignment();
-			rightAlignment.setHorizontal(HorizontalAlignment.Right);
-			assertTrue(rightAlignment == rightStyle.alignment());	
-			
-			
-			generator.startDocument();
-			generator.startSheet(SHEET_CAPTION);
-			
-			generator.startRow();
-			generator.writeCell(thickBorderStyle, "aa>>aa");
-			generator.closeRow();
-			
-			generator.emptyRow();
-			generator.emptyRow();
-			generator.emptyRow();
-			
-			generator.startRow();
-			generator.writeCell(rightStyle, "bb<<bb");
-			generator.closeRow();
-			
-			
-			generator.closeSheet();
-			generator.closeDocument();
+			// The references to the styles are kept in order to make assertions
+			//	on them later, if it were not in a unit test it would not be necessary
+			Style thickBorderStyle = null;
+			Style rightStyle = null;
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {			
+				thickBorderStyle = generator.createStyle();
+				Borders thickBorders = thickBorderStyle.borders();
+				Border thickBorder = thickBorders.createBorder(BorderPosition.Right);
+				thickBorder.setLineStyle(LineStyle.Dash);
+				thickBorder.setWeight(BorderWeight.Thick);
+				
+				rightStyle = generator.createStyle(thickBorderStyle);
+				Alignment rightAlignment = rightStyle.alignment();
+				rightAlignment.setHorizontal(HorizontalAlignment.Right);
+				assertTrue(rightAlignment == rightStyle.alignment());	
+				
+				
+				generator.startDocument();
+				generator.startSheet(SHEET_CAPTION);
+				
+				generator.startRow();
+				generator.writeCell(thickBorderStyle, "aa>>aa");
+				generator.closeRow();
+				
+				generator.emptyRow();
+				generator.emptyRow();
+				generator.emptyRow();
+				
+				generator.startRow();
+				generator.writeCell(rightStyle, "bb<<bb");
+				generator.closeRow();
+				
+				
+				generator.closeSheet();
+			}
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
 			// Not empty and correct document
@@ -242,22 +250,27 @@ public class TestStylesInheritance {
 			assertEquals(
 				NumberFormatHelper.format(BorderWeight.Thick.getValue()), 
 				getBorderStyleAttribute(
-					GeneratorTestUtils.searchCells(rows.get(0)).get(0), BorderPosition.Right.toString(), "Weight"));
+					GeneratorTestUtils.searchCells(rows.get(0)).get(0), 
+					BorderPosition.Right.toString(), "Weight"));
 			
 			// Validate horizontal alignment style
 			Element row4 = rows.get(4);
 			Element rightCell = GeneratorTestUtils.searchCells(row4).get(0);
-			assertEquals(HorizontalAlignment.Right.toString(), getAlignmentAttribute(rightCell, "Horizontal"));
+			assertEquals(HorizontalAlignment.Right.toString(), 
+					getAlignmentAttribute(rightCell, "Horizontal"));
 			
 			// Validate inheritance
 			Element rightStyleElement = searchStyle(doc, rightStyle.getId());
-			assertEquals(thickBorderStyle.getId(), XmlTestUtils.getAttributeValue(rightStyleElement, "Parent", "ss"));
+			assertEquals(thickBorderStyle.getId(), 
+					XmlTestUtils.getAttributeValue(rightStyleElement, "Parent", "ss"));
 			assertEquals(NumberFormatHelper.format(BorderWeight.Thick.getValue()), 
-					getBorderStyleAttribute(rightCell, BorderPosition.Right.toString(), "Weight"));
+					getBorderStyleAttribute(rightCell, 
+							BorderPosition.Right.toString(), "Weight"));
 			
 			os.write(baos.toByteArray());			
 			os.close();
-			System.out.println("Created file with inherited border styles -> " + file.getAbsolutePath());
+			System.out.println("Created file with inherited border styles -> " 
+					+ file.getAbsolutePath());
 			
 		}
 		catch(Exception e) {
@@ -275,37 +288,40 @@ public class TestStylesInheritance {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);	
-			
-			Style redInteriorStyle = generator.createStyle();
-			Interior redInterior = redInteriorStyle.interior();
-			redInterior.setColor(RED_COLOR);
-			assertTrue(redInterior == redInteriorStyle.interior());
-			
-			Style rightStyle = generator.createStyle(redInteriorStyle);
-			Alignment rightAlignment = rightStyle.alignment();
-			rightAlignment.setHorizontal(HorizontalAlignment.Right);
-			assertTrue(rightAlignment == rightStyle.alignment());	
-			
-			
-			generator.startDocument();
-			generator.startSheet(SHEET_CAPTION);
-			
-			generator.startRow();
-			generator.writeCell(redInteriorStyle, "aa>>aa");
-			generator.closeRow();
-			
-			generator.emptyRow();
-			generator.emptyRow();
-			generator.emptyRow();
-			
-			generator.startRow();
-			generator.writeCell(rightStyle, "bb<<bb");
-			generator.closeRow();
-			
-			
-			generator.closeSheet();
-			generator.closeDocument();
+			// The references to the styles are kept in order to make assertions
+			//	on them later, if it were not in a unit test it would not be necessary
+			Style rightStyle = null;
+			Style redInteriorStyle = null;
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {	
+				redInteriorStyle = generator.createStyle();
+				Interior redInterior = redInteriorStyle.interior();
+				redInterior.setColor(RED_COLOR);
+				assertTrue(redInterior == redInteriorStyle.interior());
+				
+				rightStyle = generator.createStyle(redInteriorStyle);
+				Alignment rightAlignment = rightStyle.alignment();
+				rightAlignment.setHorizontal(HorizontalAlignment.Right);
+				assertTrue(rightAlignment == rightStyle.alignment());	
+				
+				
+				generator.startDocument();
+				generator.startSheet(SHEET_CAPTION);
+				
+				generator.startRow();
+				generator.writeCell(redInteriorStyle, "aa>>aa");
+				generator.closeRow();
+				
+				generator.emptyRow();
+				generator.emptyRow();
+				generator.emptyRow();
+				
+				generator.startRow();
+				generator.writeCell(rightStyle, "bb<<bb");
+				generator.closeRow();
+				
+				
+				generator.closeSheet();
+			}
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
 			// Not empty and correct document
@@ -352,37 +368,40 @@ public class TestStylesInheritance {
 			File file = File.createTempFile("xmlspreadsheet", ".xml");
 			OutputStream os = new FileOutputStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);	
-			
-			Style numberFormatStyle = generator.createStyle();
-			NumberFormat nf = numberFormatStyle.numberFormat();
-			nf.setFormat(NUMBER_FORMAT);
-			assertTrue(nf == numberFormatStyle.numberFormat());
-			
-			Style rightStyle = generator.createStyle(numberFormatStyle);
-			Alignment rightAlignment = rightStyle.alignment();
-			rightAlignment.setHorizontal(HorizontalAlignment.Left);
-			assertTrue(rightAlignment == rightStyle.alignment());	
-			
-			
-			generator.startDocument();
-			generator.startSheet(SHEET_CAPTION);
-			
-			generator.startRow();
-			generator.writeCell(numberFormatStyle, 134d);
-			generator.closeRow();
-			
-			generator.emptyRow();
-			generator.emptyRow();
-			generator.emptyRow();
-			
-			generator.startRow();
-			generator.writeCell(rightStyle, 155d);
-			generator.closeRow();
-			
-			
-			generator.closeSheet();
-			generator.closeDocument();
+			// The references to the styles are kept in order to make assertions
+			//	on them later, if it were not in a unit test it would not be necessary
+			Style numberFormatStyle = null;
+			Style rightStyle = null;
+			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				numberFormatStyle = generator.createStyle();
+				NumberFormat nf = numberFormatStyle.numberFormat();
+				nf.setFormat(NUMBER_FORMAT);
+				assertTrue(nf == numberFormatStyle.numberFormat());
+				
+				rightStyle = generator.createStyle(numberFormatStyle);
+				Alignment rightAlignment = rightStyle.alignment();
+				rightAlignment.setHorizontal(HorizontalAlignment.Left);
+				assertTrue(rightAlignment == rightStyle.alignment());	
+				
+				
+				generator.startDocument();
+				generator.startSheet(SHEET_CAPTION);
+				
+				generator.startRow();
+				generator.writeCell(numberFormatStyle, 134d);
+				generator.closeRow();
+				
+				generator.emptyRow();
+				generator.emptyRow();
+				generator.emptyRow();
+				
+				generator.startRow();
+				generator.writeCell(rightStyle, 155d);
+				generator.closeRow();
+				
+				
+				generator.closeSheet();
+			}
 			
 			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));			
 			// Not empty and correct document

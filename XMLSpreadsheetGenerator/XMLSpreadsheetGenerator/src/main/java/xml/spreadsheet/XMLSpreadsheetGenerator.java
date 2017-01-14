@@ -38,7 +38,7 @@ import static xml.spreadsheet.utils.AssertionHelper.*;
  * the API user tries to break the state machine (say for example, try to write a cell
  * after closing the document, or writing a row before opening a sheet)
  */
-public class XMLSpreadsheetGenerator {
+public class XMLSpreadsheetGenerator implements AutoCloseable {
 
 	//---------------------------------------------------------------
 	// Class constants
@@ -96,6 +96,13 @@ public class XMLSpreadsheetGenerator {
 	public XMLSpreadsheetGenerator(OutputStream output) 
 				throws XMLSpreadsheetException {
 		this(output, BUFFER_SIZE);
+	}
+	
+	@Override
+	public void close() throws Exception {
+		// This method is included in order to, retroactively, implement the
+		//	AutoCloseable interface.
+		closeDocument();		
 	}
 	
 	/**
@@ -255,12 +262,17 @@ public class XMLSpreadsheetGenerator {
 	 * of the streaming and flush.
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
+	 * @deprecated The close() method should be used if the generator was used
+	 * in any case out of a try-with-resources statement
 	 */
 	public void closeDocument() 
 				throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, GeneratorState.DONE);
-		flush(engine.applyTemplate("workbook_foot"));
-		endStreaming();
+		// It will ignore further attempts to close it once it is done
+		if (state != GeneratorState.DONE) {
+			state = GeneratorState.validateTransition(state, GeneratorState.DONE);
+			flush(engine.applyTemplate("workbook_foot"));
+			endStreaming();
+		}
 	}
 	
 	/**

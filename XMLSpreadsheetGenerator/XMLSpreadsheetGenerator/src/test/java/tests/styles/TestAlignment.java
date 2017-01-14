@@ -26,6 +26,8 @@ public class TestAlignment {
 	@Before
 	public void init() {
 		try { 
+			// Don't mind here to have a warning that the resource is never closed
+			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
 			Style style = generator.createStyle();
 			
@@ -56,28 +58,6 @@ public class TestAlignment {
 			StyleTestUtils.checkAttributeValue(alignment, "Horizontal",
 					horizontalAlignment.toString());			
 		}
-	}
-
-
-	@Test
-	public void testSetReadingOrder() {
-		// ignored
-		Assert.assertTrue(true);
-		
-//		Alignment alignment = style.alignment();
-//		Assert.assertNotNull(alignment);	
-//		// Check the generated value for all the alternatives
-//		for (ReadingOrder readingOrder: ReadingOrder.values()) {
-//			alignment.setReadingOrder(readingOrder);
-//			if (readingOrder != ReadingOrder.Context) {				
-//				checkAttributeValue(alignment, "ReadingOrder", readingOrder.toString());
-//			}
-//			else {
-//				// context must return null
-//				checkAttributeValue(alignment, "ReadingOrder", null);
-//			}
-//		}
-		
 	}
 
 	@Test
