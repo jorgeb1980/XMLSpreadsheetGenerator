@@ -1,7 +1,14 @@
 language: java
 jdk:
   - oraclejdk7
-# whitelist
 branches:
   only:
-    - master
+  - /v.+/
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: Pu8sL0ADRAcSU7+e+KC1YFZl+R5jgoxvrERUdpV+YTXZzzfWUMAN1EadoE71khdiPBhYH/+/69znRPkR7dnSHcNUhXLi3v36okZDNE1GoMQPS4eTOpMAsUedtIqYGwL+oidrddlb+nHGdpMO2XvqF1X+q0a/uc17O32/NN+WI2zRelKTW3Rr9z2PiIEduxAygb2VHksAnQqRSQs6UdTT47HpigXxV1gBlqy4i5uWFCKNPio9ApM2OD+kup6bND2qhkpAVfS2oXYSpWCr5ObfO1TF4hfUjh0iFsddIW1cMGKBAHda2lOUcluynkpfwTiESejnljSXC1T9N6PKrcOLcDDyue6cSqdtAWYhAa6bNLqb+be8kfh6gljyMRqwPmqAY0rzYjlcASWbUYEqvOWRErGkgpVyJUC+jrcqZXQph3hks9zoX2xFvltLr7BISWgKW1eNljDv45tgtMIQcx3GnIMEUEL8DqWDUkvPaKKjZOaJ8yCmN9TScgBdGnovCo3glOWPtQtrxWwc74TvDVEp48M7fGaRfEsZZRJzvUaXcWLIgJGvfvN6hOedA2gd93y7loKJQD3oVKBBCmJCKrnDWrisQdP8DQ7ukxB/7ALaGnVGUik658oOEmQfIkFs5j4PRb5JNk8vV+aZCsryUp+TQ1j1UPystB3bkicMFe6lAao=
+  file: build/libs/XMLSpreadsheetGenerator.jar
+  on:
+    tags: true
