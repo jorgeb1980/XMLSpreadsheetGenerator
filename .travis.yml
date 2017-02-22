@@ -5,6 +5,8 @@ branches:
   only:
   - "/^v.+/"
   - master
+script:
+  - gradle jacocoTestReport build
 deploy:
   skip_cleanup: true
   provider: releases
@@ -13,3 +15,5 @@ deploy:
   file: build/libs/XMLSpreadsheetGenerator.jar
   on:
     tags: true
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
