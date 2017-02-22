@@ -1,4 +1,4 @@
-XMLSpreadsheetGenerator [![Build Status](https://travis-ci.org/jorgeb1980/XMLSpreadsheetGenerator.svg?branch=master)](https://travis-ci.org/jorgeb1980/XMLSpreadsheetGenerator/builds/latest)
+XMLSpreadsheetGenerator [![Build Status](https://travis-ci.org/jorgeb1980/XMLSpreadsheetGenerator.svg?branch=master)](https://travis-ci.org/jorgeb1980/XMLSpreadsheetGenerator/builds/latest) [![codecov](https://codecov.io/gh/jorgeb1980/XMLSpreadsheetGenerator/branch/master/graph/badge.svg)](https://codecov.io/gh/jorgeb1980/XMLSpreadsheetGenerator)
 =======================
 
 XMLSpreadsheetGenerator - Java library that writes XML spreadsheet documents according to Excel 2003 specification
