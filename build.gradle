@@ -39,17 +39,11 @@ jacocoTestReport {
     reports {
         xml.enabled true
         csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
     }
 }
 
-/**
- * Call this task in order to generate the docs/javadoc folder of the project
- */
-task generateJavadocFolder(dependsOn:'build')<< {
-	File srcFolder = new File(project.projectDir.getCanonicalPath() + "/src/main/java")
-	File docsFolder = new File(project.projectDir.getCanonicalPath() + "/docs/javadoc")
-	ant.javadoc(classpath: configurations.compile.asPath, sourcepath: srcFolder, destdir: docsFolder)
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
 }
-
 

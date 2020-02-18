@@ -6,3 +6,8 @@
 /bin
 /.externalToolBuilders
 /velocity.log
+*.iml
+/out
+gradlew*
+gradle
+.idea
