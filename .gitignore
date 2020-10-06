@@ -7,5 +7,4 @@
 /velocity.log
 *.iml
 /out
-gradle
 .idea
