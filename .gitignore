@@ -1,5 +1,4 @@
 /build
-/.gradle
 /.settings
 /.classpath
 /.project
@@ -8,6 +7,6 @@
 /velocity.log
 *.iml
 /out
-gradlew*
-gradle
 .idea
+.gradle
+
