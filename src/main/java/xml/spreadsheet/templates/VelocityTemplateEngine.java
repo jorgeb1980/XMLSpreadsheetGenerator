@@ -32,7 +32,7 @@ class VelocityTemplateEngine extends AbstractTemplateEngine {
 	 * to use it
 	 * @see xml.spreadsheet.templates.TemplateEngine#applyTemplate(java.lang.String, java.lang.Object)
 	 */
-	public String applyTemplate(String templateId, Map<String, String> values) 
+	public String applyTemplate(String templateId, Map<String, Object> values)
 			throws TemplateException {
 		String templateValue = returnTemplate(templateId);
 		VelocityContext context = new VelocityContext();

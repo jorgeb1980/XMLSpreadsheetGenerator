@@ -245,8 +245,6 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * of the streaming and flush.
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
-	 * @deprecated The close() method should be used if the generator was used
-	 * in any case out of a try-with-resources statement
 	 */
 	@Override
 	public void close() throws Exception {

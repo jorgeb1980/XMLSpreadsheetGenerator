@@ -91,7 +91,7 @@ public class TestTemplates {
 		try {
 			// Read the contents of the template
 			String template = ClasspathFileReader.retrieveFile("templates/test_template.xml");
-			assertEquals(template, engine.applyTemplate("test_template", new HashMap<String, String>()));
+			assertEquals(template, engine.applyTemplate("test_template", new HashMap<String, Object>()));
 		}
 		catch(Exception e) {
 			e.printStackTrace();

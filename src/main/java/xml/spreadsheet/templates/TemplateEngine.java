@@ -20,7 +20,7 @@ public interface TemplateEngine {
 	 * @return Value of the template after making the proper substitutions
 	 * @throws TemplateException If found any error (no template found, etc.)
 	 */
-	String applyTemplate(String templateId, Map<String, String> values) throws TemplateException;
+	String applyTemplate(String templateId, Map<String, Object> values) throws TemplateException;
 	
 	/**
 	 * Returns the value of the template

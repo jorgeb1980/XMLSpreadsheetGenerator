@@ -5,11 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/** This class deals with some problems related to MapBuilder.of and
- * null values
- */
+/** This class replaces Map.of due to problems with null values, and a limit on the number of parameters */
 public class MapBuilder {
-    public static Map of(Object... args) {
+
+    /**
+     * Creates a Map upon a list of pairs key/value
+     * @param args Even-sized list of objects; every odd element must be a String
+     * @return Map that excludes any pair that had any null element, that is silently discarded
+     */
+    public static Map<String, Object> of(Object... args) {
         // Make pairs
         List<Object[]> pairs = new LinkedList<>();
         if (args.length % 2 != 0) throw new IllegalArgumentException("Arguments number must be even");

@@ -26,13 +26,13 @@ class FileTemplateEngine extends AbstractTemplateEngine {
 	 * Classpath route -> templates/{templateId}.xml
 	 * @see xml.spreadsheet.templates.TemplateEngine#applyTemplate(java.lang.String, java.util.Map)
 	 */
-	public String applyTemplate(String templateId, Map<String, String> values) 
+	public String applyTemplate(String templateId, Map<String, Object> values)
 			throws TemplateException {
 		String templateValue = returnTemplate(templateId);
 		// 'Naive' replacement of variables
 		if (values != null) {
 			for (String key: values.keySet()) {
-				templateValue = templateValue.replaceAll("\\$" + key, values.get(key));
+				templateValue = templateValue.replaceAll("\\$" + key, values.get(key).toString());
 			}		
 		}
 		return templateValue;

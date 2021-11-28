@@ -20,7 +20,7 @@ abstract class AbstractTemplateEngine implements TemplateEngine {
 	 * @see xml.spreadsheet.templates.TemplateEngine#applyTemplate(java.lang.String, java.util.Map)
 	 */
 	@Override
-	public abstract String applyTemplate(String templateId, Map<String, String> values)
+	public abstract String applyTemplate(String templateId, Map<String, Object> values)
 			throws TemplateException;
 
 	/* 
