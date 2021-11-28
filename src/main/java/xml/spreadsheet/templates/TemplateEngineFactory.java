@@ -42,10 +42,10 @@ public class TemplateEngineFactory {
 		// Reads and tries to instantiate every possible template engine
 		//	found in spreadsheet.properties
 		List<String> templateEngines = 
-			PropertiesReader.propertiesByPrefix(PROPERTY_ENGINE_PREFIX);
+			PropertiesReader.READER.propertiesByPrefix(PROPERTY_ENGINE_PREFIX);
 		for (String id: templateEngines) {
 			try {
-				String className = PropertiesReader.property(id);
+				String className = PropertiesReader.READER.property(id);
 				if (className != null && className.trim().length() > 0 
 						&& !id.equals(PROPERTY_DEFAULT_ENGINE)) {
 					@SuppressWarnings("rawtypes")
@@ -85,7 +85,7 @@ public class TemplateEngineFactory {
 		}
 		else {
 			// Return the default engine (property template.engine.default)
-			String defaultEngine = PropertiesReader.property(PROPERTY_DEFAULT_ENGINE);
+			String defaultEngine = PropertiesReader.READER.property(PROPERTY_DEFAULT_ENGINE);
 			return engine(defaultEngine);
 		}
 	}

@@ -3,7 +3,7 @@
  */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.MapBuilder;
 import xml.spreadsheet.utils.XmlHelper;
 
 /**
@@ -163,12 +163,14 @@ public class Border {
 	
 	@Override
 	public String toString() {		
-		return XmlHelper.element("ss:Border",
-			new Table<Object>().
-				add("ss:Position", position != null?position.toString():null).
-				add("ss:Color", color).
-				add("ss:LineStyle", lineStyle != null?lineStyle.toString():null).
-				add("ss:Weight", weight)
-			);
+		return XmlHelper.element(
+			"ss:Border",
+			MapBuilder.of(
+				"ss:Position", position != null ? position.toString() : null,
+				"ss:Color", color,
+				"ss:LineStyle", lineStyle != null ? lineStyle.toString() : null,
+				"ss:Weight", weight
+			)
+		);
 	}
 }

@@ -3,7 +3,7 @@
  */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.MapBuilder;
 import xml.spreadsheet.utils.XmlHelper;
 
 /**
@@ -80,15 +80,17 @@ public class Alignment {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.element("ss:Alignment",
-			new Table<Object>().
-				add("ss:Horizontal", horizontal != null?horizontal.toString():null).
-				add("ss:Rotate", rotate).
-				add("ss:ShrinkToFit", shrinkToFit).
-				add("ss:Vertical", vertical != null?vertical.toString():null).
-				add("ss:VerticalText", verticalText).
-				add("ss:WrapText", wrapText)
-			);
+		return XmlHelper.element(
+			"ss:Alignment",
+			MapBuilder.of(
+				"ss:Horizontal", horizontal != null ? horizontal.toString(): null,
+				"ss:Rotate", rotate,
+				"ss:ShrinkToFit", shrinkToFit,
+				"ss:Vertical", vertical != null ? vertical.toString(): null,
+				"ss:VerticalText", verticalText,
+				"ss:WrapText", wrapText
+			)
+		);
 	}
 	
 	/** Default constructor. */

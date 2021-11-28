@@ -1,6 +1,3 @@
-/**
- * 
- */
 package xml.spreadsheet.utils;
 
 import java.io.InputStream;
@@ -14,53 +11,45 @@ import xml.spreadsheet.XMLSpreadsheetException;
 /**
  * Static properties container for the library
  */
-public class PropertiesReader {
+public enum PropertiesReader {
+
+	READER;
 
 	//----------------------------------------------------------
 	// Class constants
 	
 	/** Name of the master properties file */
-	private static final String PROPERTIES_FILE = "spreadsheet.properties";
+	private static final String PROPERTIES_FILE = "config/spreadsheet.properties";
 	
 	//----------------------------------------------------------
 	// Class properties
-	
-	// Static singleton instance
-	private static Properties properties;
-	
+
+	private Properties properties = new Properties();
+
 	//----------------------------------------------------------
 	// Class methods
-	
-	// Prevents instatiation
-	private PropertiesReader() {}
-	
-	
+
 	/** 
 	 * Singleton instance of the .properties file
 	 * @return Properties object
 	 * @throws XMLSpreadsheetException If had any problem finding the
 	 * properties file
 	 */
-	private static Properties properties() 
-			throws XMLSpreadsheetException {
-		if (properties == null) {
-			properties = new Properties();
+	PropertiesReader() {
+		try {
+			InputStream is = null;
 			try {
-				InputStream is = null;
-				try {
-					is = PropertiesReader.class.getClassLoader().
-							getResourceAsStream(PROPERTIES_FILE);
-					properties.load(is);
-				}
-				finally {
-					is.close();
-				}
+				is = PropertiesReader.class.getClassLoader().
+						getResourceAsStream(PROPERTIES_FILE);
+				properties.load(is);
 			}
-			catch(Throwable t) {
-				throw new XMLSpreadsheetException("Could not find " + PROPERTIES_FILE + " in the classpath");
-			}			
+			finally {
+				is.close();
+			}
 		}
-		return properties;
+		catch(Throwable t) {
+			t.printStackTrace();
+		}
 	}
 	
 	/**
@@ -70,9 +59,9 @@ public class PropertiesReader {
 	 * @throws XMLSpreadsheetException If had any problem finding the
 	 * properties file
 	 */
-	public static String property(String property)
+	public String property(String property)
 			throws XMLSpreadsheetException {
-		return properties().getProperty(property);
+		return properties.getProperty(property);
 	}
 	
 	/**
@@ -83,11 +72,10 @@ public class PropertiesReader {
 	 * @throws XMLSpreadsheetException If had any problem finding the
 	 * properties file
 	 */
-	public static List<String> propertiesByPrefix(String prefix)
+	public List<String> propertiesByPrefix(String prefix)
 			throws XMLSpreadsheetException {
-		Properties prop = properties();
 		List<String> strings = new LinkedList<String>();
-		for (Object key: prop.keySet()) {
+		for (Object key: properties.keySet()) {
 			String sKey = (String) key;
 			if ((sKey).startsWith(prefix)) {
 				strings.add(sKey);

@@ -1,9 +1,6 @@
-/**
- * 
- */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.MapBuilder;
 import xml.spreadsheet.utils.XmlHelper;
 
 
@@ -63,9 +60,11 @@ public class Protection {
 	@Override
 	public String toString() {
 		return XmlHelper.element("ss:Protection",
-			new Table<Object>().
-				add("ss:Protected", protectedCell).
-				add("x:HideFormula", hideFormula));
+			MapBuilder.of(
+				"ss:Protected", protectedCell,
+				"x:HideFormula", hideFormula
+			)
+		);
 	}
 	
 	

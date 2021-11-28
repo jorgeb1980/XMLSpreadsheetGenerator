@@ -1,19 +1,18 @@
 package tests.templates;
 
-import static org.junit.Assert.*;
-
-import java.util.HashMap;
-
 import org.jdom.Document;
 import org.junit.Test;
-
 import tests.generator.GeneratorTestUtils;
 import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
 import xml.spreadsheet.templates.TemplateException;
 import xml.spreadsheet.utils.ClasspathFileReader;
-import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.MapBuilder;
+
+import java.util.HashMap;
+
+import static org.junit.Assert.*;
 
 public class TestTemplates {
 
@@ -131,12 +130,16 @@ public class TestTemplates {
 		final String TEST = "just a try to change the first parameter and the $parameter2 for its respective values";
 		try {
 			// Read the contents of the template
-			assertEquals(TEST, engine.applyTemplate("values_template", 
-				new Table<String>().
-					add("wrong1", "first parameter").
-					add("wrong2", "second parameter").
-					add("parameter1", "first parameter").
-					map()));
+			assertEquals(TEST,
+				engine.applyTemplate(
+					"values_template",
+					MapBuilder.of(
+						"wrong1", "first parameter",
+						"wrong2", "second parameter",
+						"parameter1", "first parameter"
+					)
+				)
+			);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -214,11 +217,15 @@ public class TestTemplates {
 		final String TEST = "just a try to change the first parameter and the second parameter for its respective values";
 		try {
 			// Read the contents of the template
-			assertEquals(TEST, engine.applyTemplate("values_template", 
-				new Table<String>().
-					add("parameter1", "first parameter").
-					add("parameter2", "second parameter").
-					map()));
+			assertEquals(TEST,
+				engine.applyTemplate(
+					"values_template",
+					MapBuilder.of(
+						"parameter1", "first parameter",
+						"parameter2", "second parameter"
+					)
+				)
+			);
 		}
 		catch(Exception e) {
 			e.printStackTrace();

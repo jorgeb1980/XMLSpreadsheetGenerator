@@ -1,6 +1,3 @@
-/**
- * 
- */
 package xml.spreadsheet.utils;
 
 import java.text.DecimalFormat;

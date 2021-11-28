@@ -1,6 +1,3 @@
-/**
- * 
- */
 package tests.generator;
 
 import static org.junit.Assert.assertEquals;
@@ -8,8 +5,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static tests.generator.GeneratorTestUtils.getFontStyleAttribute;
-import static tests.generator.GeneratorTestUtils.getInteriorStyleAttribute;
+import static tests.XmlTestUtils.getAttributeValue;
+import static tests.generator.GeneratorTestUtils.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -110,17 +107,17 @@ public class TestGeneratorMisc {
 			assertNotNull(doc);
 			// Validate the position of cells
 			// Are there 4 rows?
-			List<Element> rows = GeneratorTestUtils.searchRows(doc, "My first sheet");
+			List<Element> rows = searchRows(doc, "My first sheet");
 			assertEquals(4, rows.size());
 			// For each row
 			Element firstRow = rows.get(0);
-			List<Element> firstRowCells = GeneratorTestUtils.searchCells(firstRow);
+			List<Element> firstRowCells = searchCells(firstRow);
 			assertEquals(1, firstRowCells.size());
 			Element cell = firstRowCells.get(0);
 			assertEquals(TEXT_FIRST_ROW, ((Element)cell.getContent().get(0)).getText());
 			// 2nd and 3rd left empty
 			Element fourthRow = rows.get(3);
-			List<Element> fourthRowCells = GeneratorTestUtils.searchCells(fourthRow);
+			List<Element> fourthRowCells = searchCells(fourthRow);
 			assertEquals(1, fourthRowCells.size());
 			cell = fourthRowCells.get(0);
 			assertEquals(TEXT_FOURTH_ROW, ((Element)cell.getContent().get(0)).getText());
@@ -167,15 +164,15 @@ public class TestGeneratorMisc {
 			// Not empty and correct document
 			Document doc = GeneratorTestUtils.parseDocument(document);
 			assertNotNull(doc);
-			List<Element> rows1 = GeneratorTestUtils.searchRows(doc, "a sheet");
+			List<Element> rows1 = searchRows(doc, "a sheet");
 			assertEquals(2, rows1.size());
-			List<Element> cells1 = GeneratorTestUtils.searchCells(rows1.get(1));
+			List<Element> cells1 = searchCells(rows1.get(1));
 			assertEquals(TEXT_FIRST_ROW, ((Element)cells1.get(0).getContent().get(0)).getText());
-			List<Element> rows2 = GeneratorTestUtils.searchRows(doc, "yet another sheet");
+			List<Element> rows2 = searchRows(doc, "yet another sheet");
 			assertEquals(0, rows2.size());
-			List<Element> rows3 = GeneratorTestUtils.searchRows(doc, "the third sheet!");
+			List<Element> rows3 = searchRows(doc, "the third sheet!");
 			assertEquals(1, rows3.size());
-			List<Element> cells3 = GeneratorTestUtils.searchCells(rows3.get(0));
+			List<Element> cells3 = searchCells(rows3.get(0));
 			assertEquals(2, cells3.size());
 			assertEquals(NumberFormatHelper.format(NUMBER_THIRD_SHEET), 
 					((Element)cells3.get(1).getContent().get(0)).getText());
@@ -225,20 +222,20 @@ public class TestGeneratorMisc {
 			// Not empty and correct document
 			Document doc = GeneratorTestUtils.parseDocument(document);
 			assertNotNull(doc);
-			List<Element> rows1 = GeneratorTestUtils.searchRows(doc, "a sheet with dates");
+			List<Element> rows1 = searchRows(doc, "a sheet with dates");
 			assertEquals(2, rows1.size());
 			// test date formats
-			Element cellNoFormat = GeneratorTestUtils.searchCells(rows1.get(0)).get(0);
-			assertNotEquals(dateStyle.getId(), XmlTestUtils.getAttributeValue(cellNoFormat, "StyleID", "ss"));
-			Element cellWithFormat = GeneratorTestUtils.searchCells(rows1.get(1)).get(0);
-			assertEquals(dateStyle.getId(), XmlTestUtils.getAttributeValue(cellWithFormat, "StyleID", "ss"));
+			Element cellNoFormat = searchCells(rows1.get(0)).get(0);
+			assertNotEquals(dateStyle.getId(), getAttributeValue(cellNoFormat, "StyleID", "ss"));
+			Element cellWithFormat = searchCells(rows1.get(1)).get(0);
+			assertEquals(dateStyle.getId(), getAttributeValue(cellWithFormat, "StyleID", "ss"));
 			
 			Element style = GeneratorTestUtils.searchStyle(doc, 
-				XmlTestUtils.getAttributeValue(cellWithFormat, "StyleID", "ss"));
+				getAttributeValue(cellWithFormat, "StyleID", "ss"));
 			assertNotNull(style);
 			// Get the format in the style
 			Element numberFormat = ((Element)style.getContent().get(0));
-			assertEquals(DATE_FORMAT, XmlTestUtils.getAttributeValue(numberFormat, "Format", "ss"));
+			assertEquals(DATE_FORMAT, getAttributeValue(numberFormat, "Format", "ss"));
 			
 			os.write(baos.toByteArray());			
 			os.close();
@@ -319,7 +316,7 @@ public class TestGeneratorMisc {
 			Document doc = GeneratorTestUtils.parseDocument(document);
 			assertNotNull(doc);			
 			
-			List<Element> rows = GeneratorTestUtils.searchRows(doc, SHEET_CAPTION);
+			List<Element> rows = searchRows(doc, SHEET_CAPTION);
 			assertEquals(17, rows.size());
 			
 			// the second to the fourth should have blue background
@@ -329,7 +326,7 @@ public class TestGeneratorMisc {
 				assertEquals(BLUE_COLOR,
 					getInteriorStyleAttribute(blueRow, "Color"));
 				assertEquals(NumberFormatHelper.format(BLUE_HEIGHT),
-					XmlTestUtils.getAttributeValue(blueRow, "Height", "ss"));
+					getAttributeValue(blueRow, "Height", "ss"));
 			}
 			
 			// the eighth to twelfth should have red background
@@ -339,7 +336,7 @@ public class TestGeneratorMisc {
 				assertEquals(RED_COLOR,
 					getInteriorStyleAttribute(redRow, "Color"));
 				assertEquals(NumberFormatHelper.format(RED_HEIGHT),
-					XmlTestUtils.getAttributeValue(redRow, "Height", "ss"));
+					getAttributeValue(redRow, "Height", "ss"));
 			}
 			
 			// the fifteenth row should have green background
@@ -443,7 +440,7 @@ public class TestGeneratorMisc {
 			// Span = 2 -> an additional column
 			// red background style
 			assertEquals(NumberFormatHelper.format(1d), 
-					XmlTestUtils.getAttributeValue(col0, "Span", "ss"));
+					getAttributeValue(col0, "Span", "ss"));
 			assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col0, "Color"));
 			
 			// Gap of 1
@@ -454,10 +451,10 @@ public class TestGeneratorMisc {
 			// width of 35d
 			Element col2 = columns.get(2);
 			assertEquals(NumberFormatHelper.format(4d), 
-					XmlTestUtils.getAttributeValue(col2, "Index", "ss"));
+					getAttributeValue(col2, "Index", "ss"));
 			assertEquals(BLUE_BACKGROUND, getInteriorStyleAttribute(col2, "Color"));
 			assertEquals(NumberFormatHelper.format(35d), 
-					XmlTestUtils.getAttributeValue(col2, "Width", "ss"));
+					getAttributeValue(col2, "Width", "ss"));
 			
 			// italic, red background
 			Element col3 = columns.get(3);
@@ -470,17 +467,17 @@ public class TestGeneratorMisc {
 			Element col4 = columns.get(4);
 			assertEquals(BLUE_BACKGROUND, getInteriorStyleAttribute(col4, "Color"));
 			assertEquals(NumberFormatHelper.format(1d), 
-					XmlTestUtils.getAttributeValue(col0, "Span", "ss"));
+					getAttributeValue(col0, "Span", "ss"));
 			
 			// red background
 			// width: 250
 			// span = 2 -> 1 additional column
 			Element col5 = columns.get(5);
 			assertEquals(NumberFormatHelper.format(1d), 
-					XmlTestUtils.getAttributeValue(col5, "Span", "ss"));
+					getAttributeValue(col5, "Span", "ss"));
 			assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col5, "Color"));
 			assertEquals(NumberFormatHelper.format(250d), 
-					XmlTestUtils.getAttributeValue(col5, "Width", "ss"));
+					getAttributeValue(col5, "Width", "ss"));
 			
 			// Gap of 2
 			Element col6 = columns.get(6);
@@ -492,9 +489,9 @@ public class TestGeneratorMisc {
 			Element col7 = columns.get(7);
 			assertEquals(BLUE_BACKGROUND, getInteriorStyleAttribute(col7, "Color"));
 			assertEquals(NumberFormatHelper.format(12d), 
-					XmlTestUtils.getAttributeValue(col7, "Index", "ss"));
+					getAttributeValue(col7, "Index", "ss"));
 			assertEquals(NumberFormatHelper.format(2d), 
-					XmlTestUtils.getAttributeValue(col7, "Span", "ss"));
+					getAttributeValue(col7, "Span", "ss"));
 			
 			// Gap of 1
 			Element col8 = columns.get(8);
@@ -505,13 +502,13 @@ public class TestGeneratorMisc {
 			Element col9 = columns.get(9);
 			assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col9, "Color"));
 			assertEquals(NumberFormatHelper.format(16d), 
-					XmlTestUtils.getAttributeValue(col9, "Index", "ss"));
+					getAttributeValue(col9, "Index", "ss"));
 			
 			// last column: the closing one
 			Element col10 = columns.get(10);
-			assertTrue(null == XmlTestUtils.getAttributeValue(col10, "StyleID", "ss"));
-			assertTrue(null == XmlTestUtils.getAttributeValue(col10, "Span", "ss"));
-			assertTrue(null == XmlTestUtils.getAttributeValue(col10, "Index", "ss"));
+			assertTrue(null == getAttributeValue(col10, "StyleID", "ss"));
+			assertTrue(null == getAttributeValue(col10, "Span", "ss"));
+			assertTrue(null == getAttributeValue(col10, "Index", "ss"));
 			
 			os.write(baos.toByteArray());			
 			os.close();
@@ -529,10 +526,10 @@ public class TestGeneratorMisc {
 		assertEquals(column.getName(), "Column");
 		if (width > 1) {
 			assertEquals(NumberFormatHelper.format(new Double(width - 1)), 
-				XmlTestUtils.getAttributeValue(column, "Span", "ss"));
+				getAttributeValue(column, "Span", "ss"));
 		}
 		else if (width == 1) {
-			assertTrue(null == XmlTestUtils.getAttributeValue(column, "Span", "ss"));
+			assertTrue(null == getAttributeValue(column, "Span", "ss"));
 		}
 		// No style
 		assertTrue(null == GeneratorTestUtils.searchStyle(column.getDocument(), column));

@@ -1,10 +1,6 @@
-/**
- * 
- */
 package xml.spreadsheet.utils;
 
 import java.util.Map;
-
 
 /**
  * Provides support to XML generation across the library
@@ -24,7 +20,7 @@ public class XmlHelper {
 		sb.append(" ");
 		sb.append(att);
 		sb.append("=\"");		
-		sb.append(value.toString());
+		sb.append(value);
 		sb.append("\"");
 	}
 	
@@ -108,7 +104,7 @@ public class XmlHelper {
 	 * @param table Table with the attributes
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Table<Object> table) {
+	public static String element(String elementName, Map<String, Object> table) {
 		return element(elementName, table, null, true);		
 	}
 	
@@ -120,7 +116,7 @@ public class XmlHelper {
 	 * does not
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Table<Object> table, boolean close) {
+	public static String element(String elementName, Map<String, Object> table, boolean close) {
 		return element(elementName, table, null, close);		
 	}
 	
@@ -131,7 +127,7 @@ public class XmlHelper {
 	 * @param content Content of the XML node 
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Table<Object> table, 
+	public static String element(String elementName, Map<String, Object> table,
 			String content) {
 		return element(elementName, table, content, true);
 	}
@@ -145,35 +141,32 @@ public class XmlHelper {
 	 * does not
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Table<Object> table, 
+	public static String element(String elementName, Map<String, Object> table,
 			String content, boolean close) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<");
 		sb.append(elementName);
-		if (table != null) {
-			Map<String, Object> map = table.map();
-			if (map != null && map.size() != 0) {
-				sb.append(" ");
-				for (String key: map.keySet()) {
-					Object value = map.get(key);
-					if (value instanceof String) {
-						att(sb, key, (String) value);
-					}
-					else if (value instanceof Double) {
-						att(sb, key, (Double) value);
-					}
-					else if (value instanceof Boolean) {
-						att(sb, key, (Boolean) value);
-					}
-					else if (value instanceof Long) {
-						att(sb, key, (Long) value);
-					}
-					else if (value instanceof Integer) {
-						att(sb, key, (Integer) value);
-					}
-					else {
-						att(sb, key, value.toString());
-					}
+		if (table != null && table.size() != 0) {
+			sb.append(" ");
+			for (String key: table.keySet()) {
+				Object value = table.get(key);
+				if (value instanceof String) {
+					att(sb, key, (String) value);
+				}
+				else if (value instanceof Double) {
+					att(sb, key, (Double) value);
+				}
+				else if (value instanceof Boolean) {
+					att(sb, key, (Boolean) value);
+				}
+				else if (value instanceof Long) {
+					att(sb, key, (Long) value);
+				}
+				else if (value instanceof Integer) {
+					att(sb, key, (Integer) value);
+				}
+				else {
+					att(sb, key, value.toString());
 				}
 			}
 		}

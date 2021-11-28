@@ -1,9 +1,6 @@
-/**
- * 
- */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.MapBuilder;
 import xml.spreadsheet.utils.XmlHelper;
 
 /**
@@ -52,10 +49,13 @@ public class Interior {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.element("ss:Interior",
-			new Table<Object>().
-				add("ss:Color", color).
-				add("ss:Pattern", pattern != null?pattern.toString():null));
+		return XmlHelper.element(
+			"ss:Interior",
+			MapBuilder.of(
+				"ss:Color", color,
+				"ss:Pattern", pattern != null ? pattern.toString() : null
+			)
+		);
 	}
 
 	/** Default constructor. */

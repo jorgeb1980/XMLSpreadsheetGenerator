@@ -1,27 +1,17 @@
-/**
- * 
- */
 package xml.spreadsheet;
-
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.templates.TemplateEngine;
 import xml.spreadsheet.templates.TemplateEngineFactory;
-import xml.spreadsheet.utils.BooleanFormatHelper;
-import xml.spreadsheet.utils.Table;
-import xml.spreadsheet.utils.XmlHelper;
-import xml.spreadsheet.utils.DateFormatHelper;
-import xml.spreadsheet.utils.NumberFormatHelper;
+import xml.spreadsheet.utils.*;
 
-import static xml.spreadsheet.utils.AssertionHelper.*;
+import java.io.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
+import static java.lang.Boolean.FALSE;
+import static xml.spreadsheet.utils.AssertionHelper.assertion;
 
 /**
  * Partial implementation of the spreadsheet format described in the article<br/>
@@ -72,7 +62,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * a new row is started, and false if a cell is written into it. */
 	private boolean emptyCurrentRow = true;
 	
-	/** This class used to have a row counter in order to display the
+	/* This class used to have a row counter in order to display the
 	 *	ss:Index attribute, which was needed by Libre Office.  Since the rest
 	 *	of spreadsheet products do not need it, or even fail to render the 
 	 *	spreadsheet if it is included, I have dropped it. */
@@ -96,13 +86,6 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	public XMLSpreadsheetGenerator(OutputStream output) 
 				throws XMLSpreadsheetException {
 		this(output, BUFFER_SIZE);
-	}
-	
-	@Override
-	public void close() throws Exception {
-		// This method is included in order to, retroactively, implement the
-		//	AutoCloseable interface.
-		closeDocument();		
 	}
 	
 	/**
@@ -265,8 +248,8 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @deprecated The close() method should be used if the generator was used
 	 * in any case out of a try-with-resources statement
 	 */
-	public void closeDocument() 
-				throws XMLSpreadsheetException {
+	@Override
+	public void close() throws Exception {
 		// It will ignore further attempts to close it once it is done
 		if (state != GeneratorState.DONE) {
 			state = GeneratorState.validateTransition(state, GeneratorState.DONE);
@@ -303,15 +286,19 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
 		emptyCurrentRow = true;
 		// Create current row
-		flush(XmlHelper.element("ss:Row", 
-			new Table<Object>().
-				add("ss:Caption", caption).
-				add("ss:Height", height).
-				add("ss:AutoFitHeight", autoFitHeight).
-				add("ss:Hidden", hidden).
-				add("ss:StyleID", style != null?style.getId():null),
-			// Don't close!
-			false));
+		flush(
+			XmlHelper.element(
+				"ss:Row",
+				MapBuilder.of(
+					"ss:Caption", caption,
+					"ss:Height", height,
+					"ss:AutoFitHeight", autoFitHeight,
+					"ss:Hidden", hidden,
+					"ss:StyleID", style != null?style.getId():null
+				),
+				FALSE // Don't close!
+			)
+		);
 	}
 	
 	/**
@@ -360,9 +347,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	public void closeRow() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET_ROWS);
 		if (emptyCurrentRow) {
-			flush(XmlHelper.element("ss:Cell", 
-				new Table<Object>().
-					add("ss:Index", "1")));
+			flush(XmlHelper.element("ss:Cell", MapBuilder.of("ss:Index", "1")));
 		}
 		flush("</ss:Row>");
 	}
@@ -389,11 +374,15 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		// Validate that the sheet name is not null
 		assertion(sheetName != null, "The sheet name must be specified");
 		// Flush the start of the sheet template
-		flush(engine.applyTemplate("sheet_header", 
-			new Table<String>().
-				add("sheetName", sheetName).
-				add("protected", BooleanFormatHelper.format(Boolean.valueOf(protectedSheet))).
-				map()));
+		flush(
+			engine.applyTemplate(
+				"sheet_header",
+				MapBuilder.of(
+					"sheetName", sheetName,
+					"protected", BooleanFormatHelper.format(protectedSheet)
+				)
+			)
+		);
 		columnCount = 0;
 	}
 	
@@ -490,10 +479,12 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 			// Should we cover a gap?
 			if ((index - columnCount) > 1) {
 				long gap = (index - columnCount) - 1;
-				flush(XmlHelper.element("ss:Column",
-						new Table<Object>().
-							add("ss:Span", gap > 1?gap-1:null)
-					));
+				flush(
+					XmlHelper.element(
+						"ss:Column",
+						MapBuilder.of("ss:Span", gap > 1 ? gap - 1 : null)
+					)
+				);
 			}
 			// Jump to the index
 			columnCount = index;
@@ -505,15 +496,20 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		if (span != null) {
 			columnCount += (span - 1);
 		}
-		flush(XmlHelper.element("ss:Column", new Table<Object>().
-				add("c:Caption", caption).
-				add("ss:AutoFitWidth", autoFitWidth).
-				add("ss:Hidden", hidden).
-				add("ss:Index", index).
-				add("ss:Span", span!=null && span > 1?span-1:null).
-				add("ss:StyleID", style==null?null:style.getId()).
-				add("ss:Width", width)				
-				));		
+		flush(
+			XmlHelper.element(
+				"ss:Column",
+				MapBuilder.of(
+					"c:Caption", caption,
+					"ss:AutoFitWidth", autoFitWidth,
+					"ss:Hidden", hidden,
+					"ss:Index", index,
+					"ss:Span", span != null && span > 1 ? span-1 : null,
+					"ss:StyleID", style == null ? null : style.getId(),
+					"ss:Width", width
+				)
+			)
+		);
 	}
 	
 	/**
@@ -633,10 +629,13 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 			emptyCurrentRow = false;
 		}
 		// write the contents of the cell
-		flush(XmlHelper.element("ss:Cell", 
-			new Table<Object>().add("ss:StyleID", style!=null?style.getId():null), 
-			XmlHelper.element("ss:Data", 
-				new Table<Object>().add("ss:Type", type.toString()), XmlHelper.cdata(value))));
+		flush(
+			XmlHelper.element("ss:Cell",
+				MapBuilder.of("ss:StyleID", style != null ? style.getId() : null),
+				XmlHelper.element("ss:Data",
+					MapBuilder.of("ss:Type", type.toString()), XmlHelper.cdata(value))
+			)
+		);
 	}
 	
 	

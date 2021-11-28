@@ -42,12 +42,7 @@ class VelocityTemplateEngine extends AbstractTemplateEngine {
 			}
 		}
 		StringWriter writer = new StringWriter();
-		try {
-			Velocity.evaluate(context, writer, templateId, templateValue);
-		}
-		catch(IOException ioe) {
-			throw new TemplateException(ioe);
-		}
+		Velocity.evaluate(context, writer, templateId, templateValue);
 		return writer.toString();
 	}
 	

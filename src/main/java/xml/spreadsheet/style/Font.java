@@ -1,10 +1,9 @@
-/**
- * 
- */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.utils.MapBuilder;
 import xml.spreadsheet.utils.XmlHelper;
+
+import java.util.Map;
 
 /**
  * Defines the font attributes to use in this style. 
@@ -52,9 +51,7 @@ public class Font {
 		
 		// No need to override toString, it is enough as is
 	}
-	
-	
-	
+
 	//-------------------------------------------------------------------
 	// Class properties
 	
@@ -117,27 +114,28 @@ public class Font {
 	 */
 	private FontFamily family = null;
 	
-	
 	//-------------------------------------------------------------------
 	// Class methods
-	
-	
+
 	@Override
-	public String toString() {		
-		return XmlHelper.element("ss:Font",
-			new Table<Object>().
-				add("ss:Bold", bold != null?bold.booleanValue():null).
-				add("ss:Color", color).
-				add("ss:FontName", fontName).
-				add("ss:Italic", italic).
-				add("ss:Outline", outline).
-				add("ss:Shadow", shadow).
-				add("ss:Size", size).
-				add("ss:StrikeThrough", strikeThrough).				
-				add("ss:Underline", underline != null?underline.toString():null).		
-				add("ss:VerticalAlign", verticalAlign != null?verticalAlign.toString():null).		
-				add("x:CharSet", charSet).		
-				add("x:Family", family != null?family.toString():null));
+	public String toString() {
+		return XmlHelper.element(
+			"ss:Font",
+			MapBuilder.of(
+				"ss:Bold", bold,
+				"ss:Color", color,
+				"ss:FontName", fontName,
+				"ss:Italic", italic,
+				"ss:Outline", outline,
+				"ss:Shadow", shadow,
+				"ss:Size", size,
+				"ss:StrikeThrough", strikeThrough,
+				"ss:Underline", underline != null ? underline.toString() : null,
+				"ss:VerticalAlign", verticalAlign != null ? verticalAlign.toString() : null,
+				"x:CharSet", charSet,
+				"x:Family", family != null ? family.toString() : null
+			)
+		);
 	}
 	
 	/** Default constructor. */

@@ -1,15 +1,7 @@
-/**
- * 
- */
 package xml.spreadsheet;
 
-import xml.spreadsheet.style.Alignment;
-import xml.spreadsheet.style.Borders;
-import xml.spreadsheet.style.Font;
-import xml.spreadsheet.style.Interior;
-import xml.spreadsheet.style.NumberFormat;
-import xml.spreadsheet.style.Protection;
-import xml.spreadsheet.utils.Table;
+import xml.spreadsheet.style.*;
+import xml.spreadsheet.utils.MapBuilder;
 import xml.spreadsheet.utils.XmlHelper;
 
 /**
@@ -22,8 +14,7 @@ public class Style {
 
 	//-------------------------------------------------
 	// Properties of the style
-	
-	
+
 	// Attributes
 	/** Unique id */
 	private String id;
@@ -179,19 +170,20 @@ public class Style {
 	public String toString() {
 		
 		return XmlHelper.element("ss:Style", 
-			new Table<Object>().
-				add("ss:ID", id).
-				add("ss:Name", name).
-				add("ss:Parent", parent),
+			MapBuilder.of(
+				"ss:ID", id,
+				"ss:Name", name,
+				"ss:Parent", parent
+			),
 			// Compose every inner style element XML representation inside 
 			//	the Style element
 			new StringBuilder()
-				.append(alignment != null?alignment.toString():"")
-				.append(borders != null?borders.toString():"")
-				.append(font != null?font.toString():"")
-				.append(interior != null?interior.toString():"")
-				.append(numberFormat != null?numberFormat.toString():"")
-				.append(protection != null?protection.toString():"").toString()
+				.append(alignment != null ? alignment.toString():"")
+				.append(borders != null ? borders.toString():"")
+				.append(font != null ? font.toString():"")
+				.append(interior != null ? interior.toString():"")
+				.append(numberFormat != null ? numberFormat.toString():"")
+				.append(protection != null ? protection.toString():"").toString()
 			);
 	}
 

@@ -18,10 +18,7 @@ import xml.spreadsheet.style.Alignment.VerticalAlignment;
  */
 public class TestAlignment {
 
-
 	Alignment alignment = null;
-	
-	// TEST SETUP
 	
 	@Before
 	public void init() {
