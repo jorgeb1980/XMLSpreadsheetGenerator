@@ -46,9 +46,7 @@ public class TestGeneratorMisc {
 			fail();
 		}
 	}
-	
-	
-	
+
 	@Test
 	public void createEmptyFile() {
 		try {
@@ -519,7 +517,7 @@ public class TestGeneratorMisc {
 	private void verifyGap(Element column, int width) throws JDOMException {
 		assertEquals(column.getName(), "Column");
 		if (width > 1) {
-			assertEquals(NumberFormatHelper.format(new Double(width - 1)), 
+			assertEquals(NumberFormatHelper.format(Double.valueOf(width - 1)),
 				getAttributeValue(column, "Span", "ss"));
 		}
 		else if (width == 1) {

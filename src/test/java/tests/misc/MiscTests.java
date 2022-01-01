@@ -11,8 +11,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestBooleanFormat.class,
 	TestNumberFormat.class,
 	TestDateFormat.class,
-	TestXmlHelper.class,
-	TestPropertiesReader.class})
+	TestXmlHelper.class
+})
 public class MiscTests {
 
 }
