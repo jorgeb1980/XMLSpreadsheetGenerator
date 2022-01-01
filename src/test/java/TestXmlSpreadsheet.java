@@ -6,8 +6,6 @@ import tests.generator.TestGenerator;
 import tests.misc.MiscTests;
 import tests.styles.StyleTests;
 
-
-
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	StyleTests.class,

@@ -1,6 +1,7 @@
 package tests.styles;
 
 import static org.junit.Assert.fail;
+import static tests.styles.StyleTestUtils.checkAttributeValue;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class TestBorders {
 			borders = new Borders();
 			borders.createBorder(BorderPosition.Bottom);
 			borders.createBorder(BorderPosition.Bottom);
-			Assert.assertTrue(false);
+			fail();
 		}
 		catch (XMLSpreadsheetException e) {
 			Assert.assertTrue(true);
@@ -72,7 +73,7 @@ public class TestBorders {
 			for (BorderPosition borderPosition: BorderPosition.values()) {
 				Border b = borders.createBorder(borderPosition);
 				Assert.assertNotNull(b);
-				StyleTestUtils.checkAttributeValue(borders, 
+				checkAttributeValue(borders,
 						"//ss:Border[@ss:Position='" + borderPosition.toString()+"']", 
 						"Position", borderPosition.toString());
 			}
@@ -90,19 +91,18 @@ public class TestBorders {
 			for (BorderPosition position: BorderPosition.values()) {
 				Border b = borders.createBorder(position);
 				// Null if default
-				StyleTestUtils.checkAttributeValue(borders, 
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+				checkAttributeValue(borders,
+						"//ss:Border[@ss:Position='" + position + "']",
 						"LineStyle", null);
 				// For each possible position, try each possible line style
 				for (LineStyle lineStyle: LineStyle.values()) {
 					b.setLineStyle(lineStyle);
-					StyleTestUtils.checkAttributeValue(borders, 
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+					checkAttributeValue(borders,
+						"//ss:Border[@ss:Position='" + position + "']",
 						"LineStyle", lineStyle.toString());
 				}
 			}
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			fail(t.getMessage());
 		}
 	}
@@ -115,36 +115,46 @@ public class TestBorders {
 			for (BorderPosition position: BorderPosition.values()) {
 				Border b = borders.createBorder(position);
 				// Null if default
-				StyleTestUtils.checkAttributeValue(borders, 
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
-						"Color", null);
-				
+				checkAttributeValue(
+					borders,
+					"//ss:Border[@ss:Position='" + position + "']",
+					"Color",
+					null
+				);
 				// For each possible position, try colors
 				b.setColor(Border.COLOR_AUTOMATIC);
-				StyleTestUtils.checkAttributeValue(borders, 
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
-						"Color", Border.COLOR_AUTOMATIC);
-				
+				checkAttributeValue(
+					borders,
+					"//ss:Border[@ss:Position='" + position + "']",
+					"Color",
+					Border.COLOR_AUTOMATIC
+				);
 				// dark red
 				b.setColor("#C14949");
-				StyleTestUtils.checkAttributeValue(borders, 
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
-						"Color", "#C14949");
-				
+				checkAttributeValue(
+					borders,
+					"//ss:Border[@ss:Position='" + position + "']",
+					"Color",
+					"#C14949"
+				);
 				// dark blue
 				b.setColor("#1B1F97");
-				StyleTestUtils.checkAttributeValue(borders, 
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
-						"Color", "#1B1F97");
-				
+				checkAttributeValue(
+					borders,
+					"//ss:Border[@ss:Position='" + position + "']",
+					"Color",
+					"#1B1F97"
+				);
 				// dark green
 				b.setColor("#096F27");
-				StyleTestUtils.checkAttributeValue(borders, 
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
-						"Color", "#096F27");
+				checkAttributeValue(
+					borders,
+					"//ss:Border[@ss:Position='" + position + "']",
+					"Color",
+					"#096F27"
+				);
 			}
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			fail(t.getMessage());
 		}
 	}
@@ -157,20 +167,24 @@ public class TestBorders {
 			for (BorderPosition position: BorderPosition.values()) {
 				Border b = borders.createBorder(position);
 				// Null if default
-				StyleTestUtils.checkAttributeValue(borders, 
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
-						"Weight", null);
-				
+				checkAttributeValue(
+					borders,
+					"//ss:Border[@ss:Position='" + position.toString()+"']",
+					"Weight",
+					null
+				);
 				// For each possible position, try weights
 				for (BorderWeight weight: BorderWeight.values()) {
 					b.setWeight(weight);
-					StyleTestUtils.checkAttributeValue(borders, 
+					checkAttributeValue(
+						borders,
 						"//ss:Border[@ss:Position='" + position.toString()+"']", 
-						"Weight", weight.getValue());
+						"Weight",
+						weight.getValue()
+					);
 				}
 			}
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			fail(t.getMessage());
 		}
 	}
@@ -182,18 +196,22 @@ public class TestBorders {
 			for (BorderPosition position: BorderPosition.values()) {
 				Border b = borders.createBorder(position);
 				// Null if default
-				StyleTestUtils.checkAttributeValue(borders, 
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
-						"Weight", null);
-				final Double WEIGHT_VALUE = 3.3d;
+				checkAttributeValue(
+					borders,
+					"//ss:Border[@ss:Position='" + position + "']",
+					"Weight",
+					null
+				);
+				final double WEIGHT_VALUE = 3.3d;
 				b.setWeight(WEIGHT_VALUE);
-				StyleTestUtils.checkAttributeValue(borders, 
-					"//ss:Border[@ss:Position='" + position.toString()+"']", 
-					"Weight", WEIGHT_VALUE);
-				
+				checkAttributeValue(
+					borders,
+					"//ss:Border[@ss:Position='" + position + "']",
+					"Weight",
+					WEIGHT_VALUE
+				);
 			}
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			fail(t.getMessage());
 		}
 	}

@@ -1,16 +1,16 @@
 package tests.styles;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Alignment;
 import xml.spreadsheet.style.Alignment.HorizontalAlignment;
 import xml.spreadsheet.style.Alignment.VerticalAlignment;
+
+import static org.junit.Assert.fail;
+import static tests.styles.StyleTestUtils.checkAttributeValue;
 
 /**
  * This test suite checks the generated XML, building it with JDOM and comparing
@@ -30,8 +30,7 @@ public class TestAlignment {
 			
 			alignment = style.alignment();
 			Assert.assertNotNull(alignment);	
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			fail(e.getMessage());
 		}
 	}
@@ -48,11 +47,11 @@ public class TestAlignment {
 	@Test
 	public void testSetHorizontal() {
 		// Null by default
-		StyleTestUtils.checkAttributeValue(alignment, "Horizontal", null);
+		checkAttributeValue(alignment, "Horizontal", null);
 		// Check the generated value for all the alternatives
 		for (HorizontalAlignment horizontalAlignment: HorizontalAlignment.values()) {
 			alignment.setHorizontal(horizontalAlignment);	
-			StyleTestUtils.checkAttributeValue(alignment, "Horizontal",
+			checkAttributeValue(alignment, "Horizontal",
 					horizontalAlignment.toString());			
 		}
 	}
@@ -62,16 +61,16 @@ public class TestAlignment {
 		// Check the generated value for all the alternatives
 		
 		// By default, null
-		StyleTestUtils.checkAttributeValue(alignment, "Rotate", null);
+		checkAttributeValue(alignment, "Rotate", null);
 		// 0 must return null
 		alignment.setRotate(0);
-		StyleTestUtils.checkAttributeValue(alignment, "Rotate", "0");
+		checkAttributeValue(alignment, "Rotate", "0");
 		
 		alignment.setRotate(90);
-		StyleTestUtils.checkAttributeValue(alignment, "Rotate", "90");
+		checkAttributeValue(alignment, "Rotate", "90");
 		
 		alignment.setRotate(-90);
-		StyleTestUtils.checkAttributeValue(alignment, "Rotate", "-90");
+		checkAttributeValue(alignment, "Rotate", "-90");
 	}
 
 	@Test
@@ -79,51 +78,51 @@ public class TestAlignment {
 		// Check the generated value
 		
 		// By default, null
-		StyleTestUtils.checkAttributeValue(alignment, "ShrinkToFit", null);
+		checkAttributeValue(alignment, "ShrinkToFit", null);
 		// Null if false
 		alignment.setShrinkToFit(false);
-		StyleTestUtils.checkAttributeValue(alignment, "ShrinkToFit", "0");
+		checkAttributeValue(alignment, "ShrinkToFit", "0");
 		// 1 if true
 		alignment.setShrinkToFit(true);
-		StyleTestUtils.checkAttributeValue(alignment, "ShrinkToFit", "1");
+		checkAttributeValue(alignment, "ShrinkToFit", "1");
 	}
 
 	@Test
 	public void testSetVertical() {
 		// Null by default
-		StyleTestUtils.checkAttributeValue(alignment, "Vertical", null);
+		checkAttributeValue(alignment, "Vertical", null);
 		// Check the generated values for all the alternatives
 		for (VerticalAlignment verticalAlignment: VerticalAlignment.values()) {
 			alignment.setVertical(verticalAlignment);
-			StyleTestUtils.checkAttributeValue(alignment, "Vertical", verticalAlignment.toString());
+			checkAttributeValue(alignment, "Vertical", verticalAlignment.toString());
 		}
 	}
 
 	@Test
 	public void testSetVerticalText() {
 		// Null by default
-		StyleTestUtils.checkAttributeValue(alignment, "VerticalText", null);
+		checkAttributeValue(alignment, "VerticalText", null);
 		// Check the possible values
 		
 		// Null if false
 		alignment.setVerticalText(false);
-		StyleTestUtils.checkAttributeValue(alignment, "VerticalText", "0");
+		checkAttributeValue(alignment, "VerticalText", "0");
 		// 1 if true
 		alignment.setVerticalText(true);
-		StyleTestUtils.checkAttributeValue(alignment, "VerticalText", "1");
+		checkAttributeValue(alignment, "VerticalText", "1");
 	}
 
 	@Test
 	public void testSetWrapText() {
 		// Null by default
-		StyleTestUtils.checkAttributeValue(alignment, "WrapText", null);
+		checkAttributeValue(alignment, "WrapText", null);
 		
 		// Null if false
 		alignment.setWrapText(false);
-		StyleTestUtils.checkAttributeValue(alignment, "WrapText", "0");
+		checkAttributeValue(alignment, "WrapText", "0");
 		// 1 if true
 		alignment.setWrapText(true);
-		StyleTestUtils.checkAttributeValue(alignment, "WrapText", "1");
+		checkAttributeValue(alignment, "WrapText", "1");
 	}
 
 }
