@@ -57,7 +57,7 @@ public class XmlTestUtils {
 
 	/**
 	 * Runs a function within a context in which an output file will be created and deleted unless
-	 * we have set the KEEP_FILES env var.
+	 * we have set the appropriate env var.  The method will output instructions for it if launched with default env vars.
 	 * @param f Lambda that will consume the created OutputStream
 	 */
 	public static void executeWithTempFile(Consumer<OutputStream> f) {
@@ -69,7 +69,7 @@ public class XmlTestUtils {
 			System.out.println("Created temp file " + file);
 			if (!YES_VALUES.contains(getSystemVariable(KEEP_FILES))) {
 				Files.delete(file.toPath());
-				System.out.println("If you wish to keep and inspect later temporary files created during tests, please declare the env var KEEP_FILES = true");
+				System.out.printf("If you wish to keep and inspect later temporary files created during tests, please declare the env var %s = true%n", KEEP_FILES);
 			}
 		} catch (IOException ioe) { ioe.printStackTrace(); }
 	}
