@@ -397,7 +397,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 				"ss:Worksheet",
 				of(
 					"ss:Name", name,
-					"ss:Protected", Boolean.toString(isProtected)
+					"ss:Protected", BooleanFormatHelper.format(isProtected)
 				),
 				FALSE
 			)
