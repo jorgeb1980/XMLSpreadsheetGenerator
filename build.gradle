@@ -31,7 +31,6 @@ dependencies {
 
 jacoco {
     toolVersion = "0.8.7"
-    reportsDir = file("$buildDir/customJacocoReportDir")
 }
 
 jacocoTestReport {
@@ -39,6 +38,10 @@ jacocoTestReport {
         xml.enabled true
         csv.enabled false
     }
+}
+
+test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
 }
 
 javadoc {

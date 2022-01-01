@@ -19,10 +19,10 @@ public class XmlTestUtils {
 	private static final String KEEP_FILES = "KEEP_FILES";
 	private static final List<String> YES_VALUES = Arrays.asList("YES", "TRUE");
 
-	private static Map<String, String> namespaces = null;
+	private static Map<String, String> namespaces;
 	
 	static {
-		namespaces = new HashMap<String, String>();
+		namespaces = new HashMap<>();
 		namespaces.put("x", "urn:schemas-microsoft-com:office:excel");
 		namespaces.put("ss", "urn:schemas-microsoft-com:office:spreadsheet");
 	}
