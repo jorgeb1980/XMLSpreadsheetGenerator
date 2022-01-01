@@ -90,12 +90,22 @@ public class XmlHelper {
 	}
 	
 	/**
-	 * Creates an empty and closed xml node with the indicated attributes
+	 * Creates a closed, empty xml node with the indicated attributes
 	 * @param elementName Name of the element
 	 * @return String representation of the XML node
 	 */
 	public static String element(String elementName) {
 		return element(elementName, null, null, true);		
+	}
+
+	/**
+	 * Creates an empty xml node with the indicated attributes
+	 * @param elementName Name of the element
+	 * @param close If it is true, the method closes the xml node; if false, it does not
+	 * @return String representation of the XML node
+	 */
+	public static String element(String elementName, boolean close) {
+		return element(elementName, null, null, close);
 	}
 	
 	/**
@@ -107,13 +117,22 @@ public class XmlHelper {
 	public static String element(String elementName, Map<String, Object> table) {
 		return element(elementName, table, null, true);		
 	}
+
+	/**
+	 * Creates a closed xml node with the indicated content
+	 * @param elementName Name of the element
+	 * @param content Content of the XML node
+	 * @return String representation of the XML node
+	 */
+	public static String element(String elementName, String content) {
+		return element(elementName, null, content, true);
+	}
 	
 	/**
 	 * Creates an empty xml node with the indicated attributes
 	 * @param elementName Name of the element
 	 * @param table Table with the attributes
-	 * @param close If it is true, the method closes the xml node; if false, it
-	 * does not
+	 * @param close If it is true, the method closes the xml node; if false, it does not
 	 * @return String representation of the XML node
 	 */
 	public static String element(String elementName, Map<String, Object> table, boolean close) {
@@ -127,8 +146,7 @@ public class XmlHelper {
 	 * @param content Content of the XML node 
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Map<String, Object> table,
-			String content) {
+	public static String element(String elementName, Map<String, Object> table, String content) {
 		return element(elementName, table, content, true);
 	}
 	

@@ -5,7 +5,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import tests.generator.TestGenerator;
 import tests.misc.MiscTests;
 import tests.styles.StyleTests;
-import tests.templates.TestTemplates;
 
 
 
@@ -13,7 +12,6 @@ import tests.templates.TestTemplates;
 @SuiteClasses({ 
 	StyleTests.class,
 	MiscTests.class,
-	TestTemplates.class,
 	TestGenerator.class})
 public class TestXmlSpreadsheet {
 

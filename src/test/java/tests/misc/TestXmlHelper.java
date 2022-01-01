@@ -17,7 +17,7 @@ public class TestXmlHelper {
 
 	@Test
 	public void testEmptyElement() {
-		String element = XmlHelper.element("ss:random_element", null);
+		String element = XmlHelper.element("ss:random_element");
 		assertEquals("<ss:random_element/>", element);
 	}
 	

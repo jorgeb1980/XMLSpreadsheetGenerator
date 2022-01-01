@@ -1,27 +1,9 @@
 package tests.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static tests.XmlTestUtils.getAttributeValue;
-import static tests.generator.GeneratorTestUtils.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.List;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.junit.Test;
-
-import tests.XmlTestUtils;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
@@ -31,6 +13,18 @@ import xml.spreadsheet.style.NumberFormat;
 import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static tests.XmlTestUtils.getAttributeValue;
+import static tests.generator.GeneratorTestUtils.*;
 
 public class TestGeneratorMisc {
 

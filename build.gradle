@@ -22,7 +22,6 @@ jar {
 }
 
 dependencies {
-	compile 'org.apache.velocity:velocity:1.7'
 	testCompile group: 'junit', name: 'junit', version: '4.12'
 	testCompile 'jdom:jdom:1.1'
 	testCompile 'jaxen:jaxen:1.2.0'
