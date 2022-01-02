@@ -34,8 +34,7 @@ public class TestDateFormat {
 			
 			Date dateTest5 = sdf.parse("22-03-2014 00:00:00:167");
 			assertEquals("2014-03-22T00:00:00.167", DateFormatHelper.format(dateTest5));
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 	}

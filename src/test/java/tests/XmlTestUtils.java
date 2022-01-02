@@ -1,12 +1,5 @@
 package tests;
 
-import static org.junit.Assert.fail;
-
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -14,12 +7,22 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.function.Consumer;
+
+import static org.junit.Assert.fail;
+
 public class XmlTestUtils {
 
-	private static Map<String, String> namespaces = null;
+	private static final String KEEP_FILES = "KEEP_FILES";
+	private static final List<String> YES_VALUES = Arrays.asList("YES", "TRUE");
+
+	private static Map<String, String> namespaces;
 	
 	static {
-		namespaces = new HashMap<String, String>();
+		namespaces = new HashMap<>();
 		namespaces.put("x", "urn:schemas-microsoft-com:office:excel");
 		namespaces.put("ss", "urn:schemas-microsoft-com:office:spreadsheet");
 	}
@@ -50,5 +53,31 @@ public class XmlTestUtils {
 	@SuppressWarnings("unchecked")
 	public static List<Element> getDescendants(Element element, String query) throws JDOMException {
 		return (List<Element>) XPath.selectNodes(element, query);
+	}
+
+	/**
+	 * Runs a function within a context in which an output file will be created and deleted unless
+	 * we have set the appropriate env var.  The method will output instructions for it if launched with default env vars.
+	 * @param f Lambda that will consume the created OutputStream
+	 */
+	public static void executeWithTempFile(Consumer<OutputStream> f) {
+		try {
+			File file = File.createTempFile("xmlspreadsheet", ".xml");
+			try (OutputStream os = new FileOutputStream(file)) {
+				f.accept(os);
+			}
+			System.out.println("Created temp file " + file);
+			if (!YES_VALUES.contains(getSystemVariable(KEEP_FILES))) {
+				Files.delete(file.toPath());
+				System.out.printf("If you wish to keep and inspect later temporary files created during tests, please declare the env var %s = true%n", KEEP_FILES);
+			}
+		} catch (IOException ioe) { ioe.printStackTrace(); }
+	}
+
+	private static String getSystemVariable(String variable) {
+		String value = System.getenv(variable);
+		String ret = "";
+		if (value != null) { ret = value.toUpperCase(); }
+		return ret;
 	}
 }

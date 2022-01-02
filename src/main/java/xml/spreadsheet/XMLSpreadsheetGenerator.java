@@ -1,8 +1,6 @@
 package xml.spreadsheet;
 
 import xml.spreadsheet.style.NumberFormat.Format;
-import xml.spreadsheet.templates.TemplateEngine;
-import xml.spreadsheet.templates.TemplateEngineFactory;
 import xml.spreadsheet.utils.*;
 
 import java.io.*;
@@ -11,7 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import static xml.spreadsheet.utils.AssertionHelper.assertion;
+import static xml.spreadsheet.utils.MapBuilder.of;
+import static xml.spreadsheet.utils.XmlHelper.element;
 
 /**
  * Partial implementation of the spreadsheet format described in the article<br/>
@@ -54,10 +55,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	/** Styles. Every new Style will be added to this List and flushed into
 	 * the output stream as soon as the document gets started. */
 	private List<Style> styles;
-	/** Template engine.  Used to recover predefined document fragments and
-	 * merge values into them. */
-	private TemplateEngine engine = null;
-	
+
 	/** Is empty the current row?  This will be set to true every time
 	 * a new row is started, and false if a cell is written into it. */
 	private boolean emptyCurrentRow = true;
@@ -102,8 +100,6 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 			new BufferedOutputStream(output, bufferSize), CHARSET);
 		// Initialization state: we can define styles
 		styles = new LinkedList<Style>();
-		// Template engine
-		engine = TemplateEngineFactory.factory().engine();
 		
 		// Default styles
 		
@@ -213,6 +209,40 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		startRow();
 		closeRow();
 	}
+
+	// Fixed header for every workbook
+	private void workbookHeader() throws XMLSpreadsheetException {
+		flush("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		flush("<?mso-application progid=\"Excel.Sheet\"?>");
+		flush(
+			element(
+				"Workbook",
+				of(
+					"xmlns", "urn:schemas-microsoft-com:office:spreadsheet",
+					"xmlns:c", "urn:schemas-microsoft-com:office:component:spreadsheet",
+					"xmlns:html", "http://www.w3.org/TR/REC-html40",
+					"xmlns:o", "urn:schemas-microsoft-com:office:office",
+					"xmlns:ss", "urn:schemas-microsoft-com:office:spreadsheet",
+					"xmlns:x2", "http://schemas.microsoft.com/office/excel/2003/xml",
+					"xmlns:x", "urn:schemas-microsoft-com:office:excel",
+					"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"
+				),
+				FALSE
+			)
+		);
+		flush(element("OfficeDocumentSettings", of("xmlns", "urn:schemas-microsoft-com:office:office"), FALSE));
+		flush(element("Colors", FALSE));
+		flush(element("Color", FALSE));
+		flush(element("Index", "3"));
+		flush(element("RGB", "#c0c0c0"));
+		flush("</Color>");
+		flush(element("Color", FALSE));
+		flush(element("Index", "4"));
+		flush(element("RGB", "#ff0000"));
+		flush("</Color>");
+		flush("</Colors>");
+		flush("</OfficeDocumentSettings>");
+	}
 	
 	/**
 	 * Use when all the styles are defined (no further definition of styles after this).
@@ -225,9 +255,9 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 				throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, 
 				GeneratorState.CLEAN_DOCUMENT);
-		
+
 		// Header of the document		
-		flush(engine.applyTemplate("workbook_header"));
+		workbookHeader();
 		
 		// Flush all the styles on the document
 		if (styles != null) {
@@ -251,7 +281,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		// It will ignore further attempts to close it once it is done
 		if (state != GeneratorState.DONE) {
 			state = GeneratorState.validateTransition(state, GeneratorState.DONE);
-			flush(engine.applyTemplate("workbook_foot"));
+			flush("</Workbook>");
 			endStreaming();
 		}
 	}
@@ -285,9 +315,9 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		emptyCurrentRow = true;
 		// Create current row
 		flush(
-			XmlHelper.element(
+			element(
 				"ss:Row",
-				MapBuilder.of(
+				of(
 					"ss:Caption", caption,
 					"ss:Height", height,
 					"ss:AutoFitHeight", autoFitHeight,
@@ -345,7 +375,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	public void closeRow() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET_ROWS);
 		if (emptyCurrentRow) {
-			flush(XmlHelper.element("ss:Cell", MapBuilder.of("ss:Index", "1")));
+			flush(element("ss:Cell", of("ss:Index", "1")));
 		}
 		flush("</ss:Row>");
 	}
@@ -359,7 +389,22 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	public void startSheet(String sheetName) throws XMLSpreadsheetException {
 		startSheet(sheetName, false);
 	}
-	
+
+	// Creates a common header for every sheet
+	private void sheetHeader(String name, boolean isProtected) throws XMLSpreadsheetException {
+		flush(
+			element(
+				"ss:Worksheet",
+				of(
+					"ss:Name", name,
+					"ss:Protected", BooleanFormatHelper.format(isProtected)
+				),
+				FALSE
+			)
+		);
+		flush(element("Table", FALSE));
+	}
+
 	/**
 	 * Streams the begin of a sheet.  Sets the <code>WRITING_SHEET</code> state.
 	 * @param sheetName Sheet tab caption
@@ -372,18 +417,17 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		// Validate that the sheet name is not null
 		assertion(sheetName != null, "The sheet name must be specified");
 		// Flush the start of the sheet template
-		flush(
-			engine.applyTemplate(
-				"sheet_header",
-				MapBuilder.of(
-					"sheetName", sheetName,
-					"protected", BooleanFormatHelper.format(protectedSheet)
-				)
-			)
-		);
+		sheetHeader(sheetName, protectedSheet);
 		columnCount = 0;
 	}
-	
+
+	// Common foot for every sheet
+	private void sheetFoot() throws XMLSpreadsheetException {
+		flush("</Table>");
+		flush("<x:WorksheetOptions/>");
+		flush("</ss:Worksheet>");
+	}
+
 	/**
 	 * Streams the ending of a sheet.  Sets the <code>CLEAN_DOCUMENT</code> state.
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
@@ -391,7 +435,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 */
 	public void closeSheet() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.CLEAN_DOCUMENT);
-		flush(engine.applyTemplate("sheet_foot"));
+		sheetFoot();
 	}
 	
 	/**
@@ -415,7 +459,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		state = GeneratorState.validateTransition(state, 
 				GeneratorState.WRITING_SHEET);
 		// Empty column
-		flush(XmlHelper.element("ss:Column"));
+		flush(element("ss:Column"));
 	}
 	
 	/**
@@ -478,9 +522,9 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 			if ((index - columnCount) > 1) {
 				long gap = (index - columnCount) - 1;
 				flush(
-					XmlHelper.element(
+					element(
 						"ss:Column",
-						MapBuilder.of("ss:Span", gap > 1 ? gap - 1 : null)
+						of("ss:Span", gap > 1 ? gap - 1 : null)
 					)
 				);
 			}
@@ -495,9 +539,9 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 			columnCount += (span - 1);
 		}
 		flush(
-			XmlHelper.element(
+			element(
 				"ss:Column",
-				MapBuilder.of(
+				of(
 					"c:Caption", caption,
 					"ss:AutoFitWidth", autoFitWidth,
 					"ss:Hidden", hidden,
@@ -628,10 +672,10 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		}
 		// write the contents of the cell
 		flush(
-			XmlHelper.element("ss:Cell",
-				MapBuilder.of("ss:StyleID", style != null ? style.getId() : null),
-				XmlHelper.element("ss:Data",
-					MapBuilder.of("ss:Type", type.toString()), XmlHelper.cdata(value))
+			element("ss:Cell",
+				of("ss:StyleID", style != null ? style.getId() : null),
+				element("ss:Data",
+					of("ss:Type", type.toString()), XmlHelper.cdata(value))
 			)
 		);
 	}

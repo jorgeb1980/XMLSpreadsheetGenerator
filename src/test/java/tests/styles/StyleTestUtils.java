@@ -1,35 +1,22 @@
-/**
- * 
- */
 package tests.styles;
-
-import static org.junit.Assert.fail;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.xpath.XPath;
-import org.junit.Assert;
-
 import tests.XmlTestUtils;
 import xml.spreadsheet.utils.NumberFormatHelper;
+
+import static org.junit.Assert.*;
+import static tests.XmlTestUtils.parseElement;
 
 /**
  * Utility methods for style elements testing
  */
 public class StyleTestUtils {
-	
-	
-	
+
 	private StyleTestUtils() {}
 	
  	private static final String PREFIX = "ss";
-
-	
-	// Retrieves the value of a certain attribute of an element inside an XML
- 	//	document
-	public static String attributeValue(Document doc, String selector, String attribute) {
-		return attributeValue(PREFIX, doc, selector, attribute);
-	}
 	
 	/** 
 	 * It will retrieve the actual value of a certain attribute of an 
@@ -47,8 +34,7 @@ public class StyleTestUtils {
 			Element element = ((Element)XPath.selectSingleNode(doc, selector)); 
 			ret = XmlTestUtils.getAttributeValue(element, attribute, 
 					prefix);
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			t.printStackTrace();
 			fail(t.getMessage());
 		}
@@ -88,19 +74,17 @@ public class StyleTestUtils {
 	// Compares the value of an attribute in an element of an XML document against
 	//	an expected value
 	public static void checkAttributeValue(String prefix, Object styleElement, String selector, String attribute, String value) {
-		Document doc = XmlTestUtils.parseElement(styleElement);
-		checkAttributeValue(prefix, doc, selector, attribute, value);
+		checkAttributeValue(prefix, parseElement(styleElement), selector, attribute, value);
 	}
 	
 	// Compares the value of an attribute in an element of an XML document against
 	//	an expected value
 	public static void checkAttributeValue(String prefix, Document doc, String selector, String attribute, String value) {
 		if (value != null) {
-			Assert.assertEquals(value, 
+			assertEquals(value,
 				StyleTestUtils.attributeValue(prefix, doc, selector, attribute));
-		}
-		else {
-			Assert.assertNull(StyleTestUtils.attributeValue(prefix, doc, 
+		} else {
+			assertNull(StyleTestUtils.attributeValue(prefix, doc,
 					selector, attribute));
 		}
 	}

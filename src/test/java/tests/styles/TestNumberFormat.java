@@ -1,20 +1,19 @@
 package tests.styles;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.NumberFormat;
 import xml.spreadsheet.style.NumberFormat.Format;
 
+import static org.junit.Assert.fail;
+import static tests.styles.StyleTestUtils.checkAttributeValue;
+
 public class TestNumberFormat {
 
 	// TEST SETUP
-	
 	NumberFormat numberFormat = null;
 	
 	@Before
@@ -27,8 +26,7 @@ public class TestNumberFormat {
 			
 			numberFormat = style.numberFormat();
 			Assert.assertNotNull(numberFormat);	
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			fail(e.getMessage());
 		}
 	}
@@ -42,28 +40,28 @@ public class TestNumberFormat {
 	@Test
 	public void testSetFormatString() {
 		// null by default
-		StyleTestUtils.checkAttributeValue(numberFormat, "Format", null);
+		checkAttributeValue(numberFormat, "Format", null);
 		
 		// try some formats
 		numberFormat.setFormat("####.#");
-		StyleTestUtils.checkAttributeValue(numberFormat, "Format", "####.#");
+		checkAttributeValue(numberFormat, "Format", "####.#");
 		
 		numberFormat.setFormat("#.0#");
-		StyleTestUtils.checkAttributeValue(numberFormat, "Format", "#.0#");
+		checkAttributeValue(numberFormat, "Format", "#.0#");
 		
 		numberFormat.setFormat("# ???/???");
-		StyleTestUtils.checkAttributeValue(numberFormat, "Format", "# ???/???");
+		checkAttributeValue(numberFormat, "Format", "# ???/???");
 	}
 
 	@Test
 	public void testSetFormatFormat() {
 		// null by default
-		StyleTestUtils.checkAttributeValue(numberFormat, "Format", null);
+		checkAttributeValue(numberFormat, "Format", null);
 		
 		// try all values
 		for (Format format: Format.values()) {
 			numberFormat.setFormat(format);
-			StyleTestUtils.checkAttributeValue(numberFormat, "Format", format.toString());
+			checkAttributeValue(numberFormat, "Format", format.toString());
 		}
 	}
 

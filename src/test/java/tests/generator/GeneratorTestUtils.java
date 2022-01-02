@@ -1,6 +1,3 @@
-/**
- * 
- */
 package tests.generator;
 
 import static org.junit.Assert.fail;

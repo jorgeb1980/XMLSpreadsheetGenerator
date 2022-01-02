@@ -1,14 +1,14 @@
 package tests.styles;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Interior;
+
+import static org.junit.Assert.fail;
+import static tests.styles.StyleTestUtils.checkAttributeValue;
 
 public class TestInterior {
 
@@ -41,20 +41,20 @@ public class TestInterior {
 	@Test
 	public void testSetColor() {
 		// null by default
-		StyleTestUtils.checkAttributeValue(interior, "Color", null);
+		checkAttributeValue(interior, "Color", null);
 		
 		// Try some values
 		// dark red
 		interior.setColor("#C14949");
-		StyleTestUtils.checkAttributeValue(interior, "Color", "#C14949");
+		checkAttributeValue(interior, "Color", "#C14949");
 		
 		// dark blue
 		interior.setColor("#1B1F97");
-		StyleTestUtils.checkAttributeValue(interior, "Color", "#1B1F97");
+		checkAttributeValue(interior, "Color", "#1B1F97");
 		
 		// dark green
 		interior.setColor("#096F27");
-		StyleTestUtils.checkAttributeValue(interior, "Color", "#096F27");
+		checkAttributeValue(interior, "Color", "#096F27");
 	}
 
 }
