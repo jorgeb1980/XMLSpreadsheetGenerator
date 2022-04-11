@@ -60,7 +60,7 @@ public class Protection {
 	@Override
 	public String toString() {
 		return XmlHelper.element("ss:Protection",
-			MapBuilder.of(
+			MapBuilder.mapOf(
 				"ss:Protected", protectedCell,
 				"x:HideFormula", hideFormula
 			)

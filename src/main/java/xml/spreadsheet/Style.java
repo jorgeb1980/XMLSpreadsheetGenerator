@@ -170,7 +170,7 @@ public class Style {
 	public String toString() {
 		
 		return XmlHelper.element("ss:Style", 
-			MapBuilder.of(
+			MapBuilder.mapOf(
 				"ss:ID", id,
 				"ss:Name", name,
 				"ss:Parent", parent

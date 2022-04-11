@@ -3,8 +3,6 @@ package xml.spreadsheet.style;
 import xml.spreadsheet.utils.MapBuilder;
 import xml.spreadsheet.utils.XmlHelper;
 
-import java.util.Map;
-
 /**
  * Defines the font attributes to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
@@ -121,7 +119,7 @@ public class Font {
 	public String toString() {
 		return XmlHelper.element(
 			"ss:Font",
-			MapBuilder.of(
+			MapBuilder.mapOf(
 				"ss:Bold", bold,
 				"ss:Color", color,
 				"ss:FontName", fontName,

@@ -13,7 +13,7 @@ public class MapBuilder {
      * @param args Even-sized list of objects; every odd element must be a String
      * @return Map that excludes any pair that had any null element, that is silently discarded
      */
-    public static Map<String, Object> of(Object... args) {
+    public static Map<String, Object> mapOf(Object... args) {
         // Make pairs
         List<Object[]> pairs = new LinkedList<>();
         if (args.length % 2 != 0) throw new IllegalArgumentException("Arguments number must be even");

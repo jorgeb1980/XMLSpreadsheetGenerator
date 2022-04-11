@@ -3,8 +3,8 @@
  */
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.MapBuilder;
-import xml.spreadsheet.utils.XmlHelper;
+import static xml.spreadsheet.utils.MapBuilder.mapOf;
+import static xml.spreadsheet.utils.XmlHelper.element;
 
 /**
  * Defines a single border within this style's Borders collection. The Borders 
@@ -163,9 +163,9 @@ public class Border {
 	
 	@Override
 	public String toString() {		
-		return XmlHelper.element(
+		return element(
 			"ss:Border",
-			MapBuilder.of(
+			mapOf(
 				"ss:Position", position != null ? position.toString() : null,
 				"ss:Color", color,
 				"ss:LineStyle", lineStyle != null ? lineStyle.toString() : null,

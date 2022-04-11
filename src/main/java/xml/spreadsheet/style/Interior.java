@@ -51,7 +51,7 @@ public class Interior {
 	public String toString() {
 		return XmlHelper.element(
 			"ss:Interior",
-			MapBuilder.of(
+			MapBuilder.mapOf(
 				"ss:Color", color,
 				"ss:Pattern", pattern != null ? pattern.toString() : null
 			)

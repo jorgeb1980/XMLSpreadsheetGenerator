@@ -3,8 +3,6 @@ package xml.spreadsheet.style;
 import xml.spreadsheet.utils.MapBuilder;
 import xml.spreadsheet.utils.XmlHelper;
 
-import java.util.Map;
-
 /**
  * Defines the number format that should be in cells referencing this style. 
  * The default value is General, and all other number formats require a custom format code. 
@@ -85,7 +83,7 @@ public class NumberFormat {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.element("ss:NumberFormat", MapBuilder.of("ss:Format", format));
+		return XmlHelper.element("ss:NumberFormat", MapBuilder.mapOf("ss:Format", format));
 	}
 	
 	/**
