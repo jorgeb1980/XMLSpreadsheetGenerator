@@ -13,12 +13,12 @@ public class XmlHelper {
 	/** 
 	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String
-	 * @param att Name of the attribute
+	 * @param name Name of the attribute
 	 * @param value Non null value to fill into the string
 	 */
-	private static void attr(StringBuilder sb, String att, String value) {
+	private static void attr(StringBuilder sb, String name, String value) {
 		sb.append(" ");
-		sb.append(att);
+		sb.append(name);
 		sb.append("=\"");		
 		sb.append(value);
 		sb.append("\"");
@@ -41,48 +41,48 @@ public class XmlHelper {
 	/** 
 	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String
-	 * @param att Name of the attribute
+	 * @param name Name of the attribute
 	 * @param value Value to fill into the string
 	 */
-	private static void attr(StringBuilder sb, String att, Double value) {
+	private static void attr(StringBuilder sb, String name, Double value) {
 		if (value != null) {
-			attr(sb, att, NumberFormatHelper.format(value));
+			attr(sb, name, NumberFormatHelper.format(value));
 		}
 	}
 	
 	/** 
 	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String
-	 * @param att Name of the attribute
+	 * @param name Name of the attribute
 	 * @param value Value to fill into the string
 	 */
-	private static void attr(StringBuilder sb, String att, Integer value) {
+	private static void attr(StringBuilder sb, String name, Integer value) {
 		if (value != null) {
-			attr(sb, att, Integer.toString(value));
+			attr(sb, name, Integer.toString(value));
 		}
 	}
 	
 	/** 
 	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String
-	 * @param att Name of the attribute
+	 * @param name Name of the attribute
 	 * @param value Value to fill into the string
 	 */
-	private static void attr(StringBuilder sb, String att, Long value) {
+	private static void attr(StringBuilder sb, String name, Long value) {
 		if (value != null) {
-			attr(sb, att, Long.toString(value));
+			attr(sb, name, Long.toString(value));
 		}
 	}
 	
 	/** 
 	 * Appends an xml attribute into the StringBuilder
 	 * @param sb Mutable String
-	 * @param att Name of the attribute
+	 * @param name Name of the attribute
 	 * @param value Value to fill into the string.  1 = true; 0 = false
 	 */
-	private static void attr(StringBuilder sb, String att, Boolean value) {
+	private static void attr(StringBuilder sb, String name, Boolean value) {
 		if (value != null) {
-			attr(sb, att, value?"1":"0");
+			attr(sb, name, value?"1":"0");
 		}
 	}
 	
@@ -108,11 +108,11 @@ public class XmlHelper {
 	/**
 	 * Creates an empty and closed xml node with the indicated attributes
 	 * @param elementName Name of the element
-	 * @param table Table with the attributes
+	 * @param attributes Table with the attributes
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Map<String, Object> table) {
-		return element(elementName, table, null, true);		
+	public static String element(String elementName, Map<String, Object> attributes) {
+		return element(elementName, attributes, null, true);
 	}
 
 	/**

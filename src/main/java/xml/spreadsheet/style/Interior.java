@@ -1,7 +1,7 @@
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.MapBuilder;
-import xml.spreadsheet.utils.XmlHelper;
+import static xml.spreadsheet.utils.MapBuilder.mapOf;
+import static xml.spreadsheet.utils.XmlHelper.element;
 
 /**
  * Defines the fill properties to use in this style. 
@@ -49,9 +49,9 @@ public class Interior {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.element(
+		return element(
 			"ss:Interior",
-			MapBuilder.mapOf(
+			mapOf(
 				"ss:Color", color,
 				"ss:Pattern", pattern != null ? pattern.toString() : null
 			)
