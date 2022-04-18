@@ -1,7 +1,7 @@
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.MapBuilder;
-import xml.spreadsheet.utils.XmlHelper;
+import static xml.spreadsheet.utils.MapBuilder.mapOf;
+import static xml.spreadsheet.utils.XmlHelper.element;
 
 /**
  * Defines the font attributes to use in this style. 
@@ -117,9 +117,9 @@ public class Font {
 
 	@Override
 	public String toString() {
-		return XmlHelper.element(
+		return element(
 			"ss:Font",
-			MapBuilder.mapOf(
+			mapOf(
 				"ss:Bold", bold,
 				"ss:Color", color,
 				"ss:FontName", fontName,

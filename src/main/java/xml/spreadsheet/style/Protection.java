@@ -1,7 +1,7 @@
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.MapBuilder;
-import xml.spreadsheet.utils.XmlHelper;
+import static xml.spreadsheet.utils.MapBuilder.mapOf;
+import static xml.spreadsheet.utils.XmlHelper.element;
 
 
 /**
@@ -59,8 +59,8 @@ public class Protection {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.element("ss:Protection",
-			MapBuilder.mapOf(
+		return element("ss:Protection",
+			mapOf(
 				"ss:Protected", protectedCell,
 				"x:HideFormula", hideFormula
 			)

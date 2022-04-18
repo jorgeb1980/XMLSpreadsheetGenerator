@@ -1,8 +1,9 @@
 package xml.spreadsheet;
 
 import xml.spreadsheet.style.*;
-import xml.spreadsheet.utils.MapBuilder;
-import xml.spreadsheet.utils.XmlHelper;
+
+import static xml.spreadsheet.utils.MapBuilder.mapOf;
+import static xml.spreadsheet.utils.XmlHelper.element;
 
 /**
  * This class contains the information for a style definition in an XML
@@ -169,8 +170,8 @@ public class Style {
 	@Override
 	public String toString() {
 		
-		return XmlHelper.element("ss:Style", 
-			MapBuilder.mapOf(
+		return element("ss:Style",
+			mapOf(
 				"ss:ID", id,
 				"ss:Name", name,
 				"ss:Parent", parent
