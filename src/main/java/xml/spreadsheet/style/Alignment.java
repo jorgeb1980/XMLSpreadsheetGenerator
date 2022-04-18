@@ -6,6 +6,9 @@ package xml.spreadsheet.style;
 import xml.spreadsheet.utils.MapBuilder;
 import xml.spreadsheet.utils.XmlHelper;
 
+import static xml.spreadsheet.utils.MapBuilder.mapOf;
+import static xml.spreadsheet.utils.XmlHelper.element;
+
 /**
  * Defines the font alignment attributes to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
@@ -80,15 +83,15 @@ public class Alignment {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.element(
+		return element(
 			"ss:Alignment",
-			MapBuilder.of(
-				"ss:Horizontal", horizontal != null ? horizontal.toString(): null,
-				"ss:Rotate", rotate,
-				"ss:ShrinkToFit", shrinkToFit,
-				"ss:Vertical", vertical != null ? vertical.toString(): null,
-				"ss:VerticalText", verticalText,
-				"ss:WrapText", wrapText
+			mapOf(
+					"ss:Horizontal", horizontal != null ? horizontal.toString() : null,
+					"ss:Rotate", rotate,
+					"ss:ShrinkToFit", shrinkToFit,
+					"ss:Vertical", vertical != null ? vertical.toString() : null,
+					"ss:VerticalText", verticalText,
+					"ss:WrapText", wrapText
 			)
 		);
 	}

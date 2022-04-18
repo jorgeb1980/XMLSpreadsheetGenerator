@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static tests.XmlTestUtils.getAttributeValue;
 import static tests.XmlTestUtils.parseElement;
-import static xml.spreadsheet.utils.MapBuilder.of;
+import static xml.spreadsheet.utils.MapBuilder.mapOf;
 import static xml.spreadsheet.utils.XmlHelper.element;
 
 public class TestXmlHelper {
@@ -23,7 +23,7 @@ public class TestXmlHelper {
 	public void testElement() {
 		String element = 
 			element("ss:yet_another_element",
-				of(
+				mapOf(
 					"ss:key1", "value1",
 					"ss:key2", "value2",
 					"ss:key3", "value3"
@@ -43,7 +43,7 @@ public class TestXmlHelper {
 		String element = 
 			element(
 				"ss:yet_another_element",
-				of(
+				mapOf(
 					"ss:key1", "value1",
 					"ss:key2", "value2",
 					"ss:key4", "value4"
@@ -66,7 +66,7 @@ public class TestXmlHelper {
 		// Try to trick empty attributes into the element
 		String element = 
 			element("ss:yet_another_element",
-				of(
+				mapOf(
 					"ss:key1", "value1",
 					"ss:key2", "value2",
 					"ss:key3", "",

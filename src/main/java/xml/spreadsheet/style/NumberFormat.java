@@ -1,9 +1,7 @@
 package xml.spreadsheet.style;
 
-import xml.spreadsheet.utils.MapBuilder;
-import xml.spreadsheet.utils.XmlHelper;
-
-import java.util.Map;
+import static xml.spreadsheet.utils.MapBuilder.mapOf;
+import static xml.spreadsheet.utils.XmlHelper.element;
 
 /**
  * Defines the number format that should be in cells referencing this style. 
@@ -85,7 +83,7 @@ public class NumberFormat {
 	
 	@Override
 	public String toString() {
-		return XmlHelper.element("ss:NumberFormat", MapBuilder.of("ss:Format", format));
+		return element("ss:NumberFormat", mapOf("ss:Format", format));
 	}
 	
 	/**

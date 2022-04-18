@@ -9,9 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 import static xml.spreadsheet.utils.AssertionHelper.assertion;
-import static xml.spreadsheet.utils.MapBuilder.of;
+import static xml.spreadsheet.utils.MapBuilder.mapOf;
 import static xml.spreadsheet.utils.XmlHelper.element;
 
 /**
@@ -217,7 +216,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		flush(
 			element(
 				"Workbook",
-				of(
+				mapOf(
 					"xmlns", "urn:schemas-microsoft-com:office:spreadsheet",
 					"xmlns:c", "urn:schemas-microsoft-com:office:component:spreadsheet",
 					"xmlns:html", "http://www.w3.org/TR/REC-html40",
@@ -230,7 +229,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 				FALSE
 			)
 		);
-		flush(element("OfficeDocumentSettings", of("xmlns", "urn:schemas-microsoft-com:office:office"), FALSE));
+		flush(element("OfficeDocumentSettings", mapOf("xmlns", "urn:schemas-microsoft-com:office:office"), FALSE));
 		flush(element("Colors", FALSE));
 		flush(element("Color", FALSE));
 		flush(element("Index", "3"));
@@ -317,7 +316,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		flush(
 			element(
 				"ss:Row",
-				of(
+				mapOf(
 					"ss:Caption", caption,
 					"ss:Height", height,
 					"ss:AutoFitHeight", autoFitHeight,
@@ -375,7 +374,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	public void closeRow() throws XMLSpreadsheetException {
 		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET_ROWS);
 		if (emptyCurrentRow) {
-			flush(element("ss:Cell", of("ss:Index", "1")));
+			flush(element("ss:Cell", mapOf("ss:Index", "1")));
 		}
 		flush("</ss:Row>");
 	}
@@ -395,7 +394,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		flush(
 			element(
 				"ss:Worksheet",
-				of(
+				mapOf(
 					"ss:Name", name,
 					"ss:Protected", BooleanFormatHelper.format(isProtected)
 				),
@@ -524,7 +523,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 				flush(
 					element(
 						"ss:Column",
-						of("ss:Span", gap > 1 ? gap - 1 : null)
+						mapOf("ss:Span", gap > 1 ? gap - 1 : null)
 					)
 				);
 			}
@@ -541,7 +540,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		flush(
 			element(
 				"ss:Column",
-				of(
+				mapOf(
 					"c:Caption", caption,
 					"ss:AutoFitWidth", autoFitWidth,
 					"ss:Hidden", hidden,
@@ -673,9 +672,11 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		// write the contents of the cell
 		flush(
 			element("ss:Cell",
-				of("ss:StyleID", style != null ? style.getId() : null),
+				mapOf("ss:StyleID", style != null ? style.getId() : null),
 				element("ss:Data",
-					of("ss:Type", type.toString()), XmlHelper.cdata(value))
+					mapOf("ss:Type", type.toString()),
+					XmlHelper.cdata(value)
+				)
 			)
 		);
 	}

@@ -21,8 +21,7 @@ public class DateFormatHelper {
 	
 	// We do not want this to be instantiated
 	private DateFormatHelper() {}	
-	
-	
+
 	/**
 	 * Formats a date to the necessary format
 	 * @param d Date value

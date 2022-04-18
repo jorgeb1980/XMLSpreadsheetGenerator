@@ -38,8 +38,7 @@ public class Borders {
 		this();
 		for (BorderPosition originalPosition: originalBorders.borders.keySet()) {
 			Border originalBorder = originalBorders.borders.get(originalPosition);
-			Border border = new Border(originalBorder);
-			this.borders.put(originalPosition, border);
+			this.borders.put(originalPosition, new Border(originalBorder));
 		}		
 	}
 	
