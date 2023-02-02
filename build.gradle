@@ -1,16 +1,14 @@
 apply plugin: 'java'
 // Integration with eclipse IDE (optional; should and must work if you are brave
 // and bold enough to edit with vim)
-apply plugin: 'eclipse'
-apply plugin: 'maven'
 apply plugin: 'jacoco'
 
 repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 9
-targetCompatibility = 9
+sourceCompatibility = 18
+targetCompatibility = 18
 version = '1.2.0'
 group = 'xml.spreadsheet'
 jar.archiveName = "XMLSpreadsheetGenerator.jar"
@@ -22,15 +20,15 @@ jar {
 }
 
 dependencies {
-	testCompile group: 'junit', name: 'junit', version: '4.12'
-	testCompile 'jdom:jdom:1.1'
-	testCompile 'jaxen:jaxen:1.2.0'
+	testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'jdom:jdom:1.1'
+    testImplementation 'jaxen:jaxen:1.2.0'
 }
 
 // Jacoco configuration
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.8"
 }
 
 jacocoTestReport {
@@ -46,6 +44,6 @@ test {
 
 javadoc {
     source = sourceSets.main.allJava
-    classpath = configurations.compile
+    classpath = configurations.implementation
 }
 
