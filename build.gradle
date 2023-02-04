@@ -23,7 +23,13 @@ dependencies {
     testImplementation 'jaxen:jaxen:1.2.0'
 }
 
-compileJava.options.compilerArgs.add('--enable-preview')
+tasks.withType(JavaCompile).each {
+    it.options.compilerArgs.add('--enable-preview')
+}
+
+test {
+    jvmArgs(['--enable-preview'])
+}
 
 // Jacoco configuration
 

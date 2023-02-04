@@ -56,18 +56,6 @@ public class XmlHelper {
 	 * @param name Name of the attribute
 	 * @param value Value to fill into the string
 	 */
-	private static void attr(StringBuilder sb, String name, Integer value) {
-		if (value != null) {
-			attr(sb, name, Integer.toString(value));
-		}
-	}
-	
-	/** 
-	 * Appends an xml attribute into the StringBuilder
-	 * @param sb Mutable String
-	 * @param name Name of the attribute
-	 * @param value Value to fill into the string
-	 */
 	private static void attr(StringBuilder sb, String name, Long value) {
 		if (value != null) {
 			attr(sb, name, Long.toString(value));
@@ -165,23 +153,12 @@ public class XmlHelper {
 			sb.append(" ");
 			for (String key: attributes.keySet()) {
 				Object value = attributes.get(key);
-				if (value instanceof String) {
-					attr(sb, key, (String) value);
-				}
-				else if (value instanceof Double) {
-					attr(sb, key, (Double) value);
-				}
-				else if (value instanceof Boolean) {
-					attr(sb, key, (Boolean) value);
-				}
-				else if (value instanceof Long) {
-					attr(sb, key, (Long) value);
-				}
-				else if (value instanceof Integer) {
-					attr(sb, key, (Integer) value);
-				}
-				else {
-					attr(sb, key, value.toString());
+				switch (value) {
+					case String s -> attr(sb, key, s);
+					case Double d -> attr(sb, key, d);
+					case Boolean b -> attr(sb, key, b);
+					case Long l -> attr(sb, key, l);
+					case null, default -> attr(sb, key, value == null ? "" : value.toString());
 				}
 			}
 		}
