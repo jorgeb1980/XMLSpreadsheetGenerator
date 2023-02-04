@@ -3,60 +3,76 @@
  */
 package xml.spreadsheet.style;
 
+import xml.spreadsheet.XMLSpreadsheetException;
+import xml.spreadsheet.style.Border.BorderPosition;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import xml.spreadsheet.XMLSpreadsheetException;
-import xml.spreadsheet.style.Border.BorderPosition;
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * Defines the border properties for cells referencing this style. The Borders 
  * element contains no attributes; it is purely a container for individual Border elements. 
  * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:borders">MSDN Borders element reference</a>
  */
-public class Borders {
+public record Borders(
+	/* Defined borders, indexed by position. Unmodifiable version of the map. */
+	Map<BorderPosition, Border> borders
+) {
 
-	//-----------------------------------------------------------
-	// Class properties
-
-	/** Defined borders, indexed by position. */
-	private Map<Border.BorderPosition, Border> borders;
-	
-	//-----------------------------------------------------------
-	// Class methods
-	
-	/** Default constructor. */
-	public Borders() {
-		borders = new HashMap<Border.BorderPosition, Border>();
+	public Borders(Map<BorderPosition, Border> borders) {
+		this.borders = borders != null ? unmodifiableMap(borders) : null;
 	}
-	
+
 	/**
 	 * Copy constructor.
 	 * @param originalBorders Original borders
 	 */
-	public Borders(Borders originalBorders) {
-		this();
-		for (BorderPosition originalPosition: originalBorders.borders.keySet()) {
-			Border originalBorder = originalBorders.borders.get(originalPosition);
-			this.borders.put(originalPosition, new Border(originalBorder));
-		}		
-	}
-	
-	/**
-	 * Creates a Border inside the Borders container.  It admits a Border instance
-	 * for each of the six possible positions.
-	 * @param position Border position
-	 * @return Border object just created
-	 * @throws XMLSpreadsheetException If tried to insert a border in an 
-	 * already used position
-	 */
-	public Border createBorder(Border.BorderPosition position) throws XMLSpreadsheetException {
-		if (borders.containsKey(position)) {
-			throw new XMLSpreadsheetException("The " + position + " border is already defined");
+	public static Borders from (Borders originalBorders) {
+		if (originalBorders == null) return null;
+		else {
+			Map<BorderPosition, Border> borders = new HashMap<>();
+			for (BorderPosition originalPosition : originalBorders.borders.keySet()) {
+				Border originalBorder = originalBorders.borders.get(originalPosition);
+				// Create new instances of Border
+				borders.put(originalPosition, Border.from(originalBorder));
+			}
+			return new Borders(borders);
 		}
-		Border border = new Border(position);
-		borders.put(position, border);
-		return border;
+	}
+
+	public static BordersBuilder builder() { return new BordersBuilder(); }
+
+	public static class BordersBuilder {
+
+		private Map<BorderPosition, Border> borders;
+
+		private BordersBuilder() {
+			borders = new HashMap<>();
+		}
+
+		public Borders build() {
+			return new Borders(borders);
+		}
+
+		/**
+		 * Creates a Border inside the Borders container.  It admits a Border instance
+		 * for each of the six possible positions.
+		 *
+		 * @param position Border position
+		 * @return Border object just created
+		 * @throws XMLSpreadsheetException If tried to insert a border in an
+		 *                                 already used position
+		 */
+		public BordersBuilder withBorder(Border border) throws XMLSpreadsheetException {
+			if (borders.containsKey(border.position())) {
+				throw new XMLSpreadsheetException("The " + border.position() + " border is already defined");
+			}
+			borders.put(border.position(), border);
+			return this;
+		}
+
 	}
 	
 	@Override

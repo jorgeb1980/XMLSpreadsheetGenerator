@@ -7,11 +7,9 @@ import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.*;
-import xml.spreadsheet.style.Alignment.HorizontalAlignment;
 import xml.spreadsheet.style.Border.BorderPosition;
 import xml.spreadsheet.style.Border.BorderWeight;
 import xml.spreadsheet.style.Border.LineStyle;
-import xml.spreadsheet.style.Font.VerticalAlignment;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
@@ -25,6 +23,13 @@ import static tests.XmlTestUtils.executeWithTempFile;
 import static tests.XmlTestUtils.getAttributeValue;
 import static tests.generator.GeneratorTestUtils.*;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
+import static xml.spreadsheet.style.Alignment.HorizontalAlignment.*;
+import static xml.spreadsheet.style.Alignment.VerticalAlignment.Top;
+import static xml.spreadsheet.style.Border.BorderPosition.Bottom;
+import static xml.spreadsheet.style.Border.BorderWeight.Medium;
+import static xml.spreadsheet.style.Border.BorderWeight.Thin;
+import static xml.spreadsheet.style.Border.LineStyle.Dash;
+import static xml.spreadsheet.style.Font.VerticalAlignment.Subscript;
 
 public class TestGeneratorStyles {
 	
@@ -69,7 +74,7 @@ public class TestGeneratorStyles {
 				generator.createStyle();				
 				generator.startDocument();				
 			}
-			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+			String document = baos.toString(Charset.forName("cp1252"));
 			Document doc = parseDocument(document);
 			assertNotNull(doc);
 		} catch(Exception e) {
@@ -83,15 +88,16 @@ public class TestGeneratorStyles {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {		
 			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {			
-				Style style = generator.createStyle();				
-				style.alignment().setHorizontal(HorizontalAlignment.Center);				
+				generator.createStyle().withAlignment(
+					Alignment.builder().withHorizontal(Center).build()
+				).build();
 				generator.startDocument();			
 			}
-			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+			String document = baos.toString(Charset.forName("cp1252"));
 			Document doc = parseDocument(document);
 			assertNotNull(doc);
 			checkAttributeValue(
-				"ss", doc, "//ss:Style/ss:Alignment", "Horizontal", HorizontalAlignment.Center.toString());
+				"ss", doc, "//ss:Style/ss:Alignment", "Horizontal", Center.toString());
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -103,15 +109,17 @@ public class TestGeneratorStyles {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {		
 			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {			
-				Style style = generator.createStyle();				
-				style.borders().createBorder(BorderPosition.Bottom);				
+				generator.createStyle().withBorders(
+					Borders.builder().withBorder(
+						Border.builder().withPosition(Bottom).build()
+					).build()
+				).build();
 				generator.startDocument();
 			}
-			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+			String document = baos.toString(Charset.forName("cp1252"));
 			Document doc = parseDocument(document);
 			assertNotNull(doc);
-			checkAttributeValue(
-				"ss", doc, "//ss:Style/ss:Borders/ss:Border", "Position", BorderPosition.Bottom.toString());
+			checkAttributeValue("ss", doc, "//ss:Style/ss:Borders/ss:Border", "Position", Bottom.toString());
 		} catch(Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -128,44 +136,36 @@ public class TestGeneratorStyles {
 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-					Style leftStyle = generator.createStyle();
-					Alignment leftAlignment = leftStyle.alignment();
-					leftAlignment.setHorizontal(HorizontalAlignment.Left);
+					Alignment leftAlignment = Alignment.builder().withHorizontal(Left).build();
+					Style leftStyle = generator.createStyle().withAlignment(leftAlignment).build();
 					assertSame(leftAlignment, leftStyle.alignment());
 
-					Style rightStyle = generator.createStyle();
-					Alignment rightAlignment = rightStyle.alignment();
-					rightAlignment.setHorizontal(HorizontalAlignment.Right);
+					Alignment rightAlignment = Alignment.builder().withHorizontal(Right).build();
+					Style rightStyle = generator.createStyle().withAlignment(rightAlignment).build();
 					assertSame(rightAlignment, rightStyle.alignment());
 
-					Style topStyle = generator.createStyle();
-					Alignment topAlignment = topStyle.alignment();
-					topAlignment.setVertical(xml.spreadsheet.style.Alignment.VerticalAlignment.Top);
+					Alignment topAlignment = Alignment.builder().withVertical(Top).build();
+					Style topStyle = generator.createStyle().withAlignment(topAlignment).build();
 					assertSame(topAlignment, topStyle.alignment());
 
-					Style bottomStyle = generator.createStyle();
-					Alignment bottomAlignment = bottomStyle.alignment();
-					bottomAlignment.setVertical(xml.spreadsheet.style.Alignment.VerticalAlignment.Bottom);
+					Alignment bottomAlignment = Alignment.builder().withVertical(Alignment.VerticalAlignment.Bottom).build();
+					Style bottomStyle = generator.createStyle().withAlignment(bottomAlignment).build();
 					assertSame(bottomAlignment, bottomStyle.alignment());
 
-					Style wrapStyle = generator.createStyle();
-					Alignment wrapAlignment = wrapStyle.alignment();
-					wrapAlignment.setWrapText(true);
+					Alignment wrapAlignment = Alignment.builder().withWrapText(true).build();
+					Style wrapStyle = generator.createStyle().withAlignment(wrapAlignment).build();
 					assertSame(wrapAlignment, wrapStyle.alignment());
 
-					Style rotateStyle = generator.createStyle();
-					Alignment rotateAlignment = rotateStyle.alignment();
-					rotateAlignment.setRotate(ROTATE_DEGREES);
+					Alignment rotateAlignment = Alignment.builder().withRotate(ROTATE_DEGREES).build();
+					Style rotateStyle = generator.createStyle().withAlignment(rotateAlignment).build();
 					assertSame(rotateAlignment, rotateStyle.alignment());
 
-					Style shrinkStyle = generator.createStyle();
-					Alignment shrinkAlignment = shrinkStyle.alignment();
-					shrinkAlignment.setShrinkToFit(true);
+					Alignment shrinkAlignment = Alignment.builder().withShrinkToFit(true).build();
+					Style shrinkStyle = generator.createStyle().withAlignment(shrinkAlignment).build();
 					assertSame(shrinkAlignment, shrinkStyle.alignment());
 
-					Style verticalTextStyle = generator.createStyle();
-					Alignment verticalTextAlignment = verticalTextStyle.alignment();
-					verticalTextAlignment.setVerticalText(true);
+					Alignment verticalTextAlignment = Alignment.builder().withVerticalText(true).build();
+					Style verticalTextStyle = generator.createStyle().withAlignment(verticalTextAlignment).build();
 					assertSame(verticalTextAlignment, verticalTextStyle.alignment());
 
 					generator.startDocument();
@@ -217,7 +217,7 @@ public class TestGeneratorStyles {
 					generator.closeSheet();
 				}
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 				// Not empty and correct document
 				Document doc = parseDocument(document);
 				assertNotNull(doc);
@@ -226,22 +226,22 @@ public class TestGeneratorStyles {
 
 				Element row1 = rows.get(1);
 				Element leftCell = searchCells(row1).get(0);
-				assertEquals(HorizontalAlignment.Left.toString(),
+				assertEquals(Left.toString(),
 					getAlignmentAttribute(leftCell, "Horizontal"));
 
 				Element row3 = rows.get(3);
 				Element rightCell = searchCells(row3).get(0);
-				assertEquals(HorizontalAlignment.Right.toString(),
+				assertEquals(Right.toString(),
 					getAlignmentAttribute(rightCell, "Horizontal"));
 
 				Element row5 = rows.get(5);
 				Element topCell = searchCells(row5).get(0);
-				assertEquals(xml.spreadsheet.style.Alignment.VerticalAlignment.Top.toString(),
+				assertEquals(Top.toString(),
 					getAlignmentAttribute(topCell, "Vertical"));
 
 				Element row7 = rows.get(7);
 				Element bottomCell = searchCells(row7).get(0);
-				assertEquals(xml.spreadsheet.style.Alignment.VerticalAlignment.Bottom.toString(),
+				assertEquals(Alignment.VerticalAlignment.Bottom.toString(),
 					getAlignmentAttribute(bottomCell, "Vertical"));
 
 				Element row10 = rows.get(10);
@@ -286,47 +286,40 @@ public class TestGeneratorStyles {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 
-					Style bold = generator.createStyle();
-					Font boldFont = bold.font();
-					boldFont.setBold(true);
+					Font boldFont = Font.builder().withBold(true).build();
+					Style bold = generator.createStyle().withFont(boldFont).build();
 					assertSame(boldFont, bold.font());
 
-					Style italic = generator.createStyle();
-					Font italicFont = italic.font();
-					italicFont.setItalic(true);
+					Font italicFont = Font.builder().withItalic(true).build();
+					Style italic = generator.createStyle().withFont(italicFont).build();
 					assertSame(italicFont, italic.font());
 
-					Style color = generator.createStyle();
-					Font colorFont = color.font();
-					colorFont.setColor(GREEN_COLOR);
+					Font colorFont = Font.builder().withColor(GREEN_COLOR).build();
+					Style color = generator.createStyle().withFont(colorFont).build();
 					assertSame(colorFont, color.font());
 
-					Style blueBold = generator.createStyle();
-					Font blueBoldFont = blueBold.font();
-					blueBoldFont.setColor(BLUE_COLOR);
-					blueBoldFont.setBold(true);
+					Font blueBoldFont = Font.builder().withBold(true).withColor(BLUE_COLOR).build();
+					Style blueBold = generator.createStyle().withFont(blueBoldFont).build();
 					assertSame(blueBoldFont, blueBold.font());
 
-					Style bottom = generator.createStyle();
-					Font bottomFont = bottom.font();
-					bottomFont.setVerticalAlign(VerticalAlignment.Subscript);
+					Font bottomFont = Font.builder().withVerticalAlign(Subscript).build();
+					Style bottom = generator.createStyle().withFont(bottomFont).build();
 					assertSame(bottomFont, bottom.font());
 
-					Style big = generator.createStyle();
-					Font bigFont = big.font();
-					bigFont.setSize(FONT_SIZE);
+					Font bigFont = Font.builder().withSize(FONT_SIZE).build();
+					Style big = generator.createStyle().withFont(bigFont).build();
 					assertSame(bigFont, big.font());
 
-					Style verdana = generator.createStyle();
-					Font verdanaFont = verdana.font();
-					verdanaFont.setFontName(FONT_NAME);
+					Font verdanaFont = Font.builder().withFontName(FONT_NAME).build();
+					Style verdana = generator.createStyle().withFont(verdanaFont).build();
 					assertSame(verdanaFont, verdana.font());
 
-					Style redBoldVerdana = generator.createStyle();
-					Font redBoldVerdanaFont = redBoldVerdana.font();
-					redBoldVerdanaFont.setFontName(FONT_NAME);
-					redBoldVerdanaFont.setColor(RED_COLOR);
-					redBoldVerdanaFont.setBold(true);
+					Font redBoldVerdanaFont = Font.builder().
+						withFontName(FONT_NAME).
+						withBold(true).
+						withColor(RED_COLOR).
+						build();
+					Style redBoldVerdana = generator.createStyle().withFont(redBoldVerdanaFont).build();
 					assertSame(redBoldVerdanaFont, redBoldVerdana.font());
 
 					generator.startDocument();
@@ -367,7 +360,7 @@ public class TestGeneratorStyles {
 				}
 
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 				// Not empty and correct document
 				Document doc = parseDocument(document);
 				assertNotNull(doc);
@@ -397,7 +390,7 @@ public class TestGeneratorStyles {
 				// Validate vertical alignment style
 				Element row9 = rows.get(9);
 				Element verticalCell = searchCells(row9).get(0);
-				assertEquals(VerticalAlignment.Subscript.toString(), getFontStyleAttribute(verticalCell, "VerticalAlign"));
+				assertEquals(Subscript.toString(), getFontStyleAttribute(verticalCell, "VerticalAlign"));
 
 				// Validate font  size
 				Element row11 = rows.get(11);
@@ -434,9 +427,8 @@ public class TestGeneratorStyles {
 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-					Style protectedCellStyle = generator.createStyle();
-					Protection protection = protectedCellStyle.protection();
-					protection.setProtectedCell(true);
+					Protection protection = Protection.builder().withProtectedCell(true).build();
+					Style protectedCellStyle = generator.createStyle().withProtection(protection).build();
 					assertSame(protection, protectedCellStyle.protection());
 
 					generator.startDocument();
@@ -450,7 +442,7 @@ public class TestGeneratorStyles {
 					generator.closeSheet();
 				}
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 				// Not empty and correct document
 				Document doc = parseDocument(document);
 				assertNotNull(doc);
@@ -479,14 +471,12 @@ public class TestGeneratorStyles {
 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-					Style redInteriorStyle = generator.createStyle();
-					Interior redInterior = redInteriorStyle.interior();
-					redInterior.setColor(RED_COLOR);
+					Interior redInterior = Interior.builder().withColor(RED_COLOR).build();
+					Style redInteriorStyle = generator.createStyle().withInterior(redInterior).build();
 					assertSame(redInterior, redInteriorStyle.interior());
 
-					Style greenInteriorStyle = generator.createStyle();
-					Interior greenInterior = greenInteriorStyle.interior();
-					greenInterior.setColor(GREEN_COLOR);
+					Interior greenInterior = Interior.builder().withColor(GREEN_COLOR).build();
+					Style greenInteriorStyle = generator.createStyle().withInterior(greenInterior).build();
 					assertSame(greenInterior, greenInteriorStyle.interior());
 
 					generator.startDocument();
@@ -505,7 +495,7 @@ public class TestGeneratorStyles {
 					generator.closeSheet();
 				}
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 				// Not empty and correct document
 				Document doc = parseDocument(document);
 				assertNotNull(doc);
@@ -548,14 +538,12 @@ public class TestGeneratorStyles {
 				Style redInteriorStyle;
 				Style greenInteriorStyle;
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-					redInteriorStyle = generator.createStyle(RED_STYLE);
-					Interior redInterior = redInteriorStyle.interior();
-					redInterior.setColor(RED_COLOR);
+					Interior redInterior = Interior.builder().withColor(RED_COLOR).build();
+					redInteriorStyle = generator.createStyle(RED_STYLE).withInterior(redInterior).build();
 					assertSame(redInterior, redInteriorStyle.interior());
 
-					greenInteriorStyle = generator.createStyle(GREEN_STYLE);
-					Interior greenInterior = greenInteriorStyle.interior();
-					greenInterior.setColor(GREEN_COLOR);
+					Interior greenInterior = Interior.builder().withColor(GREEN_COLOR).build();
+					greenInteriorStyle = generator.createStyle(GREEN_STYLE).withInterior(greenInterior).build();
 					assertSame(greenInterior, greenInteriorStyle.interior());
 
 					generator.startDocument();
@@ -574,7 +562,7 @@ public class TestGeneratorStyles {
 					generator.closeSheet();
 				}
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 				// Not empty and correct document
 				Document doc = parseDocument(document);
 				assertNotNull(doc);
@@ -592,8 +580,8 @@ public class TestGeneratorStyles {
 				// Make sure the generator has written the solid pattern too
 				assertEquals("Solid", getInteriorStyleAttribute(cellGreenBackground, "Pattern"));
 
-				Element greenStyle = searchStyle(doc, greenInteriorStyle.getId());
-				Element redStyle = searchStyle(doc, redInteriorStyle.getId());
+				Element greenStyle = searchStyle(doc, greenInteriorStyle.id());
+				Element redStyle = searchStyle(doc, redInteriorStyle.id());
 
 				assertEquals(GREEN_STYLE, getAttributeValue(greenStyle, "Name", "ss"));
 				assertEquals(RED_STYLE, getAttributeValue(redStyle, "Name", "ss"));
@@ -622,14 +610,12 @@ public class TestGeneratorStyles {
 				Style blueBackground;
 				Style redBackground;
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-					blueBackground = generator.createStyle(BLUE_STYLE);
-					Interior blueInterior = blueBackground.interior();
-					blueInterior.setColor(BLUE_COLOR);
+					Interior blueInterior = Interior.builder().withColor(BLUE_COLOR).build();
+					blueBackground = generator.createStyle(BLUE_STYLE).withInterior(blueInterior).build();
 					assertSame(blueInterior, blueBackground.interior());
 
-					redBackground = generator.createStyle(RED_STYLE);
-					Interior redInterior = redBackground.interior();
-					redInterior.setColor(RED_COLOR);
+					Interior redInterior = Interior.builder().withColor(RED_COLOR).build();
+					redBackground = generator.createStyle(RED_STYLE).withInterior(redInterior).build();
 					assertSame(redInterior, redBackground.interior());
 
 					generator.startDocument();
@@ -660,7 +646,7 @@ public class TestGeneratorStyles {
 					generator.closeSheet();
 				}
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 				// Not empty and correct document
 				Document doc = parseDocument(document);
 				assertNotNull(doc);
@@ -680,8 +666,8 @@ public class TestGeneratorStyles {
 				assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(7), "Color"));
 				assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(9), "Color"));
 
-				Element blueStyle = searchStyle(doc, blueBackground.getId());
-				Element redStyle = searchStyle(doc, redBackground.getId());
+				Element blueStyle = searchStyle(doc, blueBackground.id());
+				Element redStyle = searchStyle(doc, redBackground.id());
 
 				assertEquals(BLUE_STYLE, getAttributeValue(blueStyle, "Name", "ss"));
 				assertEquals(RED_STYLE, getAttributeValue(redStyle, "Name", "ss"));
@@ -704,14 +690,12 @@ public class TestGeneratorStyles {
 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-					Style blueBackground = generator.createStyle();
-					Interior blueInterior = blueBackground.interior();
-					blueInterior.setColor(BLUE_COLOR);
+					Interior blueInterior = Interior.builder().withColor(BLUE_COLOR).build();
+					Style blueBackground = generator.createStyle().withInterior(blueInterior).build();
 					assertSame(blueInterior, blueBackground.interior());
 
-					Style redBackground = generator.createStyle();
-					Interior redInterior = redBackground.interior();
-					redInterior.setColor(RED_COLOR);
+					Interior redInterior = Interior.builder().withColor(RED_COLOR).build();
+					Style redBackground = generator.createStyle().withInterior(redInterior).build();
 					assertSame(redInterior, redBackground.interior());
 
 					generator.startDocument();
@@ -742,7 +726,7 @@ public class TestGeneratorStyles {
 					generator.closeSheet();
 				}
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 				// Not empty and correct document
 				Document doc = parseDocument(document);
 				assertNotNull(doc);
@@ -780,31 +764,44 @@ public class TestGeneratorStyles {
 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-					Style lightBorderStyle = generator.createStyle();
-					Borders lightBorders = lightBorderStyle.borders();
-					Border lightBorder = lightBorders.createBorder(BorderPosition.Bottom);
-					lightBorder.setWeight(BorderWeight.Thin);
-					lightBorder.setLineStyle(LineStyle.Double);
+					Border lightBorder = Border.builder().
+						withPosition(Bottom).
+						withWeight(Thin).
+						withLineStyle(LineStyle.Double).
+						build();
+					Borders lightBorders = Borders.builder().withBorder(lightBorder).build();
+					Style lightBorderStyle = generator.createStyle().withBorders(lightBorders).build();
 					assertSame(lightBorders, lightBorderStyle.borders());
-					Style mediumBorderStyle = generator.createStyle();
-					Borders mediumBorders = mediumBorderStyle.borders();
-					Border mediumBorder = mediumBorders.createBorder(BorderPosition.Bottom);
-					mediumBorder.setWeight(BorderWeight.Medium);
-					mediumBorder.setColor(RED_COLOR);
+
+					Border mediumBorder = Border.builder().
+						withPosition(Bottom).
+						withWeight(Medium).
+						withColor(RED_COLOR).
+						build();
+					Borders mediumBorders = Borders.builder().withBorder(mediumBorder).build();
+					Style mediumBorderStyle = generator.createStyle().withBorders(mediumBorders).build();
 					assertSame(mediumBorders, mediumBorderStyle.borders());
-					Style thickBorderStyle = generator.createStyle();
-					Borders thickBorders = thickBorderStyle.borders();
-					Border thickBorder = thickBorders.createBorder(BorderPosition.Right);
-					thickBorder.setLineStyle(LineStyle.Dash);
-					thickBorder.setWeight(BorderWeight.Thick);
+
+					Border thickBorder = Border.builder().
+						withPosition(BorderPosition.Right).
+						withLineStyle(Dash).
+						withWeight(BorderWeight.Thick).
+						build();
+					Borders thickBorders = Borders.builder().withBorder(thickBorder).build();
+					Style thickBorderStyle = generator.createStyle().withBorders(thickBorders).build();
 					assertSame(thickBorders, thickBorderStyle.borders());
-					Style customBorderStyle = generator.createStyle();
-					Borders customBorders = customBorderStyle.borders();
-					customBorders.createBorder(BorderPosition.Left).setWeight(FORMAT_WEIGHT);
+
+					Borders customBorders = Borders.builder().withBorder(
+						Border.builder().
+							withPosition(BorderPosition.Left).
+							withWeight(FORMAT_WEIGHT).
+							build()
+					).build();
+					Style customBorderStyle = generator.createStyle().withBorders(customBorders).build();
 					assertSame(customBorders, customBorderStyle.borders());
 					// Empty borders
-					Style emptyBorderStyle = generator.createStyle();
-					Borders emptyBorders = emptyBorderStyle.borders();
+					Borders emptyBorders = Borders.builder().build();
+					Style emptyBorderStyle = generator.createStyle().withBorders(emptyBorders).build();
 					assertSame(emptyBorders, emptyBorderStyle.borders());
 
 					generator.startDocument();
@@ -837,7 +834,7 @@ public class TestGeneratorStyles {
 					generator.closeSheet();
 				}
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 
 				// Not empty and correct document
 				Document doc = parseDocument(document);
@@ -849,29 +846,29 @@ public class TestGeneratorStyles {
 				// Check the bottom border position for every even row
 				// Light
 				assertEquals(
-					NumberFormatHelper.format(BorderWeight.Thin.getValue()),
+					NumberFormatHelper.format(Thin.getValue()),
 					getBorderStyleAttribute(
-						searchCells(rows.get(1)).get(1), BorderPosition.Bottom.toString(), "Weight"));
+						searchCells(rows.get(1)).get(1), Bottom.toString(), "Weight"));
 				assertEquals(
 					LineStyle.Double.toString(),
 					getBorderStyleAttribute(
-						searchCells(rows.get(1)).get(1), BorderPosition.Bottom.toString(), "LineStyle"));
+						searchCells(rows.get(1)).get(1), Bottom.toString(), "LineStyle"));
 
 				Element mediumBorderCell = searchCells(rows.get(3)).get(1);
 				assertEquals(
-					NumberFormatHelper.format(BorderWeight.Medium.getValue()),
-					getBorderStyleAttribute(mediumBorderCell, BorderPosition.Bottom.toString(), "Weight"));
-				assertEquals(RED_COLOR, getBorderStyleAttribute(mediumBorderCell, BorderPosition.Bottom.toString(), "Color"));
+					NumberFormatHelper.format(Medium.getValue()),
+					getBorderStyleAttribute(mediumBorderCell, Bottom.toString(), "Weight"));
+				assertEquals(RED_COLOR, getBorderStyleAttribute(mediumBorderCell, Bottom.toString(), "Color"));
 				assertEquals(
 					LineStyle.Continuous.toString(),
-					getBorderStyleAttribute(mediumBorderCell, BorderPosition.Bottom.toString(), "LineStyle"));
+					getBorderStyleAttribute(mediumBorderCell, Bottom.toString(), "LineStyle"));
 
 				assertEquals(
 					NumberFormatHelper.format(BorderWeight.Thick.getValue()),
 					getBorderStyleAttribute(
 						searchCells(rows.get(5)).get(1), BorderPosition.Right.toString(), "Weight"));
 				assertEquals(
-					LineStyle.Dash.toString(),
+					Dash.toString(),
 					getBorderStyleAttribute(
 						searchCells(rows.get(5)).get(1), BorderPosition.Right.toString(), "LineStyle"));
 

@@ -1,7 +1,10 @@
 package xml.spreadsheet;
 
-import xml.spreadsheet.style.NumberFormat.Format;
-import xml.spreadsheet.utils.*;
+import xml.spreadsheet.Style.StyleBuilder;
+import xml.spreadsheet.utils.BooleanFormatHelper;
+import xml.spreadsheet.utils.DateFormatHelper;
+import xml.spreadsheet.utils.NumberFormatHelper;
+import xml.spreadsheet.utils.XmlHelper;
 
 import java.io.*;
 import java.util.Date;
@@ -9,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.Boolean.FALSE;
+import static xml.spreadsheet.style.NumberFormat.LONG_DATE;
 import static xml.spreadsheet.utils.AssertionHelper.assertion;
 import static xml.spreadsheet.utils.MapBuilder.mapOf;
 import static xml.spreadsheet.utils.XmlHelper.element;
@@ -45,7 +49,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	// Class members
 	
 	/** Every instance of the generator is tied to an OutputStream. */
-	private Writer writer;
+	final private Writer writer;
 	/** Generator state.  The machine state validations are implemented on this
 	 * variable. */
 	private GeneratorState state = GeneratorState.INITIALIZATION;
@@ -53,7 +57,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	private int styleCounter = 1;
 	/** Styles. Every new Style will be added to this List and flushed into
 	 * the output stream as soon as the document gets started. */
-	private List<Style> styles;
+	final private List<Style> styles;
 
 	/** Is empty the current row?  This will be set to true every time
 	 * a new row is started, and false if a cell is written into it. */
@@ -98,7 +102,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		writer = new OutputStreamWriter(
 			new BufferedOutputStream(output, bufferSize), CHARSET);
 		// Initialization state: we can define styles
-		styles = new LinkedList<Style>();
+		styles = new LinkedList<>();
 		
 		// Default styles
 		
@@ -106,8 +110,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		//	exist
 		createStyle("Default", "Default", null);
 		// Create the default date format
-		dateFormat = createStyle();
-		dateFormat.numberFormat().setFormat(Format.LongDate);
+		dateFormat = createStyle().withNumberFormat(LONG_DATE).build();
 	}
 	
 	/**
@@ -120,7 +123,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public Style createStyle(String name, Style parent) throws XMLSpreadsheetException {
+	public StyleBuilder createStyle(String name, Style parent) throws XMLSpreadsheetException {
 		return createStyle("ce" + Integer.toString(styleCounter++), name, parent);
 	}
 	
@@ -134,12 +137,10 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	private Style createStyle(String id, String name, Style parent) throws XMLSpreadsheetException {
+	private StyleBuilder createStyle(String id, String name, Style parent) throws XMLSpreadsheetException {
 		assertion(state == GeneratorState.INITIALIZATION, 
 				"It is not possible to add styles to a generator in state: " + state);
-		Style style = new Style(id, name, parent);
-		styles.add(style);
-		return style;
+		return Style.builder(styles).withId(id).withName(name).withParent(parent);
 	}
 	
 	/**
@@ -151,7 +152,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public Style createStyle(Style parent) throws XMLSpreadsheetException {
+	public StyleBuilder createStyle(Style parent) throws XMLSpreadsheetException {
 		return createStyle(null, parent);
 	}
 	
@@ -162,7 +163,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public Style createStyle() throws XMLSpreadsheetException {
+	public StyleBuilder createStyle() throws XMLSpreadsheetException {
 		return createStyle(null, null);
 	}
 	
@@ -174,7 +175,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public Style createStyle(String name) throws XMLSpreadsheetException {
+	public StyleBuilder createStyle(String name) throws XMLSpreadsheetException {
 		return createStyle(name, null);
 	}
 	
@@ -321,7 +322,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 					"ss:Height", height,
 					"ss:AutoFitHeight", autoFitHeight,
 					"ss:Hidden", hidden,
-					"ss:StyleID", style != null?style.getId():null
+					"ss:StyleID", style != null ? style.id() : null
 				),
 				FALSE // Don't close!
 			)
@@ -356,7 +357,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		// However, since this way to render the empty rows is not well supported by every 
 		//	spreadsheet product I tried, I decided to remain with this procedural implementation of
 		//	the same functionality.
-		Long times = emptyRows == null? 1l : emptyRows;
+		long times = emptyRows == null? 1 : emptyRows;
 		for (int i = 0; i < times; i++) {
 			startRow(null, autoFitHeight, height, false, style);
 			writeEmptyCell();
@@ -546,7 +547,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 					"ss:Hidden", hidden,
 					"ss:Index", index,
 					"ss:Span", span != null && span > 1 ? span-1 : null,
-					"ss:StyleID", style == null ? null : style.getId(),
+					"ss:StyleID", style == null ? null : style.id(),
 					"ss:Width", width
 				)
 			)
@@ -672,7 +673,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		// write the contents of the cell
 		flush(
 			element("ss:Cell",
-				mapOf("ss:StyleID", style != null ? style.getId() : null),
+				mapOf("ss:StyleID", style != null ? style.id() : null),
 				element("ss:Data",
 					mapOf("ss:Type", type.toString()),
 					XmlHelper.cdata(value)

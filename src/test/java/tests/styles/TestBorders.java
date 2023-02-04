@@ -1,7 +1,11 @@
 package tests.styles;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
+import static xml.spreadsheet.style.Border.BorderPosition.Bottom;
+import static xml.spreadsheet.style.Border.from;
+import static xml.spreadsheet.style.Borders.builder;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,11 +20,10 @@ import xml.spreadsheet.style.Border.BorderWeight;
 import xml.spreadsheet.style.Border.LineStyle;
 import xml.spreadsheet.style.Borders;
 
-public class TestBorders {
+import java.util.Arrays;
+import java.util.List;
 
-	// TEST SETUP
-	
-	Borders borders = null;
+public class TestBorders {
 	
 	@Before
 	public void init() {
@@ -28,10 +31,8 @@ public class TestBorders {
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
-			Style style = generator.createStyle();
-			
-			borders = style.borders();
-			Assert.assertNotNull(borders);	
+			Style style = generator.createStyle().build();
+			Assert.assertNull(style.borders());
 		}
 		catch (Throwable e) {
 			fail(e.getMessage());
@@ -43,60 +44,29 @@ public class TestBorders {
 	///////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////
-	
-	
-	// UNIT TESTS
-	
-	@Test
-	public void testCreateBorders() {
-		Assert.assertNotNull(borders);
-	}
+
 	
 	@Test
 	public void testRepeatBorder() {
 		try {
 			// Reset the borders object
-			borders = new Borders();
-			borders.createBorder(BorderPosition.Bottom);
-			borders.createBorder(BorderPosition.Bottom);
+			Border bottomBorder = Border.builder().withPosition(Bottom).build();
+			builder().withBorder(bottomBorder).withBorder(bottomBorder).build();
 			fail();
 		}
 		catch (XMLSpreadsheetException e) {
-			Assert.assertTrue(true);
-		}
-	}
-	
-	@Test
-	public void testCreateBorder() {
-		try {
-			// Check every possible value
-			for (BorderPosition borderPosition: BorderPosition.values()) {
-				Border b = borders.createBorder(borderPosition);
-				Assert.assertNotNull(b);
-				checkAttributeValue(borders,
-						"//ss:Border[@ss:Position='" + borderPosition.toString()+"']", 
-						"Position", borderPosition.toString());
-			}
-		}
-		catch(Throwable t) {
-			fail(t.getMessage());
+			Assert.assertEquals("The Bottom border is already defined", e.getMessage());
 		}
 	}
 	
 	@Test
 	public void testSetLinestyle() {
 		try {
-			// Reset the borders object
-			borders = new Borders();
 			for (BorderPosition position: BorderPosition.values()) {
-				Border b = borders.createBorder(position);
-				// Null if default
-				checkAttributeValue(borders,
-						"//ss:Border[@ss:Position='" + position + "']",
-						"LineStyle", null);
 				// For each possible position, try each possible line style
 				for (LineStyle lineStyle: LineStyle.values()) {
-					b.setLineStyle(lineStyle);
+					Border b = Border.builder().withPosition(position).withLineStyle(lineStyle).build();
+					Borders borders = builder().withBorder(b).build();
 					checkAttributeValue(borders,
 						"//ss:Border[@ss:Position='" + position + "']",
 						"LineStyle", lineStyle.toString());
@@ -109,50 +79,30 @@ public class TestBorders {
 	
 	@Test
 	public void testSetColor() {
+		List<String> colors = Arrays.asList(
+			Border.COLOR_AUTOMATIC,
+			"#C14949",
+			"#1B1F97",
+			"#096F27"
+		);
 		try {
-			// Reset the borders object
-			borders = new Borders();
 			for (BorderPosition position: BorderPosition.values()) {
-				Border b = borders.createBorder(position);
-				// Null if default
-				checkAttributeValue(
-					borders,
-					"//ss:Border[@ss:Position='" + position + "']",
-					"Color",
-					null
-				);
-				// For each possible position, try colors
-				b.setColor(Border.COLOR_AUTOMATIC);
-				checkAttributeValue(
-					borders,
-					"//ss:Border[@ss:Position='" + position + "']",
-					"Color",
-					Border.COLOR_AUTOMATIC
-				);
-				// dark red
-				b.setColor("#C14949");
-				checkAttributeValue(
-					borders,
-					"//ss:Border[@ss:Position='" + position + "']",
-					"Color",
-					"#C14949"
-				);
-				// dark blue
-				b.setColor("#1B1F97");
-				checkAttributeValue(
-					borders,
-					"//ss:Border[@ss:Position='" + position + "']",
-					"Color",
-					"#1B1F97"
-				);
-				// dark green
-				b.setColor("#096F27");
-				checkAttributeValue(
-					borders,
-					"//ss:Border[@ss:Position='" + position + "']",
-					"Color",
-					"#096F27"
-				);
+				for (String color: colors) {
+					Borders borders = builder().
+						withBorder(
+							Border.builder().
+								withPosition(position).
+								withColor(color).
+								build()
+						).build();
+					// For each possible position, try colors
+					checkAttributeValue(
+						borders,
+						"//ss:Border[@ss:Position='" + position + "']",
+						"Color",
+						color
+					);
+				}
 			}
 		} catch (Throwable t) {
 			fail(t.getMessage());
@@ -162,23 +112,18 @@ public class TestBorders {
 	@Test
 	public void testSetWeight() {
 		try {
-			// Reset the borders object
-			borders = new Borders();
 			for (BorderPosition position: BorderPosition.values()) {
-				Border b = borders.createBorder(position);
-				// Null if default
-				checkAttributeValue(
-					borders,
-					"//ss:Border[@ss:Position='" + position.toString()+"']",
-					"Weight",
-					null
-				);
 				// For each possible position, try weights
 				for (BorderWeight weight: BorderWeight.values()) {
-					b.setWeight(weight);
+					Borders borders = builder().withBorder(
+						Border.builder().
+							withPosition(position).
+							withWeight(weight).
+							build()
+					).build();
 					checkAttributeValue(
 						borders,
-						"//ss:Border[@ss:Position='" + position.toString()+"']", 
+						"//ss:Border[@ss:Position='" + position + "']",
 						"Weight",
 						weight.getValue()
 					);
@@ -192,18 +137,16 @@ public class TestBorders {
 	@Test
 	public void setCustomSetWeight() {
 		try {
-			borders = new Borders();
 			for (BorderPosition position: BorderPosition.values()) {
-				Border b = borders.createBorder(position);
-				// Null if default
-				checkAttributeValue(
-					borders,
-					"//ss:Border[@ss:Position='" + position + "']",
-					"Weight",
-					null
-				);
 				final double WEIGHT_VALUE = 3.3d;
-				b.setWeight(WEIGHT_VALUE);
+				Borders borders = builder().
+					withBorder(
+						Border.builder().
+							withWeight(WEIGHT_VALUE).
+							withPosition(position).
+							build()
+					).
+					build();
 				checkAttributeValue(
 					borders,
 					"//ss:Border[@ss:Position='" + position + "']",
@@ -214,5 +157,16 @@ public class TestBorders {
 		} catch (Throwable t) {
 			fail(t.getMessage());
 		}
+	}
+
+	@Test
+	public void copyConstructor() {
+		assertNull(from(null));
+	}
+
+	@Test
+	public void testEmptyBorders() {
+		Assert.assertEquals("", builder().build().toString().trim());
+		Assert.assertEquals("", new Borders(null).toString().trim());
 	}
 }

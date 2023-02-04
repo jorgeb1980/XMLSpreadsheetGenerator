@@ -1,6 +1,4 @@
 apply plugin: 'java'
-// Integration with eclipse IDE (optional; should and must work if you are brave
-// and bold enough to edit with vim)
 apply plugin: 'jacoco'
 
 repositories {
@@ -9,7 +7,7 @@ repositories {
 
 sourceCompatibility = 18
 targetCompatibility = 18
-version = '1.2.0'
+version = '2.0.0'
 group = 'xml.spreadsheet'
 jar.archiveName = "XMLSpreadsheetGenerator.jar"
 
@@ -24,6 +22,8 @@ dependencies {
     testImplementation 'jdom:jdom:1.1'
     testImplementation 'jaxen:jaxen:1.2.0'
 }
+
+compileJava.options.compilerArgs.add('--enable-preview')
 
 // Jacoco configuration
 
@@ -47,3 +47,9 @@ javadoc {
     classpath = configurations.implementation
 }
 
+test {
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT"
+        showStandardStreams = true
+    }
+}

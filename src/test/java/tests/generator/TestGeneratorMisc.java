@@ -10,7 +10,6 @@ import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Interior;
 import xml.spreadsheet.style.NumberFormat;
-import xml.spreadsheet.style.NumberFormat.Format;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
@@ -23,6 +22,7 @@ import static org.junit.Assert.*;
 import static tests.XmlTestUtils.executeWithTempFile;
 import static tests.XmlTestUtils.getAttributeValue;
 import static tests.generator.GeneratorTestUtils.*;
+import static xml.spreadsheet.style.NumberFormat.STANDARD;
 
 public class TestGeneratorMisc {
 
@@ -33,7 +33,7 @@ public class TestGeneratorMisc {
 			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 				generator.startDocument();
 			}
-			String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+			String document = baos.toString(Charset.forName("cp1252"));
 			Document doc = GeneratorTestUtils.parseDocument(document);
 			assertNotNull(doc);
 		}
@@ -50,7 +50,7 @@ public class TestGeneratorMisc {
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					generator.startDocument();
 				}
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 				Document doc = GeneratorTestUtils.parseDocument(document);
 				assertNotNull(doc);
 				os.write(baos.toByteArray());
@@ -82,7 +82,7 @@ public class TestGeneratorMisc {
 					generator.closeRow();
 					generator.closeSheet();
 				}
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 
 				// Not empty and correct document
 				Document doc = GeneratorTestUtils.parseDocument(document);
@@ -138,7 +138,7 @@ public class TestGeneratorMisc {
 					generator.closeRow();
 					generator.closeSheet();
 				}
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 
 				// Not empty and correct document
 				Document doc = GeneratorTestUtils.parseDocument(document);
@@ -178,9 +178,9 @@ public class TestGeneratorMisc {
 				//	other case
 				Style dateStyle;
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-					dateStyle = generator.createStyle();
-					NumberFormat numberFormatObj = dateStyle.numberFormat();
-					numberFormatObj.setFormat(DATE_FORMAT);
+					NumberFormat numberFormatObj = new NumberFormat(DATE_FORMAT);
+					dateStyle = generator.createStyle()
+						.withNumberFormat(numberFormatObj).build();
 					assertSame(numberFormatObj, dateStyle.numberFormat());
 					generator.startDocument();
 					generator.startSheet("a sheet with dates");
@@ -192,7 +192,7 @@ public class TestGeneratorMisc {
 					generator.closeRow();
 					generator.closeSheet();
 				}
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 
 				// Not empty and correct document
 				Document doc = GeneratorTestUtils.parseDocument(document);
@@ -201,9 +201,9 @@ public class TestGeneratorMisc {
 				assertEquals(2, rows1.size());
 				// test date formats
 				Element cellNoFormat = searchCells(rows1.get(0)).get(0);
-				assertNotEquals(dateStyle.getId(), getAttributeValue(cellNoFormat, "StyleID", "ss"));
+				assertNotEquals(dateStyle.id(), getAttributeValue(cellNoFormat, "StyleID", "ss"));
 				Element cellWithFormat = searchCells(rows1.get(1)).get(0);
-				assertEquals(dateStyle.getId(), getAttributeValue(cellWithFormat, "StyleID", "ss"));
+				assertEquals(dateStyle.id(), getAttributeValue(cellWithFormat, "StyleID", "ss"));
 
 				Element style = GeneratorTestUtils.searchStyle(doc,
 					getAttributeValue(cellWithFormat, "StyleID", "ss"));
@@ -235,22 +235,21 @@ public class TestGeneratorMisc {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 
-					Style blueBackground = generator.createStyle();
-					Interior blueInterior = blueBackground.interior();
-					blueInterior.setColor(BLUE_COLOR);
+					Interior blueInterior = Interior.builder().withColor(BLUE_COLOR).build();
+					Style blueBackground = generator.createStyle().withInterior(blueInterior).build();
 					assertSame(blueInterior, blueBackground.interior());
 
-					Style redBackground = generator.createStyle();
-					Interior redInterior = redBackground.interior();
-					redInterior.setColor(RED_COLOR);
+					Interior redInterior = Interior.builder().withColor(RED_COLOR).build();
+					Style redBackground = generator.createStyle().withInterior(redInterior).build();
 					assertSame(redInterior, redBackground.interior());
 
-					Style greenBackground = generator.createStyle();
-					Interior greenInterior = greenBackground.interior();
-					greenInterior.setColor(GREEN_COLOR);
+					Interior greenInterior = Interior.builder().withColor(GREEN_COLOR).build();
+					Font greenFont = Font.builder().withSize(GREEN_FONT_SIZE).build();
+					Style greenBackground = generator.createStyle().
+						withInterior(greenInterior).
+						withFont(greenFont).
+						build();
 					assertSame(greenInterior, greenBackground.interior());
-					Font greenFont = greenBackground.font();
-					greenFont.setSize(GREEN_FONT_SIZE);
 					assertSame(greenFont, greenBackground.font());
 
 					generator.startDocument();
@@ -283,7 +282,7 @@ public class TestGeneratorMisc {
 					generator.closeSheet();
 				}
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 				// Not empty and correct document
 				Document doc = GeneratorTestUtils.parseDocument(document);
 				assertNotNull(doc);
@@ -337,27 +336,28 @@ public class TestGeneratorMisc {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 
-					Style styleBlueBackground = generator.createStyle();
-					Interior blueInterior = styleBlueBackground.interior();
-					blueInterior.setColor(BLUE_BACKGROUND);
+
+					Interior blueInterior = Interior.builder().withColor(BLUE_BACKGROUND).build();
+					Style styleBlueBackground = generator.createStyle().withInterior(blueInterior).build();
 					assertSame(blueInterior, styleBlueBackground.interior());
 
-					Style styleRedBackground = generator.createStyle();
-					Interior redInterior = styleRedBackground.interior();
-					redInterior.setColor(RED_BACKGROUND);
+					Interior redInterior = Interior.builder().withColor(RED_BACKGROUND).build();
+					Style styleRedBackground = generator.createStyle().withInterior(redInterior).build();
 					assertSame(redInterior, styleRedBackground.interior());
 
-					Style styleItalicRedBackground = generator.createStyle();
-					Interior redItalicInterior = styleItalicRedBackground.interior();
-					redItalicInterior.setColor(RED_BACKGROUND);
-					styleItalicRedBackground.font().setItalic(true);
+					Interior redItalicInterior = Interior.builder().withColor(RED_BACKGROUND).build();
+					Style styleItalicRedBackground = generator.createStyle().
+						withInterior(redItalicInterior).
+						withFont(Font.builder().withItalic(true).build()).
+						build();
 					assertSame(redItalicInterior, styleItalicRedBackground.interior());
 
-					Style styleBlueBoldBackground = generator.createStyle();
-					Interior blueBoldInterior = styleBlueBoldBackground.interior();
-					styleBlueBoldBackground.font().setBold(true);
-					styleBlueBoldBackground.numberFormat().setFormat(Format.Standard);
-					blueBoldInterior.setColor(BLUE_BACKGROUND);
+					Interior blueBoldInterior = Interior.builder().withColor(BLUE_BACKGROUND).build();
+					Style styleBlueBoldBackground = generator.createStyle().
+						withInterior(blueBoldInterior).
+						withFont(Font.builder().withBold(true).build()).
+						withNumberFormat(STANDARD).
+						build();
 					assertSame(blueBoldInterior, styleBlueBoldBackground.interior());
 
 					generator.startDocument();
@@ -392,7 +392,7 @@ public class TestGeneratorMisc {
 					generator.closeSheet();
 				}
 
-				String document = new String(baos.toByteArray(), Charset.forName("cp1252"));
+				String document = baos.toString(Charset.forName("cp1252"));
 
 				// Not empty and correct document
 				Document doc = GeneratorTestUtils.parseDocument(document);

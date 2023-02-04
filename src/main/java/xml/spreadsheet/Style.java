@@ -2,6 +2,8 @@ package xml.spreadsheet;
 
 import xml.spreadsheet.style.*;
 
+import java.util.List;
+
 import static xml.spreadsheet.utils.MapBuilder.mapOf;
 import static xml.spreadsheet.utils.XmlHelper.element;
 
@@ -11,162 +13,132 @@ import static xml.spreadsheet.utils.XmlHelper.element;
  * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:style">MSDN Style element reference</a>
  * @see xml.spreadsheet.XMLSpreadsheetGenerator#createStyle()
  */
-public class Style {
-
-	//-------------------------------------------------
-	// Properties of the style
-
-	// Attributes
-	/** Unique id */
-	private String id;
-	
-	/** Name.  This will be used by the software to identify named styles and
+public record Style(
+	/* Unique id */
+	String id,
+	/* Name.  This will be used by the software to identify named styles and
 	 * offer them to the user in some dialogs. */
-	private String name = "";
-	
-	/** Parent */
-	private String parent = null;
-	
-	// Children
-	
-	/** Alignment */
-	private Alignment alignment;
-	
-	/** Borders */
-	private Borders borders;
-	
-	/** Font */
-	private Font font;
-	
-	/** Interior */
-	private Interior interior;
-	
-	/** NumberFormat */
-	private NumberFormat numberFormat;
-	
-	/** Protection */
-	private Protection protection;
-		
-	//-----------------------------------------------------------
-	// Style methods
-	
-	/**
-	 * Standalone style
-	 * @param id Current style id
-	 */
-	Style(String id) {
-		this.id = id;
-	}
-	
-	/**
-	 * Standalone, named style
-	 * @param id Current style id
-	 * @param name Style name
-	 */
-	Style(String id, String name) {
-		this(id);
-		this.name = name;
-	}
-	
-	/**
-	 * Style built on another available style
-	 * @param id Current style id
-	 * @param parent Parent style
-	 */
-	Style(String id, Style parent) {
-		this(id, null, parent);
-	}
-	
-	/**
-	 * Style built on another available style
-	 * @param id Current style id
-	 * @param name Style name
-	 * @param parent Parent style
-	 */
-	Style(String id, String name, Style parent) {
-		this(id, name);
-		if (parent != null) {
-			this.parent = parent.getId();
-			// Since available software won't implement this, the solution we
-			//	will take is this:
-			// The official documentation defines style inheritance, and makes
-			//	clear that all the styles can be redefined in the child style.
-			//	Since this is possible, we will simply copy the parent style
-			//	attributes to the child, and let it redefine them later if they
-			//	fell like it.  This way	we have a correct implementation of the style 
-			//	inheritance contract (just by manual means under the hood)
-			
-			// Copy all the attributes
-			if (parent.alignment != null) {
-				this.alignment = new Alignment(parent.alignment);
-			}
-			if (parent.borders != null) {
-				this.borders = new Borders(parent.borders);
-			}
-			if (parent.font != null) {
-				this.font = new Font(parent.font); 
-			}
-			if (parent.interior != null) {
-				this.interior = new Interior(parent.interior);
-			}
-			if (parent.numberFormat != null) {
-				this.numberFormat = new NumberFormat(parent.numberFormat);
-			}
-			if (parent.protection != null) {
-				this.protection = new Protection(parent.protection);
-			}
+	String name,
+	/* Parent */
+	String parent,
+	/* Alignment */
+	Alignment alignment,
+	/* Borders */
+	Borders borders,
+	/* Font */
+	Font font,
+	/* Interior */
+	Interior interior,
+	/* NumberFormat */
+	NumberFormat numberFormat,
+	/* Protection */
+	Protection protection
+) {
+
+	public static StyleBuilder builder(List<Style> styles) { return new StyleBuilder(styles); }
+
+	public static class StyleBuilder {
+		private String id;
+		private String name;
+		private Style parent;
+		private Alignment alignment;
+		private Borders borders;
+		private Font font;
+		private Interior interior;
+		private NumberFormat numberFormat;
+		private Protection protection;
+		final private List<Style> styles;
+
+		public Style build() {
+			Style style = new Style(
+				id,
+				name,
+				parent,
+				alignment,
+				borders,
+				font,
+				interior,
+				numberFormat,
+				protection
+			);
+			styles.add(style);
+			return style;
+		}
+
+		StyleBuilder(List<Style> styles) { this.styles = styles; }
+
+		public StyleBuilder withId(String id) {
+			this.id = id;
+			return this;
+		}
+
+		public StyleBuilder withName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public StyleBuilder withParent(Style parent) {
+			this.parent = parent;
+			return this;
+		}
+
+		public StyleBuilder withAlignment(Alignment a) {
+			alignment = a;
+			return this;
+		}
+
+		public StyleBuilder withBorders(Borders b) {
+			borders = b;
+			return this;
+		}
+
+		public StyleBuilder withFont(Font f) {
+			font = f;
+			return this;
+		}
+
+		public StyleBuilder withInterior(Interior i) {
+			interior = i;
+			return this;
+		}
+
+		public StyleBuilder withNumberFormat(NumberFormat nf) {
+			numberFormat = nf;
+			return this;
+
+		}
+
+		public StyleBuilder withProtection(Protection p) {
+			protection = p;
+			return this;
 		}
 	}
-	
-	/** @return an Alignment element */
-	public Alignment alignment() {
-		if (alignment == null) {
-			alignment = new Alignment();
-		}
-		return  alignment;
+
+	Style(
+		String id,
+		String name,
+		Style parent,
+		Alignment alignment,
+		Borders borders,
+		Font font,
+		Interior interior,
+		NumberFormat numberFormat,
+		Protection protection
+	) {
+		// Priority: explicit override > parent values
+		this(
+			id,
+			name,
+			parent != null ? parent.id : null,
+			alignment != null ? alignment : (parent != null ? Alignment.from(parent.alignment) : null),
+			borders != null ? borders : (parent != null ? Borders.from(parent.borders) : null),
+			font != null ? font : (parent != null ? Font.from(parent.font) : null),
+			interior != null ? interior : (parent != null ? Interior.from(parent.interior) : null),
+			numberFormat != null ? numberFormat : (parent != null ? NumberFormat.from(parent.numberFormat) : null),
+			protection != null ? protection : (parent != null ? Protection.from(parent.protection) : null)
+		);
 	}
-	
-	/** @return a Borders element */
-	public Borders borders() {
-		if (borders == null) {
-			borders = new Borders();
-		}
-		return borders;
-	}
-	
-	/** @return a Font element */
-	public Font font() {
-		if (font == null) {
-			font = new Font();
-		}
-		return font;
-	}
-	
-	/** @return an Interior element */
-	public Interior interior() {
-		if (interior == null) {
-			interior = new Interior();
-		}
-		return interior;
-	}
-	
-	/** @return a NumberFormat element */
-	public NumberFormat numberFormat() {
-		if (numberFormat == null) {
-			numberFormat = new NumberFormat();
-		}
-		return numberFormat;
-		
-	}
-	
-	/** @return a Protection element */
-	public Protection protection() {
-		if (protection == null) {
-			protection = new Protection();
-		}
-		return protection;
-	}
-	
+
 	@Override
 	public String toString() {
 		
@@ -186,13 +158,6 @@ public class Style {
 				.append(numberFormat != null ? numberFormat.toString():"")
 				.append(protection != null ? protection.toString():"").toString()
 			);
-	}
-
-	/**
-	 * @return Style ID to be used as reference when building the XML
-	 */
-	public String getId() {
-		return id;
 	}
 	
 }
