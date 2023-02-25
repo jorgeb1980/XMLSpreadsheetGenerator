@@ -13,7 +13,7 @@ import java.util.List;
 
 import static java.lang.Boolean.FALSE;
 import static xml.spreadsheet.style.NumberFormat.LONG_DATE;
-import static xml.spreadsheet.utils.AssertionHelper.assertion;
+import static xml.spreadsheet.AssertionHelper.assertion;
 import static xml.spreadsheet.utils.MapBuilder.mapOf;
 import static xml.spreadsheet.utils.XmlHelper.element;
 
