@@ -9,7 +9,7 @@ import static xml.spreadsheet.utils.XmlHelper.element;
 /**
  * Defines the font alignment attributes to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
- * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:alignment">MSDN Alignment element reference</a>
+ * @see <a href="https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)#ssalignment-tag">MSDN Alignment element reference</a>
  */
 public record Alignment(
 	/* Horizontal alignment of the cell. */

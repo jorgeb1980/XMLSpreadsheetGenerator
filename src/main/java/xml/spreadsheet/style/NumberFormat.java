@@ -16,9 +16,9 @@ import static xml.spreadsheet.utils.XmlHelper.element;
  * Style dateStyle = generator.createStyle();<br/>
  * dateStyle.numberFormat().setFormat("dd\\-mm\\-yyyy");<br/>
  * </code><br/>
- * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:numberformat">MSDN NumberFormat element reference</a>
- * @see <a href="http://office.microsoft.com/en-us/excel-help/create-a-custom-number-format-HP010342372.aspx">Technical article on number format creation</a>
- * @see <a href="http://office.microsoft.com/en-us/excel-help/format-a-date-the-way-you-want-HA102809474.aspx">Custom date formatting</a>
+ * @see <a href="https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)?redirectedfrom=MSDN#ssnumberformat-tag">MSDN NumberFormat element reference</a>
+ * @see <a href="https://support.microsoft.com/en-us/office/create-a-custom-number-format-78f2a361-936b-4c03-8772-09fab54be7f4">Technical article on number format creation</a>
+ * @see <a href="https://support.microsoft.com/en-us/office/format-a-date-the-way-you-want-8e10019e-d5d8-47a1-ba95-db95123d273e">Custom date formatting</a>
  */
 public record NumberFormat(
 	/* A number format code in the Excel number format syntax. */

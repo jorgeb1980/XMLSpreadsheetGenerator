@@ -19,7 +19,7 @@ import static xml.spreadsheet.utils.XmlHelper.element;
 
 /**
  * Partial implementation of the spreadsheet format described in the article<br/>
- * <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx">Microsoft XML Spreadsheet Reference</a> 
+ * <a href="https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)">Microsoft XML Spreadsheet Reference</a>
  * <br/>
  * The generator will follow this state machine:
  * <br/>
@@ -621,7 +621,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @param style Style object to apply to the cell.  Remember that the proper way
 	 * to create a date format is to create a <code>Style</code> object, and then
 	 * define for it a proper <code>NumberFormat</code>.
-	 * @see <a href="http://office.microsoft.com/en-us/excel-help/format-a-date-the-way-you-want-HA102809474.aspx">Custom date formatting</a>
+	 * @see <a href="https://support.microsoft.com/en-us/office/format-a-date-the-way-you-want-8e10019e-d5d8-47a1-ba95-db95123d273e">Custom date formatting</a>
 	 * @param value Date value to write
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
@@ -656,7 +656,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	/**
 	 * Writes an empty cell to the document.
 	 * @param style Cell style
-	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * @throws XMLSpreadsheetException If called in an inappropriate state or
 	 * any other library-related exception arises
 	 */
 	public void writeEmptyCell(Style style) throws XMLSpreadsheetException {

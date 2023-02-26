@@ -2,7 +2,7 @@ package xml.spreadsheet;
 
 /**
  * Possible types for an XMLSpreadsheet cell.
- * http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:data
+ * https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)?redirectedfrom=MSDN#required-attributes-2
  */
 enum CellType {
 	Number, DateTime, Boolean, String, Error

@@ -10,7 +10,7 @@ import static xml.spreadsheet.utils.XmlHelper.element;
 /**
  * This class contains the information for a style definition in an XML
  * spreadsheet.  It can only be built attached to a certain <code>XMLSpreadsheetGenerator</code> by calling <code>createStyle</code> 
- * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:style">MSDN Style element reference</a>
+ * @see <a href="https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)?redirectedfrom=MSDN#ssstyle-tag">MSDN Style element reference</a>
  * @see xml.spreadsheet.XMLSpreadsheetGenerator#createStyle()
  */
 public record Style(

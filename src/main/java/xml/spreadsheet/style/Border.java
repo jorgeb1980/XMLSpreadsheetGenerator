@@ -10,7 +10,7 @@ import static xml.spreadsheet.utils.XmlHelper.element;
  * Defines a single border within this style's Borders collection. The Borders 
  * collection may contain up to six unique Border elements. If duplicate Border 
  * elements exist, the behavior is unspecified and the XML Spreadsheet document is considered invalid. 
- * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:border">MSDN Border element reference</a>
+ * @see <a href="https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)#ssborder-tag">MSDN Border element reference</a>
  */
 public record Border(
 	/*

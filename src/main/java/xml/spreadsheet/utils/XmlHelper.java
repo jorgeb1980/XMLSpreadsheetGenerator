@@ -24,7 +24,7 @@ public class XmlHelper {
 	
 	/**
 	 * Encloses a string into a CDATA construct as defined in its 
-	 * <a href="http://www.w3schools.com/xml/xml_cdata.asp">documentation</a> 
+	 * <a href="https://www.w3resource.com/xml/CDATA-sections.php">documentation</a>
 	 * @param string Original string
 	 * @return String enclosed by CDATA structure
 	 */

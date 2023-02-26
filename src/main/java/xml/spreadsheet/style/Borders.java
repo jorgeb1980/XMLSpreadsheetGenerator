@@ -14,7 +14,7 @@ import static java.util.Collections.unmodifiableMap;
 /**
  * Defines the border properties for cells referencing this style. The Borders 
  * element contains no attributes; it is purely a container for individual Border elements. 
- * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:borders">MSDN Borders element reference</a>
+ * @see <a href="https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)#ssborders-tag">MSDN Borders element reference</a>
  */
 public record Borders(
 	/* Defined borders, indexed by position. Unmodifiable version of the map. */
