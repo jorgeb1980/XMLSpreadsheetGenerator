@@ -6,9 +6,22 @@ import static xml.spreadsheet.utils.XmlHelper.element;
 /**
  * Defines the fill properties to use in this style. 
  * Each attribute that is specified is considered an override from the default. 
- * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:interior">MSDN Interior element reference</a>
+ * @see <a href="https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)#ssinterior-tag">MSDN Interior element reference</a>
  */
-public class Interior {
+public record Interior(
+	/*
+	 * Specifies the fill color of the cell. This value can be a
+	 * 6-hexadecimal digit number in "#rrggbb" format among other things.
+	 * This string is case insensitive.
+	 */
+	String color,
+	/*
+	 * Specifies the fill pattern in the cell. The fill pattern determines
+	 * how to blend the Color and PatternColor attributes to produce the
+	 * cell's appearance.
+	 */
+	FillPattern pattern
+) {
 
 	//-------------------------------------------------------------------
 	// Subtypes and constants
@@ -17,7 +30,7 @@ public class Interior {
 	public static final String COLOR_AUTOMATIC = "Automatic";
 	
 	/** Fill pattern for the cell interior color. */
-	private enum FillPattern {
+	public enum FillPattern {
 		None, Solid 
 		// LibreOffice does not support these patterns... not exactly sure what
 		//	to do with them
@@ -26,26 +39,6 @@ public class Interior {
 		ThinHorzStripe, ThinVertStripe, ThinReverseDiagStripe, ThinDiagStripe, 
 		ThinHorzCross, ThinDiagCross
 	}
-	
-	//-------------------------------------------------------------------
-	// Class properties
-	
-	/**
-	 * Specifies the fill color of the cell. This value can be a 
-	 * 6-hexadecimal digit number in "#rrggbb" format among other things.  
-	 * This string is case insensitive.
-	 */
-	private String color = null;
-	
-	/**
-	 * Specifies the fill pattern in the cell. The fill pattern determines 
-	 * how to blend the Color and PatternColor attributes to produce the 
-	 * cell's appearance. 
-	 */
-	private FillPattern pattern = null;
-	
-	//-------------------------------------------------------------------
-	// Class methods
 	
 	@Override
 	public String toString() {
@@ -57,30 +50,46 @@ public class Interior {
 			)
 		);
 	}
-
-	/** Default constructor. */
-	public Interior () {}
 	
 	/**
 	 * Copy constructor.
 	 * @param interior Original interior to copy
 	 */
-	public Interior(Interior interior) {
-		this.color = interior.color;
-		this.pattern = interior.pattern;
+	public static Interior from(Interior interior) {
+		return interior != null ?
+			new Interior(
+				interior.color,
+				interior.pattern
+			) : null;
 	}
-	
-	/**
-	 * @param color Specifies the fill color of the cell. This value can be a 
-	 * 6-hexadecimal digit number in "#rrggbb" format among other things.
-	 */
-	public void setColor(String color) {
-		this.color = color;
+
+	public static InteriorBuilder builder() { return new InteriorBuilder(); }
+
+	public static class InteriorBuilder {
+		private String color;
 		// If the fill pattern is unspecified, use a solid fill pattern
-		if (this.pattern == null) {
-			this.pattern = FillPattern.Solid;
+		private FillPattern pattern = FillPattern.Solid;
+
+		public Interior build() {
+			return new Interior(color, pattern);
+		}
+
+		/**
+		 * @param color Specifies the fill color of the cell. This value can be a
+		 * 6-hexadecimal digit number in "#rrggbb" format among other things.
+		 */
+		public InteriorBuilder withColor(String color) {
+			this.color = color;
+			return this;
+		}
+
+		public InteriorBuilder withPattern(FillPattern pattern) {
+			this.pattern = pattern;
+			return this;
 		}
 	}
+
+
 	
 	
 }

@@ -16,88 +16,45 @@ import static xml.spreadsheet.utils.XmlHelper.element;
  * Style dateStyle = generator.createStyle();<br/>
  * dateStyle.numberFormat().setFormat("dd\\-mm\\-yyyy");<br/>
  * </code><br/>
- * @see <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx#odc_xmlss_ss:numberformat">MSDN NumberFormat element reference</a>
- * @see <a href="http://office.microsoft.com/en-us/excel-help/create-a-custom-number-format-HP010342372.aspx">Technical article on number format creation</a>
- * @see <a href="http://office.microsoft.com/en-us/excel-help/format-a-date-the-way-you-want-HA102809474.aspx">Custom date formatting</a>
+ * @see <a href="https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)?redirectedfrom=MSDN#ssnumberformat-tag">MSDN NumberFormat element reference</a>
+ * @see <a href="https://support.microsoft.com/en-us/office/create-a-custom-number-format-78f2a361-936b-4c03-8772-09fab54be7f4">Technical article on number format creation</a>
+ * @see <a href="https://support.microsoft.com/en-us/office/format-a-date-the-way-you-want-8e10019e-d5d8-47a1-ba95-db95123d273e">Custom date formatting</a>
  */
-public class NumberFormat {
-
-	//-------------------------------------------------------------------
-	// Subtypes and constants
+public record NumberFormat(
+	/* A number format code in the Excel number format syntax. */
+	String format
+) {
 	
 	/** Predefined number formats */
-	public enum Format {
-		General ("General"), 
-		GeneralNumber ("General Number"), 
-		GeneralDate ("General Date"), 
-		LongDate ("Long Date"), 
-		MediumDate ("Medium Date"), 
-		ShortDate ("Short Date"), 
-		LongTime ("Long Time"), 
-		MediumTime ("Medium Time"), 
-		ShortTime ("Short Time"), 
-		Currency ("Currency"), 
-		EuroCurrency ("Euro Currency"), 
-		Fixed ("Fixed"), 
-		Standard ("Standard"), 
-		Percent ("Percent"), 
-		Scientific ("Scientific"), 
-		YesNo ("Yes/No"), 
-		TrueFalse ("True/False"), 
-		OnOff ("On/Off");
-		
-		private String format;
-		
-		private Format(String format) {
-			this.format = format;
-		}
-		
-		@Override
-		public String toString() {
-			return format;
-		}
-	}
-	
-	//-------------------------------------------------------------------
-	// Class properties
-	
-	/**
-	 * A number format code in the Excel number format syntax.
-	 */
-	private String format = null;
-	
-	
-	//-------------------------------------------------------------------
-	// Class methods
-	
-	/** Default constructor. */
-	public NumberFormat() {}
+	public static NumberFormat GENERAL = new NumberFormat("General");
+	public static NumberFormat GENERAL_NUMBER = new NumberFormat("General Number");
+	public static NumberFormat GENERAL_DATE = new NumberFormat("General Date");
+	public static NumberFormat LONG_DATE = new NumberFormat("Long Date");
+	public static NumberFormat MEDIUM_DATE = new NumberFormat("Medium Date");
+	public static NumberFormat SHORT_DATE = new NumberFormat("Short Date");
+	public static NumberFormat LONG_TIME = new NumberFormat("Long Time");
+	public static NumberFormat MEDIUM_TIME = new NumberFormat("Medium Time");
+	public static NumberFormat SHORT_TIME = new NumberFormat("Short Time");
+	public static NumberFormat CURRENCY = new NumberFormat("Currency");
+	public static NumberFormat EURO_CURRENCY = new NumberFormat("Euro Currency");
+	public static NumberFormat FIXED = new NumberFormat("Fixed");
+	public static NumberFormat STANDARD = new NumberFormat("Standard");
+	public static NumberFormat PERCENT = new NumberFormat("Percent");
+	public static NumberFormat SCIENTIFIC = new NumberFormat("Scientific");
+	public static NumberFormat YES_NO = new NumberFormat("Yes/No");
+	public static NumberFormat TRUE_FALSE = new NumberFormat("True/False");
+	public static NumberFormat ON_OFF = new NumberFormat("On/Off");
 	
 	/**
 	 * Copy constructor.
 	 * @param numberFormat Original number format to copy
 	 */
-	public NumberFormat(NumberFormat numberFormat) {
-		this.format = numberFormat.format;
+	public static NumberFormat from(NumberFormat numberFormat) {
+		return numberFormat != null ? new NumberFormat(numberFormat.format()) : null;
 	}
 	
 	@Override
 	public String toString() {
-		return element("ss:NumberFormat", mapOf("ss:Format", format));
-	}
-	
-	/**
-	 * @param format A number format code in the Excel number format syntax.
-	 * See http://office.microsoft.com/en-us/excel-help/create-a-custom-number-format-HP010342372.aspx
-	 */
-	public void setFormat(String format) {
-		this.format = format;
-	}
-	
-	/**
-	 * @param format A predefined XML Spreadsheet format 
-	 */
-	public void setFormat(Format format) {
-		this.format = format.toString();
+		return element("ss:NumberFormat", mapOf("ss:Format", this.format));
 	}
 }

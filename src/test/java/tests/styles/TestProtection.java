@@ -5,63 +5,51 @@ import org.junit.Before;
 import org.junit.Test;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
-import xml.spreadsheet.style.Protection;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
+import static xml.spreadsheet.style.Protection.from;
+import static xml.spreadsheet.style.Protection.builder;
 
 public class TestProtection {
 
-	Protection protection = null;
-	
-	// TEST SETUP
-	
 	@Before
 	public void init() {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
-			Style style = generator.createStyle();
-			
-			protection = style.protection();
-			Assert.assertNotNull(protection);	
+			Style style = generator.createStyle().build();
+			Assert.assertNull(style.protection());
 		} catch (Throwable e) {
 			fail(e.getMessage());
 		}
 	}
 	
-	///////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////
-	
 	@Test
 	public void testSetProtectedCell() {
 		// Null by default
-		checkAttributeValue(protection, "Protected", null);
-		
+		checkAttributeValue(builder().build(), "Protected", null);
 		// 1 if true
-		protection.setProtectedCell(true);
-		checkAttributeValue(protection, "Protected", "1");
-		
+		checkAttributeValue(builder().withProtectedCell(true).build(), "Protected", "1");
 		// 0 if false
-		protection.setProtectedCell(false);
-		checkAttributeValue(protection, "Protected", "0");
+		checkAttributeValue(builder().withProtectedCell(false).build(), "Protected", "0");
+	}
+
+	@Test
+	public void copyConstructor() {
+		assertNull(from(null));
 	}
 
 	@Test
 	public void testSetHideFormula() {
 		// Null by default
-		checkAttributeValue("x", protection, "HideFormula", null);
-		
+		checkAttributeValue("x", builder().build(), "HideFormula", null);
 		// 1 if true
-		protection.setHideFormula(true);
-		checkAttributeValue("x", protection, "HideFormula", "1");
-		
+		checkAttributeValue("x", builder().withHideFormula(true).build(), "HideFormula", "1");
 		// 0 if false
-		protection.setHideFormula(false);
-		checkAttributeValue("x", protection, "HideFormula", "0");
+		checkAttributeValue("x", builder().withHideFormula(false).build(), "HideFormula", "0");
 	}
 
 }

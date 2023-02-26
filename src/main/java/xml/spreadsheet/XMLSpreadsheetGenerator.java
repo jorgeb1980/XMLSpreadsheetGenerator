@@ -1,7 +1,10 @@
 package xml.spreadsheet;
 
-import xml.spreadsheet.style.NumberFormat.Format;
-import xml.spreadsheet.utils.*;
+import xml.spreadsheet.Style.StyleBuilder;
+import xml.spreadsheet.utils.BooleanFormatHelper;
+import xml.spreadsheet.utils.DateFormatHelper;
+import xml.spreadsheet.utils.NumberFormatHelper;
+import xml.spreadsheet.utils.XmlHelper;
 
 import java.io.*;
 import java.util.Date;
@@ -9,13 +12,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.Boolean.FALSE;
+import static xml.spreadsheet.style.NumberFormat.LONG_DATE;
 import static xml.spreadsheet.utils.AssertionHelper.assertion;
 import static xml.spreadsheet.utils.MapBuilder.mapOf;
 import static xml.spreadsheet.utils.XmlHelper.element;
 
 /**
  * Partial implementation of the spreadsheet format described in the article<br/>
- * <a href="http://msdn.microsoft.com/en-us/library/office/aa140066%28v=office.10%29.aspx">Microsoft XML Spreadsheet Reference</a> 
+ * <a href="https://learn.microsoft.com/en-us/previous-versions/office/developer/office-xp/aa140066(v=office.10)">Microsoft XML Spreadsheet Reference</a>
  * <br/>
  * The generator will follow this state machine:
  * <br/>
@@ -45,7 +49,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	// Class members
 	
 	/** Every instance of the generator is tied to an OutputStream. */
-	private Writer writer;
+	final private Writer writer;
 	/** Generator state.  The machine state validations are implemented on this
 	 * variable. */
 	private GeneratorState state = GeneratorState.INITIALIZATION;
@@ -53,7 +57,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	private int styleCounter = 1;
 	/** Styles. Every new Style will be added to this List and flushed into
 	 * the output stream as soon as the document gets started. */
-	private List<Style> styles;
+	final private List<Style> styles;
 
 	/** Is empty the current row?  This will be set to true every time
 	 * a new row is started, and false if a cell is written into it. */
@@ -98,7 +102,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		writer = new OutputStreamWriter(
 			new BufferedOutputStream(output, bufferSize), CHARSET);
 		// Initialization state: we can define styles
-		styles = new LinkedList<Style>();
+		styles = new LinkedList<>();
 		
 		// Default styles
 		
@@ -106,8 +110,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		//	exist
 		createStyle("Default", "Default", null);
 		// Create the default date format
-		dateFormat = createStyle();
-		dateFormat.numberFormat().setFormat(Format.LongDate);
+		dateFormat = createStyle().withNumberFormat(LONG_DATE).build();
 	}
 	
 	/**
@@ -120,7 +123,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public Style createStyle(String name, Style parent) throws XMLSpreadsheetException {
+	public StyleBuilder createStyle(String name, Style parent) throws XMLSpreadsheetException {
 		return createStyle("ce" + Integer.toString(styleCounter++), name, parent);
 	}
 	
@@ -134,12 +137,10 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	private Style createStyle(String id, String name, Style parent) throws XMLSpreadsheetException {
+	private StyleBuilder createStyle(String id, String name, Style parent) throws XMLSpreadsheetException {
 		assertion(state == GeneratorState.INITIALIZATION, 
 				"It is not possible to add styles to a generator in state: " + state);
-		Style style = new Style(id, name, parent);
-		styles.add(style);
-		return style;
+		return Style.builder(styles).withId(id).withName(name).withParent(parent);
 	}
 	
 	/**
@@ -151,7 +152,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public Style createStyle(Style parent) throws XMLSpreadsheetException {
+	public StyleBuilder createStyle(Style parent) throws XMLSpreadsheetException {
 		return createStyle(null, parent);
 	}
 	
@@ -162,7 +163,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public Style createStyle() throws XMLSpreadsheetException {
+	public StyleBuilder createStyle() throws XMLSpreadsheetException {
 		return createStyle(null, null);
 	}
 	
@@ -174,7 +175,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
 	 */
-	public Style createStyle(String name) throws XMLSpreadsheetException {
+	public StyleBuilder createStyle(String name) throws XMLSpreadsheetException {
 		return createStyle(name, null);
 	}
 	
@@ -321,7 +322,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 					"ss:Height", height,
 					"ss:AutoFitHeight", autoFitHeight,
 					"ss:Hidden", hidden,
-					"ss:StyleID", style != null?style.getId():null
+					"ss:StyleID", style != null ? style.id() : null
 				),
 				FALSE // Don't close!
 			)
@@ -356,7 +357,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		// However, since this way to render the empty rows is not well supported by every 
 		//	spreadsheet product I tried, I decided to remain with this procedural implementation of
 		//	the same functionality.
-		Long times = emptyRows == null? 1l : emptyRows;
+		long times = emptyRows == null? 1 : emptyRows;
 		for (int i = 0; i < times; i++) {
 			startRow(null, autoFitHeight, height, false, style);
 			writeEmptyCell();
@@ -546,7 +547,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 					"ss:Hidden", hidden,
 					"ss:Index", index,
 					"ss:Span", span != null && span > 1 ? span-1 : null,
-					"ss:StyleID", style == null ? null : style.getId(),
+					"ss:StyleID", style == null ? null : style.id(),
 					"ss:Width", width
 				)
 			)
@@ -620,7 +621,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * @param style Style object to apply to the cell.  Remember that the proper way
 	 * to create a date format is to create a <code>Style</code> object, and then
 	 * define for it a proper <code>NumberFormat</code>.
-	 * @see <a href="http://office.microsoft.com/en-us/excel-help/format-a-date-the-way-you-want-HA102809474.aspx">Custom date formatting</a>
+	 * @see <a href="https://support.microsoft.com/en-us/office/format-a-date-the-way-you-want-8e10019e-d5d8-47a1-ba95-db95123d273e">Custom date formatting</a>
 	 * @param value Date value to write
 	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
 	 * any other library-related exception arises
@@ -655,7 +656,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	/**
 	 * Writes an empty cell to the document.
 	 * @param style Cell style
-	 * @throws XMLSpreadsheetException If called in an inappropiate state or 
+	 * @throws XMLSpreadsheetException If called in an inappropriate state or
 	 * any other library-related exception arises
 	 */
 	public void writeEmptyCell(Style style) throws XMLSpreadsheetException {
@@ -672,7 +673,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 		// write the contents of the cell
 		flush(
 			element("ss:Cell",
-				mapOf("ss:StyleID", style != null ? style.getId() : null),
+				mapOf("ss:StyleID", style != null ? style.id() : null),
 				element("ss:Data",
 					mapOf("ss:Type", type.toString()),
 					XmlHelper.cdata(value)

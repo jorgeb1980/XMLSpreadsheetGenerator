@@ -2,6 +2,8 @@ package xml.spreadsheet.utils;
 
 import java.util.Map;
 
+import static java.lang.String.format;
+
 /**
  * Provides support to XML generation across the library
  */
@@ -17,23 +19,19 @@ public class XmlHelper {
 	 * @param value Non null value to fill into the string
 	 */
 	private static void attr(StringBuilder sb, String name, String value) {
-		sb.append(" ");
-		sb.append(name);
-		sb.append("=\"");		
-		sb.append(value);
-		sb.append("\"");
+		sb.append(format(" %s=\"%s\"", name, value));
 	}
 	
 	/**
 	 * Encloses a string into a CDATA construct as defined in its 
-	 * <a href="http://www.w3schools.com/xml/xml_cdata.asp">documentation</a> 
+	 * <a href="https://www.w3resource.com/xml/CDATA-sections.php">documentation</a>
 	 * @param string Original string
 	 * @return String enclosed by CDATA structure
 	 */
 	public static String cdata(String string) {
 		String ret = null;
 		if (string != null) {
-			ret = String.format("<![CDATA[%s]]>", string);
+			ret = format("<![CDATA[%s]]>", string);
 		}
 		return ret;
 	}
@@ -47,18 +45,6 @@ public class XmlHelper {
 	private static void attr(StringBuilder sb, String name, Double value) {
 		if (value != null) {
 			attr(sb, name, NumberFormatHelper.format(value));
-		}
-	}
-	
-	/** 
-	 * Appends an xml attribute into the StringBuilder
-	 * @param sb Mutable String
-	 * @param name Name of the attribute
-	 * @param value Value to fill into the string
-	 */
-	private static void attr(StringBuilder sb, String name, Integer value) {
-		if (value != null) {
-			attr(sb, name, Integer.toString(value));
 		}
 	}
 	
@@ -152,12 +138,15 @@ public class XmlHelper {
 	 * @param elementName Name of the element
 	 * @param attributes Table with the attributes
 	 * @param content Content of the XML node 
-	 * @param close If it is true, the method closes the xml node; if false, it
-	 * does not
+	 * @param close If it is true, the method closes the xml node; if false, it does not
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Map<String, Object> attributes,
-			String content, boolean close) {
+	public static String element(
+		String elementName,
+		Map<String, Object> attributes,
+		String content,
+		boolean close
+	) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<");
 		sb.append(elementName);
@@ -165,23 +154,12 @@ public class XmlHelper {
 			sb.append(" ");
 			for (String key: attributes.keySet()) {
 				Object value = attributes.get(key);
-				if (value instanceof String) {
-					attr(sb, key, (String) value);
-				}
-				else if (value instanceof Double) {
-					attr(sb, key, (Double) value);
-				}
-				else if (value instanceof Boolean) {
-					attr(sb, key, (Boolean) value);
-				}
-				else if (value instanceof Long) {
-					attr(sb, key, (Long) value);
-				}
-				else if (value instanceof Integer) {
-					attr(sb, key, (Integer) value);
-				}
-				else {
-					attr(sb, key, value.toString());
+				switch (value) {
+					case String s -> attr(sb, key, s);
+					case Double d -> attr(sb, key, d);
+					case Boolean b -> attr(sb, key, b);
+					case Long l -> attr(sb, key, l);
+					case null, default -> attr(sb, key, value == null ? "" : value.toString());
 				}
 			}
 		}
@@ -189,9 +167,7 @@ public class XmlHelper {
 			sb.append(">");
 			sb.append(content);
 			if (close) {
-				sb.append("</");
-				sb.append(elementName);
-				sb.append(">");
+				sb.append(format("</%s>", elementName));
 			}
 		}
 		else {

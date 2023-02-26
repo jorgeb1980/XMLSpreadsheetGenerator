@@ -1,68 +1,57 @@
 package tests.styles;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import xml.spreadsheet.Style;
-import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.NumberFormat;
-import xml.spreadsheet.style.NumberFormat.Format;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
+import static xml.spreadsheet.style.NumberFormat.from;
 
 public class TestNumberFormat {
 
-	// TEST SETUP
-	NumberFormat numberFormat = null;
-	
-	@Before
-	public void init() {
-		try { 
-			// Don't mind here to have a warning that the resource is never closed
-			@SuppressWarnings("resource")
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
-			Style style = generator.createStyle();
-			
-			numberFormat = style.numberFormat();
-			Assert.assertNotNull(numberFormat);	
-		} catch (Throwable e) {
-			fail(e.getMessage());
-		}
+	private void testNumberFormat(String nf) {
+		NumberFormat format = new NumberFormat(nf);
+		checkAttributeValue(format, "Format", nf);
 	}
-	
-	///////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////
-	// UNIT TESTS
-	
+
 	@Test
 	public void testSetFormatString() {
+		NumberFormat nf1 = new NumberFormat(null);
 		// null by default
-		checkAttributeValue(numberFormat, "Format", null);
-		
-		// try some formats
-		numberFormat.setFormat("####.#");
-		checkAttributeValue(numberFormat, "Format", "####.#");
-		
-		numberFormat.setFormat("#.0#");
-		checkAttributeValue(numberFormat, "Format", "#.0#");
-		
-		numberFormat.setFormat("# ???/???");
-		checkAttributeValue(numberFormat, "Format", "# ???/???");
+		checkAttributeValue(nf1, "Format", null);
+		testNumberFormat("####.#");
+		testNumberFormat("#.0#");
+		testNumberFormat("# ???/???");
 	}
 
 	@Test
 	public void testSetFormatFormat() {
 		// null by default
-		checkAttributeValue(numberFormat, "Format", null);
-		
-		// try all values
-		for (Format format: Format.values()) {
-			numberFormat.setFormat(format);
-			checkAttributeValue(numberFormat, "Format", format.toString());
+		checkAttributeValue(new NumberFormat(null), "Format", null);
+
+		try {
+			// Check all the constants of type NumberFormat
+			for (Field f : NumberFormat.class.getDeclaredFields()) {
+				int modifiers = f.getModifiers();
+				if (f.getAnnotatedType().getType().getTypeName().equals("NumberFormat")
+					&& Modifier.isStatic(modifiers)
+					&& Modifier.isFinal(modifiers)) {
+					testNumberFormat(((NumberFormat) f.get(null)).format());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
 		}
+	}
+
+	@Test
+	public void copyConstructor() {
+		assertNull(from(null));
 	}
 
 }

@@ -60,17 +60,14 @@ public class XmlTestUtils {
 	 * we have set the appropriate env var.  The method will output instructions for it if launched with default env vars.
 	 * @param f Lambda that will consume the created OutputStream
 	 */
-	public static void executeWithTempFile(Consumer<OutputStream> f) {
-		try {
-			File file = File.createTempFile("xmlspreadsheet", ".xml");
-			try (OutputStream os = new FileOutputStream(file)) {
-				f.accept(os);
-			}
-			System.out.println("Created temp file " + file);
-			if (!YES_VALUES.contains(getSystemVariable(KEEP_FILES))) {
-				Files.delete(file.toPath());
-				System.out.printf("If you wish to keep and inspect later temporary files created during tests, please declare the env var %s = true%n", KEEP_FILES);
-			}
+	public static void executeWithTempFile(Consumer<ByteArrayOutputStream> f) {
+		try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			f.accept(baos);
+			if (YES_VALUES.contains(getSystemVariable(KEEP_FILES))) {
+				File file = File.createTempFile("xmlspreadsheet", ".xml");
+				try (OutputStream os = new FileOutputStream(file)) { os.write(baos.toByteArray()); }
+				System.out.println("Created temp file " + file);
+			} else  System.out.printf("If you wish to keep and inspect later temporary files created during tests, please declare the env var %s=true%n", KEEP_FILES);
 		} catch (IOException ioe) { ioe.printStackTrace(); }
 	}
 

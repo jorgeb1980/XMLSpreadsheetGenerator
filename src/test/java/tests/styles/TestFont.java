@@ -1,35 +1,32 @@
 package tests.styles;
 
-import static org.junit.Assert.fail;
-import static tests.styles.StyleTestUtils.checkAttributeValue;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import xml.spreadsheet.Charset;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
-import xml.spreadsheet.style.Font;
 import xml.spreadsheet.style.Font.FontFamily;
 import xml.spreadsheet.style.Font.Underline;
 import xml.spreadsheet.style.Font.VerticalAlignment;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+import static tests.styles.StyleTestUtils.checkAttributeValue;
+import static xml.spreadsheet.Charset.*;
+import static xml.spreadsheet.style.Font.from;
+import static xml.spreadsheet.style.Font.COLOR_AUTOMATIC;
+import static xml.spreadsheet.style.Font.builder;
+
 public class TestFont {
 
-	// TEST SETUP
-	Font font = null;
-	
 	@Before
 	public void init() {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
-			Style style = generator.createStyle();
-			
-			font = style.font();
-			Assert.assertNotNull(font);	
+			Style style = generator.createStyle().build();
+			Assert.assertNull(style.font());
 		} catch (Throwable e) {
 			fail(e.getMessage());
 		}
@@ -38,190 +35,143 @@ public class TestFont {
 	@Test
 	public void testSetBold() {
 		// null by default
-		checkAttributeValue(font, "Bold", null);
-		
+		checkAttributeValue(builder().build(), "Bold", null);
 		// 0 if false
-		font.setBold(false);
-		checkAttributeValue(font, "Bold", "0");
-		
+		checkAttributeValue(builder().withBold(false).build(), "Bold", "0");
 		// 1 if true
-		font.setBold(true);
-		checkAttributeValue(font, "Bold", "1");
+		checkAttributeValue(builder().withBold(true).build(), "Bold", "1");
 	}
 
 	@Test
 	public void testSetColor() {
 		// null by default
-		checkAttributeValue(font, "Color", null);
-		
+		checkAttributeValue(builder().build(), "Color", null);
 		// Check different values
-		
-		font.setColor(Font.COLOR_AUTOMATIC);
-		checkAttributeValue(font, "Color", Font.COLOR_AUTOMATIC);
-		
+		checkAttributeValue(builder().withColor(COLOR_AUTOMATIC).build(), "Color", COLOR_AUTOMATIC);
 		// dark red
-		font.setColor("#C14949");
-		checkAttributeValue(font, "Color", "#C14949");
-		
+		checkAttributeValue(builder().withColor("#C14949").build(), "Color", "#C14949");
 		// dark blue
-		font.setColor("#1B1F97");
-		checkAttributeValue(font, "Color", "#1B1F97");
-		
+		checkAttributeValue(builder().withColor("#1B1F97").build(), "Color", "#1B1F97");
 		// dark green
-		font.setColor("#096F27");
-		checkAttributeValue(font, "Color", "#096F27");
+		checkAttributeValue(builder().withColor("#096F27").build(), "Color", "#096F27");
 	}
 
 	@Test
 	public void testSetFontName() {
 		// null by default
-		checkAttributeValue(font, "FontName", null);
-		
+		checkAttributeValue(builder().build(), "FontName", null);
 		// Arial
-		font.setFontName("Arial");
-		checkAttributeValue(font, "FontName", "Arial");
-		
+		checkAttributeValue(builder().withFontName("Arial").build(), "FontName", "Arial");
 		// Arial
-		font.setFontName("Verdana");
-		checkAttributeValue(font, "FontName", "Verdana");
+		checkAttributeValue(builder().withFontName("Verdana").build(), "FontName", "Verdana");
 	}
 
 	@Test
 	public void testSetItalic() {
 		// null by default
-		checkAttributeValue(font, "Italic", null);
-		
+		checkAttributeValue(builder().build(), "Italic", null);
 		// 0 if false
-		font.setItalic(false);
-		checkAttributeValue(font, "Italic", "0");
-		
+		checkAttributeValue(builder().withItalic(false).build(), "Italic", "0");
 		// 1 if true
-		font.setItalic(true);
-		checkAttributeValue(font, "Italic", "1");
+		checkAttributeValue(builder().withItalic(true).build(), "Italic", "1");
 	}
 
 	@Test
 	public void testSetOutline() {
 		// null by default
-		checkAttributeValue(font, "Outline", null);
-		
+		checkAttributeValue(builder().build(), "Outline", null);
 		// 0 if false
-		font.setOutline(false);
-		checkAttributeValue(font, "Outline", "0");
-		
+		checkAttributeValue(builder().withOutline(false).build(), "Outline", "0");
 		// 1 if true
-		font.setOutline(true);
-		checkAttributeValue(font, "Outline", "1");
+		checkAttributeValue(builder().withOutline(true).build(), "Outline", "1");
 	}
 
 	@Test
 	public void testSetShadow() {
 		// null by default
-		checkAttributeValue(font, "Shadow", null);
-		
+		checkAttributeValue(builder().build(), "Shadow", null);
 		// 0 if false
-		font.setShadow(false);
-		checkAttributeValue(font, "Shadow", "0");
-		
+		checkAttributeValue(builder().withShadow(false).build(), "Shadow", "0");
 		// 1 if true
-		font.setShadow(true);
-		checkAttributeValue(font, "Shadow", "1");
+		checkAttributeValue(builder().withShadow(true).build(), "Shadow", "1");
 	}
 
 	@Test
 	public void testSetSize() {
 		// null by default
-		checkAttributeValue(font, "Size", null);
-		
+		checkAttributeValue(builder().build(), "Size", null);
 		try {
 			// Must fail
-			font.setSize(-1);
+			builder().withSize(-1).build();
 			fail();
 		}
 		catch(IllegalArgumentException e) {
 			Assert.assertNotNull(e);
 		}
-		
 		// 12 points
-		font.setSize(12);
-		checkAttributeValue(font, "Size", "12");
-		
+		checkAttributeValue(builder().withSize(12).build(), "Size", "12");
 		// 13 points
-		font.setSize(13);
-		checkAttributeValue(font, "Size", "13");
-		
+		checkAttributeValue(builder().withSize(13).build(), "Size", "13");
 		// 14 points
-		font.setSize(14);
-		checkAttributeValue(font, "Size", "14");
+		checkAttributeValue(builder().withSize(14).build(), "Size", "14");
 	}
 
 	@Test
 	public void testSetStrikeThrough() {
 		// null by default
-		checkAttributeValue(font, "StrikeThrough", null);
-		
+		checkAttributeValue(builder().build(), "StrikeThrough", null);
 		// 0 if false
-		font.setStrikeThrough(false);
-		checkAttributeValue(font, "StrikeThrough", "0");
-		
+		checkAttributeValue(builder().withStrikeThrough(false).build(), "StrikeThrough", "0");
 		// 1 if true
-		font.setStrikeThrough(true);
-		checkAttributeValue(font, "StrikeThrough", "1");
+		checkAttributeValue(builder().withStrikeThrough(true).build(), "StrikeThrough", "1");
 	}
 
 	@Test
 	public void testSetUnderline() {
 		// null by default
-		checkAttributeValue(font, "Underline", null);
-		
+		checkAttributeValue(builder().build(), "Underline", null);
 		// Try all alternatives
 		for (Underline underline: Underline.values()) {
-			font.setUnderline(underline);
-			checkAttributeValue(font, "Underline", underline.toString());
+			checkAttributeValue(builder().withUnderline(underline).build(), "Underline", underline.toString());
 		}
 	}
 
 	@Test
 	public void testSetVerticalAlign() {
 		// null by default
-		checkAttributeValue(font, "VerticalAlign", null);
-		
+		checkAttributeValue(builder().build(), "VerticalAlign", null);
 		// check all alternatives
 		for (VerticalAlignment alignment: VerticalAlignment.values()) {
-			font.setVerticalAlign(alignment);
-			checkAttributeValue(font, "VerticalAlign", alignment.toString());
+			checkAttributeValue(builder().withVerticalAlign(alignment).build(), "VerticalAlign", alignment.toString());
 		}
 	}
 
 	@Test
 	public void testSetCharSet() {
 		// null by default
-		checkAttributeValue("x", font, "CharSet", null);
-		
+		checkAttributeValue("x", builder().build(), "CharSet", null);
 		// try some values
-		font.setCharSet(Charset.ANSI_Latin.getValue());
-		checkAttributeValue("x", font, "CharSet",
-			Integer.toString(Charset.ANSI_Latin.getValue()));
-		
-		font.setCharSet(Charset.ANSI_Arabic.getValue());
-		checkAttributeValue("x", font, "CharSet",
-			Integer.toString(Charset.ANSI_Arabic.getValue()));
-		
-		font.setCharSet(Charset.Apple_Roman.getValue());
-		checkAttributeValue("x", font, "CharSet",
-			Integer.toString(Charset.Apple_Roman.getValue()));
+		checkAttributeValue("x", builder().withCharSet(ANSI_Latin.getValue()).build(), "CharSet",
+			Integer.toString(ANSI_Latin.getValue()));
+		checkAttributeValue("x", builder().withCharSet(ANSI_Arabic.getValue()).build(), "CharSet",
+			Integer.toString(ANSI_Arabic.getValue()));
+		checkAttributeValue("x", builder().withCharSet(Apple_Roman.getValue()).build(), "CharSet",
+			Integer.toString(Apple_Roman.getValue()));
+	}
+
+	@Test
+	public void copyConstructor() {
+		assertNull(from(null));
 	}
 
 	@Test
 	public void testSetFamily() {
 		// null by default
-		checkAttributeValue("x", font, "Family", null);
+		checkAttributeValue("x", builder().build(), "Family", null);
 		
 		// try all the possible values
 		for (FontFamily family: FontFamily.values()) {
-			font.setFamily(family);
-			checkAttributeValue("x", font, "Family",
-				family.toString());
+			checkAttributeValue("x", builder().withFamily(family).build(), "Family", family.toString());
 		}
 	}
 
