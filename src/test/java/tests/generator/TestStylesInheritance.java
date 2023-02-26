@@ -27,12 +27,11 @@ public class TestStylesInheritance {
 	
 	@Test 
 	public void testInheritColorStyle() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String GREEN_COLOR = "#00ff00";
 				final String SHEET_CAPTION = "a sheet with inherited color styles";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				// The references to the styles are kept in order to make assertions
 				//	on them later, if it were not in a unit test it would not be necessary
 				Style rightStyle;
@@ -88,8 +87,6 @@ public class TestStylesInheritance {
 				Element rightCell = searchCells(row4).get(0);
 				assertEquals(Right.toString(), getAlignmentAttribute(rightCell, "Horizontal"));
 				assertEquals(GREEN_COLOR, getFontStyleAttribute(rightCell, "Color"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -99,12 +96,11 @@ public class TestStylesInheritance {
 	
 	@Test 
 	public void testInheritAlignmentStyle() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String GREEN_COLOR = "#00ff00";
 				final String SHEET_CAPTION = "a sheet with inherited alignment styles";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				// The references to the styles are kept in order to make assertions
 				//	on them later, if it were not in a unit test it would not be necessary
 				Style rightStyle;
@@ -158,8 +154,6 @@ public class TestStylesInheritance {
 				Element colorElement = searchStyle(doc, color.id());
 				assertEquals(rightStyle.id(), getAttributeValue(colorElement, "Parent", "ss"));
 				assertEquals(Right.toString(), getAlignmentAttribute(greenCell, "Horizontal"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -169,11 +163,10 @@ public class TestStylesInheritance {
 	
 	@Test 
 	public void testInheritBorderStyle() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with inherited border styles";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				// The references to the styles are kept in order to make assertions
 				//	on them later, if it were not in a unit test it would not be necessary
 				Style thickBorderStyle;
@@ -237,9 +230,6 @@ public class TestStylesInheritance {
 				assertEquals(NumberFormatHelper.format(Thick.getValue()),
 					getBorderStyleAttribute(rightCell,
 						BorderPosition.Right.toString(), "Weight"));
-
-				os.write(baos.toByteArray());
-
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -249,12 +239,11 @@ public class TestStylesInheritance {
 	
 	@Test 
 	public void testInheritInteriorStyle() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with inherited interior styles";
 				final String RED_COLOR = "#ff0000";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				// The references to the styles are kept in order to make assertions
 				//	on them later, if it were not in a unit test it would not be necessary
 				Style rightStyle;
@@ -311,8 +300,6 @@ public class TestStylesInheritance {
 				assertEquals(RED_COLOR, getInteriorStyleAttribute(rightCell, "Color"));
 				// Make sure the generator has written the solid pattern too
 				assertEquals("Solid", getInteriorStyleAttribute(rightCell, "Pattern"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -322,12 +309,11 @@ public class TestStylesInheritance {
 	
 	@Test 
 	public void testInheritNumberFormatStyle() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with inherited number format styles";
 				final String NUMBER_FORMAT = "#####.000";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				// The references to the styles are kept in order to make assertions
 				//	on them later, if it were not in a unit test it would not be necessary
 				Style numberFormatStyle;
@@ -382,8 +368,6 @@ public class TestStylesInheritance {
 				Element rightStyleElement = searchStyle(doc, rightStyle.id());
 				assertEquals(numberFormatStyle.id(), getAttributeValue(rightStyleElement, "Parent", "ss"));
 				assertEquals(NUMBER_FORMAT, getNumberFormatAttribute(rightCell, "Format"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());

@@ -13,8 +13,9 @@ import xml.spreadsheet.style.NumberFormat;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
 
@@ -44,16 +45,14 @@ public class TestGeneratorMisc {
 
 	@Test
 	public void createEmptyFile() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					generator.startDocument();
 				}
 				String document = baos.toString(Charset.forName("cp1252"));
 				Document doc = GeneratorTestUtils.parseDocument(document);
 				assertNotNull(doc);
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -63,12 +62,11 @@ public class TestGeneratorMisc {
 	
 	@Test
 	public void createFileCells() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String TEXT_FIRST_ROW = "a<<4~~4~~aa";
 				final String TEXT_FOURTH_ROW = "fesfe>>&&fsf";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					generator.startDocument();
 					generator.startSheet("My first sheet");
@@ -103,8 +101,6 @@ public class TestGeneratorMisc {
 				assertEquals(1, fourthRowCells.size());
 				cell = fourthRowCells.get(0);
 				assertEquals(TEXT_FOURTH_ROW, ((Element) cell.getContent().get(0)).getText());
-
-				os.write(baos.toByteArray());
 			}
 			catch(Exception e) {
 				e.printStackTrace();
@@ -115,12 +111,11 @@ public class TestGeneratorMisc {
 	
 	@Test
 	public void createFileSheets() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String TEXT_FIRST_ROW = "<aaa<>";
 				final Double NUMBER_THIRD_SHEET = 123.3d;
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					generator.startDocument();
 					generator.startSheet("a sheet");
@@ -155,8 +150,6 @@ public class TestGeneratorMisc {
 				assertEquals(2, cells3.size());
 				assertEquals(NumberFormatHelper.format(NUMBER_THIRD_SHEET),
 					((Element) cells3.get(1).getContent().get(0)).getText());
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -166,13 +159,12 @@ public class TestGeneratorMisc {
 	
 	@Test
 	public void testDates() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final Date NO_FORMAT_DATE = new Date();
 				final Date FORMAT_DATE = new Date();
 				final String DATE_FORMAT = "dd\\-mm\\.yyyy";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				// Keep a reference to it just for verification purposes, should
 				//	never be needed out of the try-with-resources statemente in any
 				//	other case
@@ -211,8 +203,6 @@ public class TestGeneratorMisc {
 				// Get the format in the style
 				Element numberFormat = ((Element) style.getContent().get(0));
 				assertEquals(DATE_FORMAT, getAttributeValue(numberFormat, "Format", "ss"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -222,7 +212,7 @@ public class TestGeneratorMisc {
 	
 	@Test 
 	public void testEmptyRows() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with empty rows";
 				final String BLUE_COLOR = "#0000ff";
@@ -232,7 +222,6 @@ public class TestGeneratorMisc {
 				final double RED_HEIGHT = 12d;
 				final double GREEN_FONT_SIZE = 45d;
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 
 					Interior blueInterior = Interior.builder().withColor(BLUE_COLOR).build();
@@ -316,8 +305,6 @@ public class TestGeneratorMisc {
 					getInteriorStyleAttribute(greenRow, "Color"));
 				assertEquals(NumberFormatHelper.format(GREEN_FONT_SIZE),
 					getFontStyleAttribute(greenRow, "Size"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -327,13 +314,12 @@ public class TestGeneratorMisc {
 	
 	@Test 
 	public void testColumns() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with columns";
 				final String BLUE_BACKGROUND = "#0000ff";
 				final String RED_BACKGROUND = "#ff0000";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 
 
@@ -477,8 +463,6 @@ public class TestGeneratorMisc {
 				assertNull(getAttributeValue(col10, "StyleID", "ss"));
 				assertNull(getAttributeValue(col10, "Span", "ss"));
 				assertNull(getAttributeValue(col10, "Index", "ss"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -501,8 +485,9 @@ public class TestGeneratorMisc {
 	
 	@Test
 	public void controlIOerror() {
-		executeWithTempFile( os -> {
-			try {
+		try {
+			File file = File.createTempFile("xmlspreadsheet", ".xml");
+			try (OutputStream os = new FileOutputStream(file)) {
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os)) {
 					generator.startDocument();
 					generator.startSheet("this will fail");
@@ -520,8 +505,12 @@ public class TestGeneratorMisc {
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
+			} finally {
+				Files.delete(file.toPath());
 			}
-		});
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 	
 	@Test 

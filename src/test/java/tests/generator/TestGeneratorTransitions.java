@@ -14,11 +14,11 @@ public class TestGeneratorTransitions {
 	
 	@Test 
 	public void testInvalidTransitionSheetToCell() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				// Don't mind here to have a warning that the resource is never closed
 				@SuppressWarnings("resource")
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
+				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.startSheet("this will fail");
 				generator.writeCell("adasf"); // not the proper place
@@ -33,11 +33,11 @@ public class TestGeneratorTransitions {
 	
 	@Test 
 	public void testInvalidTransitionDocumentToCell() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				// Don't mind here to have a warning that the resource is never closed
 				@SuppressWarnings("resource")
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
+				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.writeCell("adasf"); // not the proper place
 				fail(); // Should not get here!
@@ -51,9 +51,9 @@ public class TestGeneratorTransitions {
 	
 	@Test 
 	public void testInvalidTransitionSheetToDocument() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
+				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.startSheet("this will fail");
 				generator.close(); // Should jump here with an XMLSpreadsheetException
@@ -68,9 +68,9 @@ public class TestGeneratorTransitions {
 	
 	@Test 
 	public void testInvalidTransitionRowToDocument() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
+				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.startSheet("this will fail");
 				generator.startRow();
@@ -86,11 +86,11 @@ public class TestGeneratorTransitions {
 	
 	@Test 
 	public void testInvalidTransitionCleanToCell() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				// Don't mind here to have a warning that the resource is never closed
 				@SuppressWarnings("resource")
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
+				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.writeCell(new Date());
 				fail(); // Should not get here!
@@ -104,11 +104,11 @@ public class TestGeneratorTransitions {
 	
 	@Test 
 	public void testInvalidTransitionNotInitializedToCell() {
-		executeWithTempFile(os -> {
+		executeWithTempFile(baos -> {
 			try {
 				// Don't mind here to have a warning that the resource is never closed
 				@SuppressWarnings("resource")
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os);
+				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 				generator.writeCell(new Date());
 				fail(); // Should not get here!
 			} catch (XMLSpreadsheetException e) {

@@ -35,8 +35,7 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testCreateStyleAfterStarting() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {
+		try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			// Don't mind here to have a warning that the resource is never closed
 			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 				generator.startDocument();
@@ -68,8 +67,7 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testCreateEmptyStyle() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {		
+		try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {			
 				generator.createStyle();				
 				generator.startDocument();				
@@ -85,8 +83,7 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testCreateAlignmentStyle() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {		
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()){
 			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {			
 				generator.createStyle().withAlignment(
 					Alignment.builder().withHorizontal(Center).build()
@@ -106,8 +103,7 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testCreateBordersStyle() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {		
+		try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {			
 				generator.createStyle().withBorders(
 					Borders.builder().withBorder(
@@ -128,13 +124,12 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testAlignment() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with alignment styles";
 				final String VERY_LONG_TEXT = "very long text very long text very long text very long text very long text very long text very long text ";
 				final double ROTATE_DEGREES = 45d;
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					Alignment leftAlignment = Alignment.builder().withHorizontal(Left).build();
 					Style leftStyle = generator.createStyle().withAlignment(leftAlignment).build();
@@ -263,8 +258,6 @@ public class TestGeneratorStyles {
 				Element verticalTextCell = searchCells(row16).get(0);
 				assertEquals(BooleanFormatHelper.format(true),
 					getAlignmentAttribute(verticalTextCell, "VerticalText"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -274,7 +267,7 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testFont() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String GREEN_COLOR = "#00ff00";
 				final String RED_COLOR = "#ff0000";
@@ -283,7 +276,6 @@ public class TestGeneratorStyles {
 				final String FONT_NAME = "Verdana";
 				final String SHEET_CAPTION = "a sheet with font styles";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 
 					Font boldFont = Font.builder().withBold(true).build();
@@ -408,8 +400,6 @@ public class TestGeneratorStyles {
 				assertEquals(FONT_NAME, getFontStyleAttribute(miscFontCell, "FontName"));
 				assertEquals(RED_COLOR, getFontStyleAttribute(miscFontCell, "Color"));
 				assertEquals(BooleanFormatHelper.format(true), getFontStyleAttribute(miscFontCell, "Bold"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -421,11 +411,10 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testProtection() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with protected cells";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					Protection protection = Protection.builder().withProtectedCell(true).build();
 					Style protectedCellStyle = generator.createStyle().withProtection(protection).build();
@@ -451,9 +440,6 @@ public class TestGeneratorStyles {
 				Element cellProtection = searchCells(rows.get(1)).get(0);
 				assertEquals(BooleanFormatHelper.format(true),
 					getProtectionStyleAttribute(cellProtection, "Protected"));
-
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -463,13 +449,12 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testInterior() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with interior styles";
 				final String RED_COLOR = "#ff0000";
 				final String GREEN_COLOR = "#00ff00";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					Interior redInterior = Interior.builder().withColor(RED_COLOR).build();
 					Style redInteriorStyle = generator.createStyle().withInterior(redInterior).build();
@@ -512,8 +497,6 @@ public class TestGeneratorStyles {
 				assertEquals(GREEN_COLOR, getInteriorStyleAttribute(cellGreenBackground, "Color"));
 				// Make sure the generator has written the solid pattern too
 				assertEquals("Solid", getInteriorStyleAttribute(cellGreenBackground, "Pattern"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -523,7 +506,7 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testNamedStyles() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with named styles";
 				final String RED_COLOR = "#ff0000";
@@ -532,7 +515,6 @@ public class TestGeneratorStyles {
 				final String RED_STYLE = "Red_background";
 				final String GREEN_STYLE = "Green_background";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				// The references to the styles are kept in order to make assertions
 				//	on them later, if it were not in a unit test it would not be necessary
 				Style redInteriorStyle;
@@ -585,8 +567,6 @@ public class TestGeneratorStyles {
 
 				assertEquals(GREEN_STYLE, getAttributeValue(greenStyle, "Name", "ss"));
 				assertEquals(RED_STYLE, getAttributeValue(redStyle, "Name", "ss"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -596,7 +576,7 @@ public class TestGeneratorStyles {
 	
 	@Test 
 	public void testCombinedNamedStyles() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with combined named styles";
 				final String BLUE_COLOR = "#0000ff";
@@ -604,7 +584,6 @@ public class TestGeneratorStyles {
 				final String BLUE_STYLE = "Blue background";
 				final String RED_STYLE = "Red background";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				// The references to the styles are kept in order to make assertions
 				//	on them later, if it were not in a unit test it would not be necessary
 				Style blueBackground;
@@ -671,8 +650,6 @@ public class TestGeneratorStyles {
 
 				assertEquals(BLUE_STYLE, getAttributeValue(blueStyle, "Name", "ss"));
 				assertEquals(RED_STYLE, getAttributeValue(redStyle, "Name", "ss"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -682,13 +659,12 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testCombinedStyles() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final String SHEET_CAPTION = "a sheet with combined styles";
 				final String BLUE_COLOR = "#0000ff";
 				final String RED_COLOR = "#ff0000";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					Interior blueInterior = Interior.builder().withColor(BLUE_COLOR).build();
 					Style blueBackground = generator.createStyle().withInterior(blueInterior).build();
@@ -745,8 +721,6 @@ public class TestGeneratorStyles {
 				assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(5), "Color"));
 				assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(7), "Color"));
 				assertEquals(RED_COLOR, getInteriorStyleAttribute(cells.get(9), "Color"));
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -756,13 +730,12 @@ public class TestGeneratorStyles {
 	
 	@Test
 	public void testBorders() {
-		executeWithTempFile( os -> {
+		executeWithTempFile( baos -> {
 			try {
 				final double FORMAT_WEIGHT = 2.0d;
 				final String RED_COLOR = "#ff0000";
 				final String SHEET_CAPTION = "a sheet with border styles";
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					Border lightBorder = Border.builder().
 						withPosition(Bottom).
@@ -886,8 +859,6 @@ public class TestGeneratorStyles {
 				Element xmlEmptyStyle = searchStyle(cellEmptyStyle.getDocument(),
 					getAttributeValue(cellEmptyStyle, "StyleID", "ss"));
 				assertEquals(0, xmlEmptyStyle.getChildren().size());
-
-				os.write(baos.toByteArray());
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail(e.getMessage());
