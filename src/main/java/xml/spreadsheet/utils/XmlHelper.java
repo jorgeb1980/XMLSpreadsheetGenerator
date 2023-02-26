@@ -2,6 +2,8 @@ package xml.spreadsheet.utils;
 
 import java.util.Map;
 
+import static java.lang.String.format;
+
 /**
  * Provides support to XML generation across the library
  */
@@ -17,11 +19,7 @@ public class XmlHelper {
 	 * @param value Non null value to fill into the string
 	 */
 	private static void attr(StringBuilder sb, String name, String value) {
-		sb.append(" ");
-		sb.append(name);
-		sb.append("=\"");		
-		sb.append(value);
-		sb.append("\"");
+		sb.append(format(" %s=\"%s\"", name, value));
 	}
 	
 	/**
@@ -33,7 +31,7 @@ public class XmlHelper {
 	public static String cdata(String string) {
 		String ret = null;
 		if (string != null) {
-			ret = String.format("<![CDATA[%s]]>", string);
+			ret = format("<![CDATA[%s]]>", string);
 		}
 		return ret;
 	}
@@ -140,12 +138,15 @@ public class XmlHelper {
 	 * @param elementName Name of the element
 	 * @param attributes Table with the attributes
 	 * @param content Content of the XML node 
-	 * @param close If it is true, the method closes the xml node; if false, it
-	 * does not
+	 * @param close If it is true, the method closes the xml node; if false, it does not
 	 * @return String representation of the XML node
 	 */
-	public static String element(String elementName, Map<String, Object> attributes,
-			String content, boolean close) {
+	public static String element(
+		String elementName,
+		Map<String, Object> attributes,
+		String content,
+		boolean close
+	) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<");
 		sb.append(elementName);
@@ -166,9 +167,7 @@ public class XmlHelper {
 			sb.append(">");
 			sb.append(content);
 			if (close) {
-				sb.append("</");
-				sb.append(elementName);
-				sb.append(">");
+				sb.append(format("</%s>", elementName));
 			}
 		}
 		else {
