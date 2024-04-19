@@ -7,10 +7,17 @@ import java.util.List;
  * The generator works as a state machine, as documented in the diagram state_machine.jpg							
  */
 enum GeneratorState {
-	INITIALIZATION, CLEAN_DOCUMENT, WRITING_SHEET, WRITING_COLUMNS, WRITING_SHEET_ROWS, WRITING_ROW, WRITING_CELL, DONE;
+	INITIALIZATION,
+	CLEAN_DOCUMENT,
+	WRITING_SHEET,
+	WRITING_COLUMNS,
+	WRITING_SHEET_ROWS,
+	WRITING_ROW,
+	WRITING_CELL,
+	DONE;
 	
 	// Possible states to go for every state
-	private List<GeneratorState> states = new LinkedList<GeneratorState>();
+	private final List<GeneratorState> states = new LinkedList<>();
 	
 	// State machine
 	static {
@@ -54,12 +61,12 @@ enum GeneratorState {
 			sb.append(previous);
 			sb.append(" -> ");
 			sb.append(next);
-			sb.append(System.getProperty("line.separator"));
+			sb.append(System.lineSeparator());
 			sb.append("Valid transitions from ");
 			sb.append(previous);
 			sb.append(": ");
 			for (GeneratorState state: previous.states) {
-				sb.append(System.getProperty("line.separator"));
+				sb.append(System.lineSeparator());
 				sb.append(state);
 			}
 			throw new XMLSpreadsheetException(sb.toString());

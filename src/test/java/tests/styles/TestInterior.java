@@ -2,7 +2,6 @@ package tests.styles;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Interior.FillPattern;
 
@@ -20,8 +19,8 @@ public class TestInterior {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
-			Style style = generator.createStyle().build();
+			var generator = new XMLSpreadsheetGenerator(null);
+			var style = generator.createStyle().build();
 			assertNull(style.interior());
 		}
 		catch (Throwable e) {
@@ -50,7 +49,7 @@ public class TestInterior {
 	public void testSetPattern() {
 		// Solid by default
 		checkAttributeValue(builder().build(), "Pattern", Solid.toString());
-		for (FillPattern pattern: FillPattern.values()) {
+		for (var pattern: FillPattern.values()) {
 			checkAttributeValue(builder().withPattern(pattern).build(), "Pattern", pattern.toString());
 		}
 	}

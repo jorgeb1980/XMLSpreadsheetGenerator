@@ -1,16 +1,7 @@
 package tests.styles;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static tests.styles.StyleTestUtils.checkAttributeValue;
-import static xml.spreadsheet.style.Border.BorderPosition.Bottom;
-import static xml.spreadsheet.style.Border.from;
-import static xml.spreadsheet.style.Borders.builder;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Border;
@@ -20,7 +11,12 @@ import xml.spreadsheet.style.Border.LineStyle;
 import xml.spreadsheet.style.Borders;
 
 import java.util.Arrays;
-import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static tests.styles.StyleTestUtils.checkAttributeValue;
+import static xml.spreadsheet.style.Border.BorderPosition.Bottom;
+import static xml.spreadsheet.style.Border.from;
+import static xml.spreadsheet.style.Borders.builder;
 
 public class TestBorders {
 	
@@ -29,8 +25,8 @@ public class TestBorders {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
-			Style style = generator.createStyle().build();
+			var generator = new XMLSpreadsheetGenerator(null);
+			var style = generator.createStyle().build();
 			assertNull(style.borders());
 		}
 		catch (Throwable e) {
@@ -49,7 +45,7 @@ public class TestBorders {
 	public void testRepeatBorder() {
 		try {
 			// Reset the borders object
-			Border bottomBorder = Border.builder().withPosition(Bottom).build();
+			var bottomBorder = Border.builder().withPosition(Bottom).build();
 			builder().withBorder(bottomBorder).withBorder(bottomBorder).build();
 			fail();
 		}
@@ -61,14 +57,15 @@ public class TestBorders {
 	@Test
 	public void testSetLinestyle() {
 		try {
-			for (BorderPosition position: BorderPosition.values()) {
+			for (var position: BorderPosition.values()) {
 				// For each possible position, try each possible line style
-				for (LineStyle lineStyle: LineStyle.values()) {
-					Border b = Border.builder().withPosition(position).withLineStyle(lineStyle).build();
-					Borders borders = builder().withBorder(b).build();
+				for (var lineStyle: LineStyle.values()) {
+					var b = Border.builder().withPosition(position).withLineStyle(lineStyle).build();
+					var borders = builder().withBorder(b).build();
 					checkAttributeValue(borders,
 						"//ss:Border[@ss:Position='" + position + "']",
-						"LineStyle", lineStyle.toString());
+						"LineStyle", lineStyle.toString()
+					);
 				}
 			}
 		} catch (Throwable t) {
@@ -78,16 +75,16 @@ public class TestBorders {
 	
 	@Test
 	public void testSetColor() {
-		List<String> colors = Arrays.asList(
+		var colors = Arrays.asList(
 			Border.COLOR_AUTOMATIC,
 			"#C14949",
 			"#1B1F97",
 			"#096F27"
 		);
 		try {
-			for (BorderPosition position: BorderPosition.values()) {
-				for (String color: colors) {
-					Borders borders = builder().
+			for (var position: BorderPosition.values()) {
+				for (var color: colors) {
+					var borders = builder().
 						withBorder(
 							Border.builder().
 								withPosition(position).
@@ -111,10 +108,10 @@ public class TestBorders {
 	@Test
 	public void testSetWeight() {
 		try {
-			for (BorderPosition position: BorderPosition.values()) {
+			for (var position: BorderPosition.values()) {
 				// For each possible position, try weights
 				for (BorderWeight weight: BorderWeight.values()) {
-					Borders borders = builder().withBorder(
+					var borders = builder().withBorder(
 						Border.builder().
 							withPosition(position).
 							withWeight(weight).
@@ -136,16 +133,15 @@ public class TestBorders {
 	@Test
 	public void setCustomSetWeight() {
 		try {
-			for (BorderPosition position: BorderPosition.values()) {
-				final double WEIGHT_VALUE = 3.3d;
-				Borders borders = builder().
+			for (var position: BorderPosition.values()) {
+				final var WEIGHT_VALUE = 3.3d;
+				var borders = builder().
 					withBorder(
 						Border.builder().
 							withWeight(WEIGHT_VALUE).
 							withPosition(position).
 							build()
-					).
-					build();
+					).build();
 				checkAttributeValue(
 					borders,
 					"//ss:Border[@ss:Position='" + position + "']",

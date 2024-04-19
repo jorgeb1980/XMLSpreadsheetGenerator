@@ -1,7 +1,6 @@
 package tests.styles;
 
 import org.jdom2.Document;
-import org.jdom2.Element;
 import tests.XmlTestUtils;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
@@ -30,7 +29,7 @@ public class StyleTestUtils {
 	public static String attributeValue(String prefix, Document doc, String selector, String attribute) {
 		String ret = null;
 		try {
-			Element element = XmlTestUtils.generateXPathExpression(selector).evaluateFirst(doc);
+			var element = XmlTestUtils.generateXPathExpression(selector).evaluateFirst(doc);
 			ret = XmlTestUtils.getAttributeValue(element, attribute, prefix);
 		} catch (Throwable t) {
 			t.printStackTrace();

@@ -4,13 +4,12 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import tests.XmlTestUtils;
 
 import java.io.StringReader;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.fail;
-import static tests.XmlTestUtils.generateXPathExpression;
+import static tests.XmlTestUtils.*;
 
 @SuppressWarnings("unchecked")
 public class GeneratorTestUtils {
@@ -58,7 +57,7 @@ public class GeneratorTestUtils {
 	// Returns the style as an Element object
 	public static Element searchStyle(Document doc, Element cell) throws JDOMException {
 		Element ret = null;
-		String id = XmlTestUtils.getAttributeValue(cell, "StyleID", "ss");
+		var id = getAttributeValue(cell, "StyleID", "ss");
 		if (id != null && !id.trim().isEmpty()) {
 			ret = generateXPathExpression( "//ss:Style[@ss:ID='" + id + "']").evaluateFirst(doc);
 		}
@@ -68,11 +67,10 @@ public class GeneratorTestUtils {
 	// Get the value of an attribute of a certain element
 	public static String getChildAttribute(String child, Element element, String attribute) throws JDOMException {
 		String ret = null;
-		Element style = GeneratorTestUtils.searchStyle(element.getDocument(), element);
-		List<Element> children =
-			XmlTestUtils.getDescendants(style, child);
+		var style = GeneratorTestUtils.searchStyle(element.getDocument(), element);
+		var children = getDescendants(style, child);
 		if (children != null && children.size() == 1) {
-			ret = XmlTestUtils.getAttributeValue(children.get(0), attribute, "ss");
+			ret = getAttributeValue(children.get(0), attribute, "ss");
 		}
 		else {
 			fail();
@@ -103,11 +101,10 @@ public class GeneratorTestUtils {
 	// Style of the bottom border
 	public static String getBorderStyleAttribute(Element cell, String position, String attribute) throws JDOMException {
 		String ret = null;
-		Element style = GeneratorTestUtils.searchStyle(cell.getDocument(), cell);
-		List<Element> bottomBorder = 
-			XmlTestUtils.getDescendants(style, "ss:Borders/ss:Border[@ss:Position='" + position + "']");
+		var style = GeneratorTestUtils.searchStyle(cell.getDocument(), cell);
+		var bottomBorder =  getDescendants(style, "ss:Borders/ss:Border[@ss:Position='" + position + "']");
 		if (bottomBorder != null && bottomBorder.size() == 1) {
-			ret = XmlTestUtils.getAttributeValue(bottomBorder.get(0), attribute, "ss");
+			ret = getAttributeValue(bottomBorder.get(0), attribute, "ss");
 		}
 		else {
 			fail(); 

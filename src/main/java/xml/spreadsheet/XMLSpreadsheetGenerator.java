@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.Boolean.FALSE;
+import static xml.spreadsheet.GeneratorState.validateTransition;
 import static xml.spreadsheet.style.NumberFormat.LONG_DATE;
 import static xml.spreadsheet.utils.AssertionHelper.assertion;
 import static xml.spreadsheet.utils.MapBuilder.mapOf;
@@ -253,7 +254,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 */
 	public void startDocument() 
 				throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, 
+		state = validateTransition(state,
 				GeneratorState.CLEAN_DOCUMENT);
 
 		// Header of the document		
@@ -280,7 +281,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	public void close() throws Exception {
 		// It will ignore further attempts to close it once it is done
 		if (state != GeneratorState.DONE) {
-			state = GeneratorState.validateTransition(state, GeneratorState.DONE);
+			state = validateTransition(state, GeneratorState.DONE);
 			flush("</Workbook>");
 			endStreaming();
 		}
@@ -311,7 +312,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 			Double height, 
 			Boolean hidden, 
 			Style style) throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+		state = validateTransition(state, GeneratorState.WRITING_ROW);
 		emptyCurrentRow = true;
 		// Create current row
 		flush(
@@ -373,7 +374,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * any other library-related exception arises
 	 */
 	public void closeRow() throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET_ROWS);
+		state = validateTransition(state, GeneratorState.WRITING_SHEET_ROWS);
 		if (emptyCurrentRow) {
 			flush(element("ss:Cell", mapOf("ss:Index", "1")));
 		}
@@ -413,7 +414,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * any other library-related exception arises
 	 */
 	public void startSheet(String sheetName, boolean protectedSheet) throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_SHEET);
+		state = validateTransition(state, GeneratorState.WRITING_SHEET);
 		// Validate that the sheet name is not null
 		assertion(sheetName != null, "The sheet name must be specified");
 		// Flush the start of the sheet template
@@ -434,7 +435,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * any other library-related exception arises
 	 */
 	public void closeSheet() throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, GeneratorState.CLEAN_DOCUMENT);
+		state = validateTransition(state, GeneratorState.CLEAN_DOCUMENT);
 		sheetFoot();
 	}
 	
@@ -445,7 +446,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * any other library-related exception arises 
 	 */
 	public void startColumns() throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, 
+		state = validateTransition(state,
 				GeneratorState.WRITING_COLUMNS);
 	}
 	
@@ -456,7 +457,7 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * any other library-related exception arises 
 	 */
 	public void closeColumns() throws XMLSpreadsheetException {
-		state = GeneratorState.validateTransition(state, 
+		state = validateTransition(state,
 				GeneratorState.WRITING_SHEET);
 		// Empty column
 		flush(element("ss:Column"));
@@ -578,9 +579,9 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * any other library-related exception arises
 	 */
 	public void writeCell(Style style, String value) throws XMLSpreadsheetException {		
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_CELL);
+		state = validateTransition(state, GeneratorState.WRITING_CELL);
 		writeCellImpl(style, value, CellType.String);		
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+		state = validateTransition(state, GeneratorState.WRITING_ROW);
 	}
 	
 	/**
@@ -601,9 +602,9 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * any other library-related exception arises
 	 */
 	public void writeCell(Style style, Double value) throws XMLSpreadsheetException {		
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_CELL);
+		state = validateTransition(state, GeneratorState.WRITING_CELL);
 		writeCellImpl(style, NumberFormatHelper.format(value), CellType.Number);		
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+		state = validateTransition(state, GeneratorState.WRITING_ROW);
 	}
 	
 	/**
@@ -627,10 +628,10 @@ public class XMLSpreadsheetGenerator implements AutoCloseable {
 	 * any other library-related exception arises
 	 */
 	public void writeCell(Style style, Date value) throws XMLSpreadsheetException {		
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_CELL);
+		state = validateTransition(state, GeneratorState.WRITING_CELL);
 		// Desired format: 1987-10-30T00:00:00.000
 		writeCellImpl(style == null?dateFormat:style, DateFormatHelper.format(value), CellType.DateTime);		
-		state = GeneratorState.validateTransition(state, GeneratorState.WRITING_ROW);
+		state = validateTransition(state, GeneratorState.WRITING_ROW);
 	}
 	
 	/**

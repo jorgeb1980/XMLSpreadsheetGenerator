@@ -1,6 +1,5 @@
 package tests.generator;
 
-import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.junit.jupiter.api.Test;
@@ -13,19 +12,15 @@ import xml.spreadsheet.style.NumberFormat;
 import xml.spreadsheet.utils.BooleanFormatHelper;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Date;
-import java.util.List;
 
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static tests.XmlTestUtils.executeWithTempFile;
 import static tests.XmlTestUtils.getAttributeValue;
 import static tests.generator.GeneratorTestUtils.*;
@@ -35,13 +30,13 @@ public class TestGeneratorMisc {
 
 	@Test
 	public void testEmptyDocument() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		var baos = new ByteArrayOutputStream();
 		try {		
-			try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+			try (var generator = new XMLSpreadsheetGenerator(baos)) {
 				generator.startDocument();
 			}
-			String document = baos.toString(Charset.forName("cp1252"));
-			Document doc = GeneratorTestUtils.parseDocument(document);
+			var document = baos.toString(Charset.forName("cp1252"));
+			var doc = GeneratorTestUtils.parseDocument(document);
 			assertNotNull(doc);
 		}
 		catch(Exception e) {
@@ -53,11 +48,11 @@ public class TestGeneratorMisc {
 	public void createEmptyFile() {
 		executeWithTempFile( baos -> {
 			try {
-				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				try (var generator = new XMLSpreadsheetGenerator(baos)) {
 					generator.startDocument();
 				}
-				String document = baos.toString(Charset.forName("cp1252"));
-				Document doc = GeneratorTestUtils.parseDocument(document);
+				var document = baos.toString(Charset.forName("cp1252"));
+				var doc = GeneratorTestUtils.parseDocument(document);
 				assertNotNull(doc);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -70,8 +65,8 @@ public class TestGeneratorMisc {
 	public void createFileCells() {
 		executeWithTempFile( baos -> {
 			try {
-				final String TEXT_FIRST_ROW = "a<<4~~4~~aa";
-				final String TEXT_FOURTH_ROW = "fesfe>>&&fsf";
+				final var TEXT_FIRST_ROW = "a<<4~~4~~aa";
+				final var TEXT_FOURTH_ROW = "fesfe>>&&fsf";
 
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					generator.startDocument();
@@ -86,24 +81,24 @@ public class TestGeneratorMisc {
 					generator.closeRow();
 					generator.closeSheet();
 				}
-				String document = baos.toString(Charset.forName("cp1252"));
+				var document = baos.toString(Charset.forName("cp1252"));
 
 				// Not empty and correct document
-				Document doc = GeneratorTestUtils.parseDocument(document);
+				var doc = GeneratorTestUtils.parseDocument(document);
 				assertNotNull(doc);
 				// Validate the position of cells
 				// Are there 4 rows?
-				List<Element> rows = searchRows(doc, "My first sheet");
+				var rows = searchRows(doc, "My first sheet");
 				assertEquals(4, rows.size());
 				// For each row
-				Element firstRow = rows.get(0);
-				List<Element> firstRowCells = searchCells(firstRow);
+				var firstRow = rows.get(0);
+				var firstRowCells = searchCells(firstRow);
 				assertEquals(1, firstRowCells.size());
-				Element cell = firstRowCells.get(0);
+				var cell = firstRowCells.get(0);
 				assertEquals(TEXT_FIRST_ROW, ((Element) cell.getContent().get(0)).getText());
 				// 2nd and 3rd left empty
-				Element fourthRow = rows.get(3);
-				List<Element> fourthRowCells = searchCells(fourthRow);
+				var fourthRow = rows.get(3);
+				var fourthRowCells = searchCells(fourthRow);
 				assertEquals(1, fourthRowCells.size());
 				cell = fourthRowCells.get(0);
 				assertEquals(TEXT_FOURTH_ROW, ((Element) cell.getContent().get(0)).getText());
@@ -119,8 +114,8 @@ public class TestGeneratorMisc {
 	public void createFileSheets() {
 		executeWithTempFile( baos -> {
 			try {
-				final String TEXT_FIRST_ROW = "<aaa<>";
-				final Double NUMBER_THIRD_SHEET = 123.3d;
+				final var TEXT_FIRST_ROW = "<aaa<>";
+				final var NUMBER_THIRD_SHEET = 123.3d;
 
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 					generator.startDocument();
@@ -139,20 +134,20 @@ public class TestGeneratorMisc {
 					generator.closeRow();
 					generator.closeSheet();
 				}
-				String document = baos.toString(Charset.forName("cp1252"));
+				var document = baos.toString(Charset.forName("cp1252"));
 
 				// Not empty and correct document
-				Document doc = GeneratorTestUtils.parseDocument(document);
+				var doc = GeneratorTestUtils.parseDocument(document);
 				assertNotNull(doc);
-				List<Element> rows1 = searchRows(doc, "a sheet");
+				var rows1 = searchRows(doc, "a sheet");
 				assertEquals(2, rows1.size());
-				List<Element> cells1 = searchCells(rows1.get(1));
+				var cells1 = searchCells(rows1.get(1));
 				assertEquals(TEXT_FIRST_ROW, ((Element) cells1.get(0).getContent().get(0)).getText());
-				List<Element> rows2 = searchRows(doc, "yet another sheet");
+				var rows2 = searchRows(doc, "yet another sheet");
 				assertEquals(0, rows2.size());
-				List<Element> rows3 = searchRows(doc, "the third sheet!");
+				var rows3 = searchRows(doc, "the third sheet!");
 				assertEquals(1, rows3.size());
-				List<Element> cells3 = searchCells(rows3.get(0));
+				var cells3 = searchCells(rows3.get(0));
 				assertEquals(2, cells3.size());
 				assertEquals(NumberFormatHelper.format(NUMBER_THIRD_SHEET),
 					((Element) cells3.get(1).getContent().get(0)).getText());
@@ -167,9 +162,9 @@ public class TestGeneratorMisc {
 	public void testDates() {
 		executeWithTempFile( baos -> {
 			try {
-				final Date NO_FORMAT_DATE = new Date();
-				final Date FORMAT_DATE = new Date();
-				final String DATE_FORMAT = "dd\\-mm\\.yyyy";
+				final var NO_FORMAT_DATE = new Date();
+				final var FORMAT_DATE = new Date();
+				final var DATE_FORMAT = "dd\\-mm\\.yyyy";
 
 				// Keep a reference to it just for verification purposes, should
 				//	never be needed out of the try-with-resources statemente in any
@@ -190,24 +185,24 @@ public class TestGeneratorMisc {
 					generator.closeRow();
 					generator.closeSheet();
 				}
-				String document = baos.toString(Charset.forName("cp1252"));
+				var document = baos.toString(Charset.forName("cp1252"));
 
 				// Not empty and correct document
-				Document doc = GeneratorTestUtils.parseDocument(document);
+				var doc = GeneratorTestUtils.parseDocument(document);
 				assertNotNull(doc);
-				List<Element> rows1 = searchRows(doc, "a sheet with dates");
+				var rows1 = searchRows(doc, "a sheet with dates");
 				assertEquals(2, rows1.size());
 				// test date formats
-				Element cellNoFormat = searchCells(rows1.get(0)).get(0);
+				var cellNoFormat = searchCells(rows1.get(0)).get(0);
 				assertNotEquals(dateStyle.id(), getAttributeValue(cellNoFormat, "StyleID", "ss"));
-				Element cellWithFormat = searchCells(rows1.get(1)).get(0);
+				var cellWithFormat = searchCells(rows1.get(1)).get(0);
 				assertEquals(dateStyle.id(), getAttributeValue(cellWithFormat, "StyleID", "ss"));
 
-				Element style = GeneratorTestUtils.searchStyle(doc,
+				var style = GeneratorTestUtils.searchStyle(doc,
 					getAttributeValue(cellWithFormat, "StyleID", "ss"));
 				assertNotNull(style);
 				// Get the format in the style
-				Element numberFormat = ((Element) style.getContent().get(0));
+				var numberFormat = ((Element) style.getContent().get(0));
 				assertEquals(DATE_FORMAT, getAttributeValue(numberFormat, "Format", "ss"));
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -220,27 +215,27 @@ public class TestGeneratorMisc {
 	public void testEmptyRows() {
 		executeWithTempFile( baos -> {
 			try {
-				final String SHEET_CAPTION = "a sheet with empty rows";
-				final String BLUE_COLOR = "#0000ff";
-				final String RED_COLOR = "#ff0000";
-				final String GREEN_COLOR = "#00ff00";
-				final double BLUE_HEIGHT = 33d;
-				final double RED_HEIGHT = 12d;
-				final double GREEN_FONT_SIZE = 45d;
+				final var SHEET_CAPTION = "a sheet with empty rows";
+				final var BLUE_COLOR = "#0000ff";
+				final var RED_COLOR = "#ff0000";
+				final var GREEN_COLOR = "#00ff00";
+				final var BLUE_HEIGHT = 33d;
+				final var RED_HEIGHT = 12d;
+				final var GREEN_FONT_SIZE = 45d;
 
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 
-					Interior blueInterior = Interior.builder().withColor(BLUE_COLOR).build();
-					Style blueBackground = generator.createStyle().withInterior(blueInterior).build();
+					var blueInterior = Interior.builder().withColor(BLUE_COLOR).build();
+					var blueBackground = generator.createStyle().withInterior(blueInterior).build();
 					assertSame(blueInterior, blueBackground.interior());
 
 					Interior redInterior = Interior.builder().withColor(RED_COLOR).build();
-					Style redBackground = generator.createStyle().withInterior(redInterior).build();
+					var redBackground = generator.createStyle().withInterior(redInterior).build();
 					assertSame(redInterior, redBackground.interior());
 
-					Interior greenInterior = Interior.builder().withColor(GREEN_COLOR).build();
-					Font greenFont = Font.builder().withSize(GREEN_FONT_SIZE).build();
-					Style greenBackground = generator.createStyle().
+					var greenInterior = Interior.builder().withColor(GREEN_COLOR).build();
+					var greenFont = Font.builder().withSize(GREEN_FONT_SIZE).build();
+					var greenBackground = generator.createStyle().
 						withInterior(greenInterior).
 						withFont(greenFont).
 						build();
@@ -277,18 +272,18 @@ public class TestGeneratorMisc {
 					generator.closeSheet();
 				}
 
-				String document = baos.toString(Charset.forName("cp1252"));
+				var document = baos.toString(Charset.forName("cp1252"));
 				// Not empty and correct document
-				Document doc = GeneratorTestUtils.parseDocument(document);
+				var doc = GeneratorTestUtils.parseDocument(document);
 				assertNotNull(doc);
 
-				List<Element> rows = searchRows(doc, SHEET_CAPTION);
+				var rows = searchRows(doc, SHEET_CAPTION);
 				assertEquals(17, rows.size());
 
 				// the second to the fourth should have blue background
 				for (int indexBlue = 1; indexBlue < 4; indexBlue++) {
 					// Its style should have blue background
-					Element blueRow = rows.get(indexBlue);
+					var blueRow = rows.get(indexBlue);
 					assertEquals(BLUE_COLOR,
 						getInteriorStyleAttribute(blueRow, "Color"));
 					assertEquals(NumberFormatHelper.format(BLUE_HEIGHT),
@@ -298,7 +293,7 @@ public class TestGeneratorMisc {
 				// the eighth to twelfth should have red background
 				for (int indexRed = 7; indexRed < 12; indexRed++) {
 					// Its style should have blue background
-					Element redRow = rows.get(indexRed);
+					var redRow = rows.get(indexRed);
 					assertEquals(RED_COLOR,
 						getInteriorStyleAttribute(redRow, "Color"));
 					assertEquals(NumberFormatHelper.format(RED_HEIGHT),
@@ -306,7 +301,7 @@ public class TestGeneratorMisc {
 				}
 
 				// the fifteenth row should have green background
-				Element greenRow = rows.get(15);
+				var greenRow = rows.get(15);
 				assertEquals(GREEN_COLOR,
 					getInteriorStyleAttribute(greenRow, "Color"));
 				assertEquals(NumberFormatHelper.format(GREEN_FONT_SIZE),
@@ -322,30 +317,30 @@ public class TestGeneratorMisc {
 	public void testColumns() {
 		executeWithTempFile( baos -> {
 			try {
-				final String SHEET_CAPTION = "a sheet with columns";
-				final String BLUE_BACKGROUND = "#0000ff";
-				final String RED_BACKGROUND = "#ff0000";
+				final var SHEET_CAPTION = "a sheet with columns";
+				final var BLUE_BACKGROUND = "#0000ff";
+				final var RED_BACKGROUND = "#ff0000";
 
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
 
 
-					Interior blueInterior = Interior.builder().withColor(BLUE_BACKGROUND).build();
-					Style styleBlueBackground = generator.createStyle().withInterior(blueInterior).build();
+					var blueInterior = Interior.builder().withColor(BLUE_BACKGROUND).build();
+					var styleBlueBackground = generator.createStyle().withInterior(blueInterior).build();
 					assertSame(blueInterior, styleBlueBackground.interior());
 
-					Interior redInterior = Interior.builder().withColor(RED_BACKGROUND).build();
-					Style styleRedBackground = generator.createStyle().withInterior(redInterior).build();
+					var redInterior = Interior.builder().withColor(RED_BACKGROUND).build();
+					var styleRedBackground = generator.createStyle().withInterior(redInterior).build();
 					assertSame(redInterior, styleRedBackground.interior());
 
-					Interior redItalicInterior = Interior.builder().withColor(RED_BACKGROUND).build();
-					Style styleItalicRedBackground = generator.createStyle().
+					var redItalicInterior = Interior.builder().withColor(RED_BACKGROUND).build();
+					var styleItalicRedBackground = generator.createStyle().
 						withInterior(redItalicInterior).
 						withFont(Font.builder().withItalic(true).build()).
 						build();
 					assertSame(redItalicInterior, styleItalicRedBackground.interior());
 
-					Interior blueBoldInterior = Interior.builder().withColor(BLUE_BACKGROUND).build();
-					Style styleBlueBoldBackground = generator.createStyle().
+					var blueBoldInterior = Interior.builder().withColor(BLUE_BACKGROUND).build();
+					var styleBlueBoldBackground = generator.createStyle().
 						withInterior(blueBoldInterior).
 						withFont(Font.builder().withBold(true).build()).
 						withNumberFormat(STANDARD).
@@ -384,19 +379,19 @@ public class TestGeneratorMisc {
 					generator.closeSheet();
 				}
 
-				String document = baos.toString(Charset.forName("cp1252"));
+				var document = baos.toString(Charset.forName("cp1252"));
 
 				// Not empty and correct document
-				Document doc = GeneratorTestUtils.parseDocument(document);
+				var doc = GeneratorTestUtils.parseDocument(document);
 				assertNotNull(doc);
 
-				List<Element> columns = GeneratorTestUtils.searchColumns(doc, SHEET_CAPTION);
+				var columns = GeneratorTestUtils.searchColumns(doc, SHEET_CAPTION);
 				// There is a column without styles closing the set and another two closing the gaps
 				//	before #4 , #9 and #15
 				assertEquals(11, columns.size());
 
 				// Test column styles
-				Element col0 = columns.get(0);
+				var col0 = columns.get(0);
 				// Span = 2 -> an additional column
 				// red background style
 				assertEquals(NumberFormatHelper.format(1d),
@@ -404,12 +399,12 @@ public class TestGeneratorMisc {
 				assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col0, "Color"));
 
 				// Gap of 1
-				Element col1 = columns.get(1);
+				var col1 = columns.get(1);
 				verifyGap(col1, 1);
 
 				// blue background
 				// width of 35d
-				Element col2 = columns.get(2);
+				var col2 = columns.get(2);
 				assertEquals(NumberFormatHelper.format(4d),
 					getAttributeValue(col2, "Index", "ss"));
 				assertEquals(BLUE_BACKGROUND, getInteriorStyleAttribute(col2, "Color"));
@@ -417,14 +412,14 @@ public class TestGeneratorMisc {
 					getAttributeValue(col2, "Width", "ss"));
 
 				// italic, red background
-				Element col3 = columns.get(3);
+				var col3 = columns.get(3);
 				assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col3, "Color"));
 				assertEquals(BooleanFormatHelper.format(Boolean.TRUE),
 					getFontStyleAttribute(col3, "Italic"));
 
 				// blue background
 				/// Span = 2 -> 1 additional column
-				Element col4 = columns.get(4);
+				var col4 = columns.get(4);
 				assertEquals(BLUE_BACKGROUND, getInteriorStyleAttribute(col4, "Color"));
 				assertEquals(NumberFormatHelper.format(1d),
 					getAttributeValue(col0, "Span", "ss"));
@@ -432,7 +427,7 @@ public class TestGeneratorMisc {
 				// red background
 				// width: 250
 				// span = 2 -> 1 additional column
-				Element col5 = columns.get(5);
+				var col5 = columns.get(5);
 				assertEquals(NumberFormatHelper.format(1d),
 					getAttributeValue(col5, "Span", "ss"));
 				assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col5, "Color"));
@@ -440,13 +435,13 @@ public class TestGeneratorMisc {
 					getAttributeValue(col5, "Width", "ss"));
 
 				// Gap of 2
-				Element col6 = columns.get(6);
+				var col6 = columns.get(6);
 				verifyGap(col6, 2);
 
 				// blue background
 				// index = 12
 				// span = 3 -> 2 additional columns
-				Element col7 = columns.get(7);
+				var col7 = columns.get(7);
 				assertEquals(BLUE_BACKGROUND, getInteriorStyleAttribute(col7, "Color"));
 				assertEquals(NumberFormatHelper.format(12d),
 					getAttributeValue(col7, "Index", "ss"));
@@ -454,18 +449,18 @@ public class TestGeneratorMisc {
 					getAttributeValue(col7, "Span", "ss"));
 
 				// Gap of 1
-				Element col8 = columns.get(8);
+				var col8 = columns.get(8);
 				verifyGap(col8, 1);
 
 				// index = 16
 				// red background
-				Element col9 = columns.get(9);
+				var col9 = columns.get(9);
 				assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col9, "Color"));
 				assertEquals(NumberFormatHelper.format(16d),
 					getAttributeValue(col9, "Index", "ss"));
 
 				// last column: the closing one
-				Element col10 = columns.get(10);
+				var col10 = columns.get(10);
 				assertNull(getAttributeValue(col10, "StyleID", "ss"));
 				assertNull(getAttributeValue(col10, "Span", "ss"));
 				assertNull(getAttributeValue(col10, "Index", "ss"));
@@ -492,8 +487,8 @@ public class TestGeneratorMisc {
 	@Test
 	public void controlIOerror() {
 		try {
-			File file = File.createTempFile("xmlspreadsheet", ".xml");
-			try (OutputStream os = new FileOutputStream(file)) {
+			var file = File.createTempFile("xmlspreadsheet", ".xml");
+			try (var os = new FileOutputStream(file)) {
 				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os)) {
 					generator.startDocument();
 					generator.startSheet("this will fail");
@@ -522,10 +517,10 @@ public class TestGeneratorMisc {
 	@Test 
 	public void testStartNamelessSheet() {
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			var baos = new ByteArrayOutputStream();
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			var generator = new XMLSpreadsheetGenerator(baos);
 			generator.startDocument();
 			generator.startSheet(null);  // Should jump with an XMLSpreadsheetException
 			fail();  // Should not get here!
@@ -542,9 +537,9 @@ public class TestGeneratorMisc {
 	@Test
 	public void testMisplacedColumn() {
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			var baos = new ByteArrayOutputStream();
 			// Don't mind here to have a warning that the resource is never closed
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			var generator = new XMLSpreadsheetGenerator(baos);
 			generator.startDocument();
 			generator.startSheet("This will fail");
 			generator.startRow();
@@ -563,9 +558,9 @@ public class TestGeneratorMisc {
 	@Test
 	public void testOverlapColumns() {
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			var baos = new ByteArrayOutputStream();
 			// Don't mind here to have a warning that the resource is never closed
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+			var generator = new XMLSpreadsheetGenerator(baos);
 			generator.startDocument();
 			generator.startSheet("This will fail");
 			generator.startColumns();

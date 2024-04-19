@@ -3,7 +3,6 @@ package tests.styles;
 import org.junit.jupiter.api.Test;
 import xml.spreadsheet.style.NumberFormat;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -14,13 +13,13 @@ import static xml.spreadsheet.style.NumberFormat.from;
 public class TestNumberFormat {
 
 	private void testNumberFormat(String nf) {
-		NumberFormat format = new NumberFormat(nf);
+		var format = new NumberFormat(nf);
 		checkAttributeValue(format, "Format", nf);
 	}
 
 	@Test
 	public void testSetFormatString() {
-		NumberFormat nf1 = new NumberFormat(null);
+		var nf1 = new NumberFormat(null);
 		// null by default
 		checkAttributeValue(nf1, "Format", null);
 		testNumberFormat("####.#");
@@ -35,7 +34,7 @@ public class TestNumberFormat {
 
 		try {
 			// Check all the constants of type NumberFormat
-			for (Field f : NumberFormat.class.getDeclaredFields()) {
+			for (var f : NumberFormat.class.getDeclaredFields()) {
 				int modifiers = f.getModifiers();
 				if (f.getAnnotatedType().getType().getTypeName().equals("NumberFormat")
 					&& Modifier.isStatic(modifiers)

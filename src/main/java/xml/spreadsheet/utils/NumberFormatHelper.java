@@ -20,7 +20,7 @@ public class NumberFormatHelper {
 	
 	static {
 		DOUBLE_FORMAT = new DecimalFormat("#.#####");
-		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+		var dfs = new DecimalFormatSymbols();
 		dfs.setDecimalSeparator('.');
 		DOUBLE_FORMAT.setDecimalFormatSymbols(dfs);
 	}

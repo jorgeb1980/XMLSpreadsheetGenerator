@@ -43,9 +43,7 @@ public class XmlHelper {
 	 * @param value Value to fill into the string
 	 */
 	private static void attr(StringBuilder sb, String name, Double value) {
-		if (value != null) {
-			attr(sb, name, NumberFormatHelper.format(value));
-		}
+		if (value != null) attr(sb, name, NumberFormatHelper.format(value));
 	}
 	
 	/** 
@@ -55,9 +53,7 @@ public class XmlHelper {
 	 * @param value Value to fill into the string
 	 */
 	private static void attr(StringBuilder sb, String name, Long value) {
-		if (value != null) {
-			attr(sb, name, Long.toString(value));
-		}
+		if (value != null) attr(sb, name, Long.toString(value));
 	}
 	
 	/** 
@@ -67,9 +63,7 @@ public class XmlHelper {
 	 * @param value Value to fill into the string.  1 = true; 0 = false
 	 */
 	private static void attr(StringBuilder sb, String name, Boolean value) {
-		if (value != null) {
-			attr(sb, name, value?"1":"0");
-		}
+		if (value != null) attr(sb, name, value?"1":"0");
 	}
 	
 	/**
@@ -150,7 +144,7 @@ public class XmlHelper {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<");
 		sb.append(elementName);
-		if (attributes != null && attributes.size() != 0) {
+		if (attributes != null && !attributes.isEmpty()) {
 			sb.append(" ");
 			for (String key: attributes.keySet()) {
 				Object value = attributes.get(key);

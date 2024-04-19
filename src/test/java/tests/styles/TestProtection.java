@@ -2,14 +2,13 @@ package tests.styles;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
-import static xml.spreadsheet.style.Protection.from;
 import static xml.spreadsheet.style.Protection.builder;
+import static xml.spreadsheet.style.Protection.from;
 
 public class TestProtection {
 
@@ -18,8 +17,8 @@ public class TestProtection {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
-			Style style = generator.createStyle().build();
+			var generator = new XMLSpreadsheetGenerator(null);
+			var style = generator.createStyle().build();
 			assertNull(style.protection());
 		} catch (Throwable e) {
 			fail(e.getMessage());

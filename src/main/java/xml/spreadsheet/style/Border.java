@@ -53,7 +53,7 @@ public record Border(
 		
 		final private double weight;
 		
-		private BorderWeight (double weight) {
+		BorderWeight (double weight) {
 			this.weight = weight;
 		}
 		

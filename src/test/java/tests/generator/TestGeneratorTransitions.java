@@ -19,7 +19,7 @@ public class TestGeneratorTransitions {
 			try {
 				// Don't mind here to have a warning that the resource is never closed
 				@SuppressWarnings("resource")
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+				var generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.startSheet("this will fail");
 				generator.writeCell("adasf"); // not the proper place
@@ -38,7 +38,7 @@ public class TestGeneratorTransitions {
 			try {
 				// Don't mind here to have a warning that the resource is never closed
 				@SuppressWarnings("resource")
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+				var generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.writeCell("adasf"); // not the proper place
 				fail(); // Should not get here!
@@ -54,7 +54,7 @@ public class TestGeneratorTransitions {
 	public void testInvalidTransitionSheetToDocument() {
 		executeWithTempFile( baos -> {
 			try {
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+				var generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.startSheet("this will fail");
 				generator.close(); // Should jump here with an XMLSpreadsheetException
@@ -71,7 +71,7 @@ public class TestGeneratorTransitions {
 	public void testInvalidTransitionRowToDocument() {
 		executeWithTempFile( baos -> {
 			try {
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+				var generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.startSheet("this will fail");
 				generator.startRow();
@@ -91,7 +91,7 @@ public class TestGeneratorTransitions {
 			try {
 				// Don't mind here to have a warning that the resource is never closed
 				@SuppressWarnings("resource")
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+				var generator = new XMLSpreadsheetGenerator(baos);
 				generator.startDocument();
 				generator.writeCell(new Date());
 				fail(); // Should not get here!
@@ -109,7 +109,7 @@ public class TestGeneratorTransitions {
 			try {
 				// Don't mind here to have a warning that the resource is never closed
 				@SuppressWarnings("resource")
-				XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
+				var generator = new XMLSpreadsheetGenerator(baos);
 				generator.writeCell(new Date());
 				fail(); // Should not get here!
 			} catch (XMLSpreadsheetException e) {
