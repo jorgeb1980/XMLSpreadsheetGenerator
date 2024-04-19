@@ -19,7 +19,7 @@ public class GeneratorTestUtils {
 	public static Document parseDocument(String value) {
 		Document doc = null;
 		try {
-			SAXBuilder builder = new SAXBuilder();
+			var builder = new SAXBuilder();
 			doc = builder.build(
 				new StringReader(value));
 		}

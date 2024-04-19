@@ -31,7 +31,7 @@ public class TestGeneratorMisc {
 	@Test
 	public void testEmptyDocument() {
 		var baos = new ByteArrayOutputStream();
-		try {		
+		try {
 			try (var generator = new XMLSpreadsheetGenerator(baos)) {
 				generator.startDocument();
 			}
@@ -117,7 +117,7 @@ public class TestGeneratorMisc {
 				final var TEXT_FIRST_ROW = "<aaa<>";
 				final var NUMBER_THIRD_SHEET = 123.3d;
 
-				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				try (var generator = new XMLSpreadsheetGenerator(baos)) {
 					generator.startDocument();
 					generator.startSheet("a sheet");
 					generator.emptyRow();
@@ -170,8 +170,8 @@ public class TestGeneratorMisc {
 				//	never be needed out of the try-with-resources statemente in any
 				//	other case
 				Style dateStyle;
-				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-					NumberFormat numberFormatObj = new NumberFormat(DATE_FORMAT);
+				try (var generator = new XMLSpreadsheetGenerator(baos)) {
+					var numberFormatObj = new NumberFormat(DATE_FORMAT);
 					dateStyle = generator.createStyle()
 						.withNumberFormat(numberFormatObj).build();
 					assertSame(numberFormatObj, dateStyle.numberFormat());
@@ -223,13 +223,13 @@ public class TestGeneratorMisc {
 				final var RED_HEIGHT = 12d;
 				final var GREEN_FONT_SIZE = 45d;
 
-				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
+				try (var generator = new XMLSpreadsheetGenerator(baos)) {
 
 					var blueInterior = Interior.builder().withColor(BLUE_COLOR).build();
 					var blueBackground = generator.createStyle().withInterior(blueInterior).build();
 					assertSame(blueInterior, blueBackground.interior());
 
-					Interior redInterior = Interior.builder().withColor(RED_COLOR).build();
+					var redInterior = Interior.builder().withColor(RED_COLOR).build();
 					var redBackground = generator.createStyle().withInterior(redInterior).build();
 					assertSame(redInterior, redBackground.interior());
 
@@ -321,8 +321,7 @@ public class TestGeneratorMisc {
 				final var BLUE_BACKGROUND = "#0000ff";
 				final var RED_BACKGROUND = "#ff0000";
 
-				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos)) {
-
+				try (var generator = new XMLSpreadsheetGenerator(baos)) {
 
 					var blueInterior = Interior.builder().withColor(BLUE_BACKGROUND).build();
 					var styleBlueBackground = generator.createStyle().withInterior(blueInterior).build();
@@ -394,8 +393,7 @@ public class TestGeneratorMisc {
 				var col0 = columns.get(0);
 				// Span = 2 -> an additional column
 				// red background style
-				assertEquals(NumberFormatHelper.format(1d),
-					getAttributeValue(col0, "Span", "ss"));
+				assertEquals(NumberFormatHelper.format(1d), getAttributeValue(col0, "Span", "ss"));
 				assertEquals(RED_BACKGROUND, getInteriorStyleAttribute(col0, "Color"));
 
 				// Gap of 1
@@ -489,7 +487,7 @@ public class TestGeneratorMisc {
 		try {
 			var file = File.createTempFile("xmlspreadsheet", ".xml");
 			try (var os = new FileOutputStream(file)) {
-				try (XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(os)) {
+				try (var generator = new XMLSpreadsheetGenerator(os)) {
 					generator.startDocument();
 					generator.startSheet("this will fail");
 					generator.startRow();

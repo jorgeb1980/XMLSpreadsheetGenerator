@@ -3,7 +3,6 @@ package tests;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPath;
@@ -12,7 +11,10 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static org.jdom2.Namespace.getNamespace;
@@ -34,7 +36,7 @@ public class XmlTestUtils {
 	public static Document parseElement(Object styleElement) {
 		Document doc = null;
 		try {
-			SAXBuilder builder = new SAXBuilder();
+			var builder = new SAXBuilder();
 			doc = builder.build(
 				new StringReader(
 					"<xml_test xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\" " +
@@ -65,11 +67,11 @@ public class XmlTestUtils {
 	 * @param f Lambda that will consume the created OutputStream
 	 */
 	public static void executeWithTempFile(Consumer<ByteArrayOutputStream> f) {
-		try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+		try(var baos = new ByteArrayOutputStream()) {
 			f.accept(baos);
 			if (YES_VALUES.contains(getSystemVariable(KEEP_FILES))) {
-				File file = File.createTempFile("xmlspreadsheet", ".xml");
-				try (OutputStream os = new FileOutputStream(file)) { os.write(baos.toByteArray()); }
+				var file = File.createTempFile("xmlspreadsheet", ".xml");
+				try (var os = new FileOutputStream(file)) { os.write(baos.toByteArray()); }
 				System.out.println("Created temp file " + file);
 			} else  System.out.printf("If you wish to keep and inspect later temporary files created during tests, please declare the env var %s=true%n", KEEP_FILES);
 		} catch (IOException ioe) { ioe.printStackTrace(); }
@@ -83,8 +85,8 @@ public class XmlTestUtils {
 	}
 
 	private static String getSystemVariable(String variable) {
-		String value = System.getenv(variable);
-		String ret = "";
+		var value = System.getenv(variable);
+		var ret = "";
 		if (value != null) { ret = value.toUpperCase(); }
 		return ret;
 	}
