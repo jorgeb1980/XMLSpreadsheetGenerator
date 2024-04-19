@@ -1,11 +1,10 @@
 package tests.misc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.utils.NumberFormatHelper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TestNumberFormat {
 

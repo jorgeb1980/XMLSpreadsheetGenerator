@@ -1,32 +1,25 @@
 package tests.styles;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import xml.spreadsheet.Style;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
-import xml.spreadsheet.style.Font.FontFamily;
-import xml.spreadsheet.style.Font.Underline;
-import xml.spreadsheet.style.Font.VerticalAlignment;
+import xml.spreadsheet.style.Font.*;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
 import static xml.spreadsheet.Charset.*;
-import static xml.spreadsheet.style.Font.from;
-import static xml.spreadsheet.style.Font.COLOR_AUTOMATIC;
-import static xml.spreadsheet.style.Font.builder;
+import static xml.spreadsheet.style.Font.*;
 
 public class TestFont {
 
-	@Before
-	public void init() {
+	@BeforeAll
+	public static void init() {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
-			Style style = generator.createStyle().build();
-			Assert.assertNull(style.font());
+			var generator = new XMLSpreadsheetGenerator(null);
+			var style = generator.createStyle().build();
+			assertNull(style.font());
 		} catch (Throwable e) {
 			fail(e.getMessage());
 		}
@@ -106,7 +99,7 @@ public class TestFont {
 			fail();
 		}
 		catch(IllegalArgumentException e) {
-			Assert.assertNotNull(e);
+			assertNotNull(e);
 		}
 		// 12 points
 		checkAttributeValue(builder().withSize(12).build(), "Size", "12");
@@ -131,7 +124,7 @@ public class TestFont {
 		// null by default
 		checkAttributeValue(builder().build(), "Underline", null);
 		// Try all alternatives
-		for (Underline underline: Underline.values()) {
+		for (var underline: Underline.values()) {
 			checkAttributeValue(builder().withUnderline(underline).build(), "Underline", underline.toString());
 		}
 	}
@@ -170,7 +163,7 @@ public class TestFont {
 		checkAttributeValue("x", builder().build(), "Family", null);
 		
 		// try all the possible values
-		for (FontFamily family: FontFamily.values()) {
+		for (var family: FontFamily.values()) {
 			checkAttributeValue("x", builder().withFamily(family).build(), "Family", family.toString());
 		}
 	}

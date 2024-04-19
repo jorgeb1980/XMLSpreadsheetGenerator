@@ -1,10 +1,8 @@
 package tests.misc;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static xml.spreadsheet.utils.MapBuilder.mapOf;
 
 public class TestMapBuilder {
@@ -21,7 +19,7 @@ public class TestMapBuilder {
 
     @Test
     public void testTrivialSuccessCase() {
-        Map<String, Object> map = mapOf("first", 1, "second", 2);
+        var map = mapOf("first", 1, "second", 2);
         assertEquals(1, map.get("first"));
         assertEquals(2, map.get("second"));
         assertNull(map.get("not exists"));
@@ -30,7 +28,7 @@ public class TestMapBuilder {
 
     @Test
     public void testNullValues() {
-        Map<String, Object> map = mapOf("first", 1, "second", null, null, 3);
+        var map = mapOf("first", 1, "second", null, null, 3);
         assertEquals(1, map.get("first"));
         assertNull(map.get("second"));
         assertEquals(1, map.keySet().size());

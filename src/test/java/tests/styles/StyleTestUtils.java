@@ -1,12 +1,10 @@
 package tests.styles;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.xpath.XPath;
+import org.jdom2.Document;
 import tests.XmlTestUtils;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tests.XmlTestUtils.parseElement;
 
 /**
@@ -31,9 +29,8 @@ public class StyleTestUtils {
 	public static String attributeValue(String prefix, Document doc, String selector, String attribute) {
 		String ret = null;
 		try {
-			Element element = ((Element)XPath.selectSingleNode(doc, selector)); 
-			ret = XmlTestUtils.getAttributeValue(element, attribute, 
-					prefix);
+			var element = XmlTestUtils.generateXPathExpression(selector).evaluateFirst(doc);
+			ret = XmlTestUtils.getAttributeValue(element, attribute, prefix);
 		} catch (Throwable t) {
 			t.printStackTrace();
 			fail(t.getMessage());
@@ -80,12 +77,7 @@ public class StyleTestUtils {
 	// Compares the value of an attribute in an element of an XML document against
 	//	an expected value
 	public static void checkAttributeValue(String prefix, Document doc, String selector, String attribute, String value) {
-		if (value != null) {
-			assertEquals(value,
-				StyleTestUtils.attributeValue(prefix, doc, selector, attribute));
-		} else {
-			assertNull(StyleTestUtils.attributeValue(prefix, doc,
-					selector, attribute));
-		}
+		if (value != null) assertEquals(value, attributeValue(prefix, doc, selector, attribute));
+		else assertNull(attributeValue(prefix, doc, selector, attribute));
 	}
 }

@@ -1,15 +1,13 @@
 package tests.styles;
 
-import org.junit.Before;
-import org.junit.Test;
-import xml.spreadsheet.Style;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
-import xml.spreadsheet.style.Alignment;
 import xml.spreadsheet.style.Alignment.HorizontalAlignment;
 import xml.spreadsheet.style.Alignment.VerticalAlignment;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
 import static xml.spreadsheet.style.Alignment.builder;
 import static xml.spreadsheet.style.Alignment.from;
@@ -20,13 +18,13 @@ import static xml.spreadsheet.style.Alignment.from;
  */
 public class TestAlignment {
 	
-	@Before
-	public void init() {
+	@BeforeAll
+	public static void init() {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
-			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
-			Style style = generator.createStyle().build();
+			var generator = new XMLSpreadsheetGenerator(null);
+			var style = generator.createStyle().build();
 			assertNull(style.alignment());
 		} catch (Throwable e) {
 			fail(e.getMessage());
@@ -47,10 +45,9 @@ public class TestAlignment {
 		// Null by default
 		checkAttributeValue(builder().build(), "Horizontal", null);
 		// Check the generated value for all the alternatives
-		for (HorizontalAlignment horizontalAlignment: HorizontalAlignment.values()) {
-			Alignment alignment = builder().withHorizontal(horizontalAlignment).build();
-			checkAttributeValue(alignment, "Horizontal",
-					horizontalAlignment.toString());			
+		for (var horizontalAlignment: HorizontalAlignment.values()) {
+			var alignment = builder().withHorizontal(horizontalAlignment).build();
+			checkAttributeValue(alignment, "Horizontal", horizontalAlignment.toString());
 		}
 	}
 
@@ -86,8 +83,8 @@ public class TestAlignment {
 		// Null by default
 		checkAttributeValue(builder().build(), "Vertical", null);
 		// Check the generated values for all the alternatives
-		for (VerticalAlignment verticalAlignment: VerticalAlignment.values()) {
-			Alignment alignment = builder().withVertical(verticalAlignment).build();
+		for (var verticalAlignment: VerticalAlignment.values()) {
+			var alignment = builder().withVertical(verticalAlignment).build();
 			checkAttributeValue(alignment, "Vertical", verticalAlignment.toString());
 		}
 	}

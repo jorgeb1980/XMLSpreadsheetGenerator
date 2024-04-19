@@ -33,8 +33,8 @@ public record Borders(
 		if (originalBorders == null) return null;
 		else {
 			Map<BorderPosition, Border> borders = new HashMap<>();
-			for (BorderPosition originalPosition : originalBorders.borders.keySet()) {
-				Border originalBorder = originalBorders.borders.get(originalPosition);
+			for (var originalPosition : originalBorders.borders.keySet()) {
+				var originalBorder = originalBorders.borders.get(originalPosition);
 				// Create new instances of Border
 				borders.put(originalPosition, Border.from(originalBorder));
 			}
@@ -60,7 +60,6 @@ public record Borders(
 		 * Creates a Border inside the Borders container.  It admits a Border instance
 		 * for each of the six possible positions.
 		 *
-		 * @param position Border position
 		 * @return Border object just created
 		 * @throws XMLSpreadsheetException If tried to insert a border in an
 		 *                                 already used position
@@ -77,9 +76,9 @@ public record Borders(
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		var sb = new StringBuilder();
 		
-		if (borders != null && borders.size() > 0) {
+		if (borders != null && !borders.isEmpty()) {
 			sb.append("<ss:Borders>");
 			for (Border border: borders.values()) {
 				sb.append(border.toString());
