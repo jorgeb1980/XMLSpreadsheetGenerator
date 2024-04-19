@@ -1,8 +1,8 @@
 package tests.generator;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.junit.jupiter.api.Test;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetException;
@@ -18,6 +18,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
+
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -543,7 +544,6 @@ public class TestGeneratorMisc {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			// Don't mind here to have a warning that the resource is never closed
-			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 			generator.startDocument();
 			generator.startSheet("This will fail");
@@ -565,7 +565,6 @@ public class TestGeneratorMisc {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			// Don't mind here to have a warning that the resource is never closed
-			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(baos);
 			generator.startDocument();
 			generator.startSheet("This will fail");

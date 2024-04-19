@@ -24,8 +24,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation 'jdom:jdom:1.1'
-    testImplementation 'jaxen:jaxen:1.2.0'
+    testImplementation 'org.jdom:jdom2:2.0.6.1'
+    testImplementation 'jaxen:jaxen:2.0.0'
 }
 
 // tests and coverage configuration

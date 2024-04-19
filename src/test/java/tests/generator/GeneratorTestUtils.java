@@ -1,17 +1,16 @@
 package tests.generator;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import tests.XmlTestUtils;
+
 import java.io.StringReader;
 import java.util.List;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.xpath.XPath;
-
-import tests.XmlTestUtils;
-
 import static org.junit.jupiter.api.Assertions.fail;
+import static tests.XmlTestUtils.generateXPathExpression;
 
 @SuppressWarnings("unchecked")
 public class GeneratorTestUtils {
@@ -34,25 +33,25 @@ public class GeneratorTestUtils {
 	// List of rows of a certain sheet
 	// Returns rows as Element objects
 	public static List<Element> searchRows(Document doc, String sheetName) throws JDOMException {
-		return (List<Element>) XPath.selectNodes(doc, "//ss:Worksheet[@ss:Name='" + sheetName + "']//ss:Row");
+		return generateXPathExpression("//ss:Worksheet[@ss:Name='" + sheetName + "']//ss:Row").evaluate(doc);
 	}
 	
 	// List of columns of a certain sheet
 	// Returns columns as Element objects
 	public static List<Element> searchColumns(Document doc, String sheetName) throws JDOMException {
-		return (List<Element>) XPath.selectNodes(doc, "//ss:Worksheet[@ss:Name='" + sheetName + "']//ss:Column");
+		return generateXPathExpression( "//ss:Worksheet[@ss:Name='" + sheetName + "']//ss:Column").evaluate(doc);
 	}
 	
 	// List of cells of a certain row
 	// Returns cells as Element objects
 	public static List<Element> searchCells(Element row) throws JDOMException {
-		return (List<Element>) XPath.selectNodes(row, "ss:Cell");
+		return generateXPathExpression("ss:Cell").evaluate(row);
 	}
 	
 	// Style of a certain id
 	// Returns the style as an Element object
 	public static Element searchStyle(Document doc, String styleId) throws JDOMException {
-		return (Element) XPath.selectSingleNode(doc, "//ss:Style[@ss:ID='" + styleId + "']");
+		return generateXPathExpression("//ss:Style[@ss:ID='" + styleId + "']").evaluateFirst(doc);
 	}
 	
 	// Style of a certain cell
@@ -61,7 +60,7 @@ public class GeneratorTestUtils {
 		Element ret = null;
 		String id = XmlTestUtils.getAttributeValue(cell, "StyleID", "ss");
 		if (id != null && !id.trim().isEmpty()) {
-			ret = (Element) XPath.selectSingleNode(doc, "//ss:Style[@ss:ID='" + id + "']");
+			ret = generateXPathExpression( "//ss:Style[@ss:ID='" + id + "']").evaluateFirst(doc);
 		}
 		return ret;
 	}
