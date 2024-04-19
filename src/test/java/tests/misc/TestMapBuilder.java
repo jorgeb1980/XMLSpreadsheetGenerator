@@ -1,10 +1,10 @@
 package tests.misc;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static xml.spreadsheet.utils.MapBuilder.mapOf;
 
 public class TestMapBuilder {

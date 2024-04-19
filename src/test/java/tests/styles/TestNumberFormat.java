@@ -1,13 +1,13 @@
 package tests.styles;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.style.NumberFormat;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
 import static xml.spreadsheet.style.NumberFormat.from;
 

@@ -2,10 +2,10 @@ package tests.misc;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static tests.XmlTestUtils.getAttributeValue;
 import static tests.XmlTestUtils.parseElement;
 import static xml.spreadsheet.utils.MapBuilder.mapOf;

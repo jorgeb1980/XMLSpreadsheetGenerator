@@ -1,18 +1,19 @@
 package tests.generator;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static tests.XmlTestUtils.executeWithTempFile;
 
 public class TestGeneratorTransitions {
 	
-	@Test 
+	@Test
 	public void testInvalidTransitionSheetToCell() {
 		executeWithTempFile( baos -> {
 			try {

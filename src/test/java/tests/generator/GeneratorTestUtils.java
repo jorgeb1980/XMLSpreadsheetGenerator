@@ -1,7 +1,5 @@
 package tests.generator;
 
-import static org.junit.Assert.fail;
-
 import java.io.StringReader;
 import java.util.List;
 
@@ -12,6 +10,8 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
 import tests.XmlTestUtils;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("unchecked")
 public class GeneratorTestUtils {
@@ -60,7 +60,7 @@ public class GeneratorTestUtils {
 	public static Element searchStyle(Document doc, Element cell) throws JDOMException {
 		Element ret = null;
 		String id = XmlTestUtils.getAttributeValue(cell, "StyleID", "ss");
-		if (id != null && id.trim().length() > 0) {
+		if (id != null && !id.trim().isEmpty()) {
 			ret = (Element) XPath.selectSingleNode(doc, "//ss:Style[@ss:ID='" + id + "']");
 		}
 		return ret;

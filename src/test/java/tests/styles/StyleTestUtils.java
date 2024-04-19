@@ -6,7 +6,7 @@ import org.jdom.xpath.XPath;
 import tests.XmlTestUtils;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tests.XmlTestUtils.parseElement;
 
 /**

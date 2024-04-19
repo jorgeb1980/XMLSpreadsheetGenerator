@@ -8,11 +8,10 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class XmlTestUtils {
 

@@ -1,13 +1,13 @@
 package tests.misc;
 
+import org.junit.jupiter.api.Test;
+import xml.spreadsheet.utils.DateFormatHelper;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
-import xml.spreadsheet.utils.DateFormatHelper;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestDateFormat {
 

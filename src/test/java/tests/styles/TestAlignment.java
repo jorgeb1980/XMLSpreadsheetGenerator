@@ -1,15 +1,15 @@
 package tests.styles;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Alignment;
 import xml.spreadsheet.style.Alignment.HorizontalAlignment;
 import xml.spreadsheet.style.Alignment.VerticalAlignment;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
 import static xml.spreadsheet.style.Alignment.builder;
 import static xml.spreadsheet.style.Alignment.from;
@@ -20,8 +20,8 @@ import static xml.spreadsheet.style.Alignment.from;
  */
 public class TestAlignment {
 	
-	@Before
-	public void init() {
+	@BeforeAll
+	public static void init() {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")

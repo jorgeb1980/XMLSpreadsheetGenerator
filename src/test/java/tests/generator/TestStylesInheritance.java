@@ -2,7 +2,7 @@ package tests.generator;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.*;
@@ -10,11 +10,10 @@ import xml.spreadsheet.style.Alignment.HorizontalAlignment;
 import xml.spreadsheet.style.Border.BorderPosition;
 import xml.spreadsheet.utils.NumberFormatHelper;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tests.XmlTestUtils.executeWithTempFile;
 import static tests.XmlTestUtils.getAttributeValue;
 import static tests.generator.GeneratorTestUtils.*;
@@ -25,7 +24,7 @@ import static xml.spreadsheet.style.Border.LineStyle.Dash;
 
 public class TestStylesInheritance {
 	
-	@Test 
+	@Test
 	public void testInheritColorStyle() {
 		executeWithTempFile( baos -> {
 			try {

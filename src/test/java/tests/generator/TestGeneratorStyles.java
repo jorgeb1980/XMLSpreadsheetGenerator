@@ -2,7 +2,7 @@ package tests.generator;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tests.XmlTestUtils.executeWithTempFile;
 import static tests.XmlTestUtils.getAttributeValue;
 import static tests.generator.GeneratorTestUtils.*;

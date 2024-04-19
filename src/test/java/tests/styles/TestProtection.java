@@ -1,27 +1,26 @@
 package tests.styles;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
 import static xml.spreadsheet.style.Protection.from;
 import static xml.spreadsheet.style.Protection.builder;
 
 public class TestProtection {
 
-	@Before
-	public void init() {
+	@BeforeAll
+	public static void init() {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
 			Style style = generator.createStyle().build();
-			Assert.assertNull(style.protection());
+			assertNull(style.protection());
 		} catch (Throwable e) {
 			fail(e.getMessage());
 		}

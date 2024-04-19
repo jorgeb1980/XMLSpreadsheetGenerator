@@ -1,16 +1,15 @@
 package tests.styles;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
 import static xml.spreadsheet.style.Border.BorderPosition.Bottom;
 import static xml.spreadsheet.style.Border.from;
 import static xml.spreadsheet.style.Borders.builder;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetException;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
@@ -25,14 +24,14 @@ import java.util.List;
 
 public class TestBorders {
 	
-	@Before
-	public void init() {
+	@BeforeAll
+	public static void init() {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
 			Style style = generator.createStyle().build();
-			Assert.assertNull(style.borders());
+			assertNull(style.borders());
 		}
 		catch (Throwable e) {
 			fail(e.getMessage());
@@ -55,7 +54,7 @@ public class TestBorders {
 			fail();
 		}
 		catch (XMLSpreadsheetException e) {
-			Assert.assertEquals("The Bottom border is already defined", e.getMessage());
+			assertEquals("The Bottom border is already defined", e.getMessage());
 		}
 	}
 	
@@ -166,7 +165,7 @@ public class TestBorders {
 
 	@Test
 	public void testEmptyBorders() {
-		Assert.assertEquals("", builder().build().toString().trim());
-		Assert.assertEquals("", new Borders(null).toString().trim());
+		assertEquals("", builder().build().toString().trim());
+		assertEquals("", new Borders(null).toString().trim());
 	}
 }

@@ -1,16 +1,14 @@
 package tests.styles;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import xml.spreadsheet.Style;
 import xml.spreadsheet.XMLSpreadsheetGenerator;
 import xml.spreadsheet.style.Font.FontFamily;
 import xml.spreadsheet.style.Font.Underline;
 import xml.spreadsheet.style.Font.VerticalAlignment;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static tests.styles.StyleTestUtils.checkAttributeValue;
 import static xml.spreadsheet.Charset.*;
 import static xml.spreadsheet.style.Font.from;
@@ -19,14 +17,14 @@ import static xml.spreadsheet.style.Font.builder;
 
 public class TestFont {
 
-	@Before
-	public void init() {
+	@BeforeAll
+	public static void init() {
 		try { 
 			// Don't mind here to have a warning that the resource is never closed
 			@SuppressWarnings("resource")
 			XMLSpreadsheetGenerator generator = new XMLSpreadsheetGenerator(null);
 			Style style = generator.createStyle().build();
-			Assert.assertNull(style.font());
+			assertNull(style.font());
 		} catch (Throwable e) {
 			fail(e.getMessage());
 		}
@@ -106,7 +104,7 @@ public class TestFont {
 			fail();
 		}
 		catch(IllegalArgumentException e) {
-			Assert.assertNotNull(e);
+			assertNotNull(e);
 		}
 		// 12 points
 		checkAttributeValue(builder().withSize(12).build(), "Size", "12");
