@@ -7,9 +7,9 @@ repositories {
 }
 
 tasks.withType(JavaCompile) {
-    options.release = 21
+    options.release = 25
 }
-version = '2.1.0'
+version = '2.2.0'
 group = 'xml.spreadsheet'
 
 jar {
@@ -30,7 +30,7 @@ dependencies {
 
 // tests and coverage configuration
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = "0.8.15"
 }
 
 test {

@@ -5,7 +5,6 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
-import org.jdom2.xpath.XPath;
 import org.jdom2.xpath.XPathBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
@@ -25,7 +24,7 @@ public class XmlTestUtils {
 	private static final String KEEP_FILES = "KEEP_FILES";
 	private static final List<String> YES_VALUES = Arrays.asList("YES", "TRUE");
 
-	private static Map<String, String> namespaces;
+	private static final Map<String, String> namespaces;
 	
 	static {
 		namespaces = new HashMap<>();
@@ -56,9 +55,9 @@ public class XmlTestUtils {
 	}
 	
 	// Given a certain element, returns a list of descendants determined by an XPath query
-	@SuppressWarnings("unchecked")
 	public static List<Element> getDescendants(Element element, String query) throws JDOMException {
-		return (List<Element>) XPath.selectNodes(element, query);
+		var expression = generateXPathExpression(query);
+		return expression.evaluate(element);
 	}
 
 	/**
