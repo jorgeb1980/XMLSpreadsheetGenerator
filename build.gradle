@@ -9,7 +9,7 @@ repositories {
 tasks.withType(JavaCompile) {
     options.release = 25
 }
-version = '2.2.0-SNAPSHOT'
+version = '2.2.0'
 group = 'xml.spreadsheet'
 
 jar {
